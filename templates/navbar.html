@@ -1,0 +1,65 @@
+<header class="sa-topbar">
+    <div class="sa-topbar__left">
+        <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="{{ _('Toggle Menu') }}">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="min-w-0">
+            <h2 class="sa-topbar__title">{% block topbar_title %}{% endblock %}</h2>
+        </div>
+    </div>
+    <div class="sa-topbar__right">
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1"
+                type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-globe"></i>
+                <span id="currentLanguageLabel" class="d-none d-sm-inline">
+                    {% if session.get('locale', 'en') == 'en' %}{{ _('Language En') }}
+                    {% elif session.get('locale', 'en') == 'zh' %}{{ _('Language Zh') }}
+                    {% elif session.get('locale', 'en') == 'de' %}{{ _('Language De') }}
+                    {% elif session.get('locale', 'en') == 'fr' %}{{ _('Language Fr') }}
+                    {% elif session.get('locale', 'en') == 'tr' %}{{ _('Language Tr') }}
+                    {% elif session.get('locale', 'en') == 'gu' %}{{ _('Language Gu') }}
+                    {% else %}{{ _('Language En') }}{% endif %}
+                </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="languageDropdown">
+                <li class="dropdown-header">{{ _('Language Name') }}</li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'en' %}active{% endif %}"
+                        href="{{ url_for('set_language', locale='en') }}"><span>🇬🇧</span> {{ _('Language En') }}</a>
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'zh' %}active{% endif %}"
+                        href="{{ url_for('set_language', locale='zh') }}"><span>🇨🇳</span> {{ _('Language Zh') }}</a>
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'de' %}active{% endif %}"
+                        href="{{ url_for('set_language', locale='de') }}"><span>🇩🇪</span> {{ _('Language De') }}</a>
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'fr' %}active{% endif %}"
+                        href="{{ url_for('set_language', locale='fr') }}"><span>🇫🇷</span> {{ _('Language Fr') }}</a>
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'tr' %}active{% endif %}"
+                        href="{{ url_for('set_language', locale='tr') }}"><span>🇹🇷</span> {{ _('Language Tr') }}</a>
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'gu' %}active{% endif %}"
+                        href="{{ url_for('set_language', locale='gu') }}"><span>🇮🇳</span> {{ _('Language Gu') }}</a>
+                </li>
+            </ul>
+        </div>
+        <a href="{{ url_for('notifications.notifications') }}" class="sa-notify-btn" title="{{ _('Notifications') }}">
+            <i class="fa-solid fa-bell"></i>
+        </a>
+        <a href="{{ url_for('super_admin.profile') }}"
+            class="sa-user-chip d-none d-md-inline-flex text-decoration-none">
+            {% if session.get('profile_pic') %}
+            <img src="{{ url_for('static', filename='uploads/profiles/' ~ session.get('profile_pic')) }}" alt="Avatar"
+                class="sa-user-chip__avatar rounded-circle object-fit-cover shadow-sm border border-2 border-primary"
+                style="width: 32px; height: 32px;">
+            {% else %}
+            <span class="sa-user-chip__avatar"><i class="fa-solid fa-user"></i></span>
+            {% endif %}
+            <span>{{ _('Super Admin') }}</span>
+        </a>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-secondary d-md-none" title="{{ _('Logout') }}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+    </div>
+</header>

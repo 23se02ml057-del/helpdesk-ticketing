@@ -1,0 +1,56 @@
+{
+  "model_version": "v1.0",
+  "trained_at": "2026-08-17T06:59:18.421915",
+  "training_records": 5,
+  "eligible_records": 5,
+  "excluded_records": 0,
+  "exclusion_reasons": {
+    "missing_title_desc": 0,
+    "missing_category": 0,
+    "missing_priority": 0,
+    "missing_timestamps": 0,
+    "negative_resolution": 0,
+    "too_large": 0,
+    "too_small": 0
+  },
+  "mae_minutes": 0.15737214915310177,
+  "rmse_minutes": 0.1901189119387964,
+  "r2": 0.9999868013844222,
+  "warning": "Only 5 samples available. Minimum 10 recommended for train/test split. Results are indicative only.",
+  "status": "active",
+  "dataset_status": "limited",
+  "training_config": {
+    "model_type": "GradientBoostingRegressor",
+    "n_estimators": 100,
+    "max_depth": 4,
+    "learning_rate": 0.1,
+    "subsample": 0.8
+  },
+  "tfidf_config": {
+    "max_features": 2000,
+    "ngram_range": [
+      1,
+      2
+    ]
+  },
+  "feature_names": {
+    "text_features": "TF-IDF of title + description + issue_type",
+    "structured_features": [
+      "priority_encoded"
+    ]
+  },
+  "training_predictions": [
+    218.7,
+    141.2,
+    140.9,
+    113.1,
+    57.0
+  ],
+  "training_actuals": [
+    219.0,
+    141.0,
+    141.0,
+    113.0,
+    57.0
+  ]
+}

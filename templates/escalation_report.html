@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Report
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-white shadow-sm rounded">
+    <h4 class="fw-bold text-primary mb-0">
+      <i class="fa-solid fa-triangle-exclamation me-2"></i> Escalation Report
+    </h4>
+    <a href="/reports" class="btn btn-secondary btn-sm">
+      <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-header bg-white fw-bold">
+      <i class="fa-solid fa-filter me-2"></i> Filters
+    </div>
+    <div class="card-body">
+      <form method="GET" class="row g-2">
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Status</label>
+          <select name="status" class="form-select">
+            <option value="">All</option>
+            <option value="Active" {% if filters.status=='Active' %}selected{% endif %}>Active</option>
+            <option value="Inactive" {% if filters.status=='Inactive' %}selected{% endif %}>Inactive</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Notify Role</label>
+          <select name="notify_role" class="form-select">
+            <option value="">All</option>
+            <option value="Support Manager" {% if filters.notify_role=='Support Manager' %}selected{% endif %}>Support
+              Manager</option>
+            <option value="Support Agent" {% if filters.notify_role=='Support Agent' %}selected{% endif %}>Support Agent
+            </option>
+            <option value="Super Admin" {% if filters.notify_role=='Super Admin' %}selected{% endif %}>Super Admin
+            </option>
+          </select>
+        </div>
+        <div class="col-12 d-flex gap-2 mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+          <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Card -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white fw-bold">
+      <i class="fa-solid fa-chart-column me-2"></i> Escalation Rules Report
+    </div>
+    <div class="card-body p-2">
+
+      <!-- Table with Scrollbar -->
+      <div class="table-scroll">
+        <table class="table table-bordered table-hover table-sm mb-0">
+          <thead class="table-dark sticky-top">
+            <tr>
+              <th>ID</th>
+              <th>{{ _('Priority') }}</th>
+              <th>SLA Response Time</th>
+              <th>Escalation After</th>
+              <th>Notify {{ _('Role') }}</th>
+              <th>{{ _('Status') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if report_data %}
+            {% for rule in report_data %}
+            <tr>
+              <td class="text-center">{{ loop.index }}</td>
+              <td>{{ rule.priority_name }}</td>
+              <td>{{ rule.escalation_after }} Minutes</td>
+              <td>{{ rule.notify_role }}</td>
+              <td class="text-center">
+                {% if rule.status=="Active" %}
+                <span class="badge bg-success">Active</span>
+                {% else %}
+                <span class="badge bg-danger">Inactive</span>
+                {% endif %}
+              </td>
+              <td>{{ rule.created_at }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-danger">No Escalation Rules Found</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

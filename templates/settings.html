@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Settings') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Page Header -->
+  <div class="row align-items-center mb-4">
+    <div class="col-lg-8 col-md-7 col-sm-12">
+      <h3 class="fw-bold mb-1">
+        <i class="fa-solid fa-gear text-primary me-2"></i> {{ _('System Settings') }}
+      </h3>
+      <p class="text-muted mb-0">{{ _('Configure Helpdesk Preferences') }}</p>
+    </div>
+    <div class="col-lg-4 col-md-5 col-sm-12 text-md-end mt-3 mt-md-0">
+      <span class="badge bg-success fs-6 px-3 py-2">
+        <i class="fa-solid fa-check-circle me-1"></i> {{ _('Active') }}
+      </span>
+    </div>
+  </div>
+
+  <form method="POST" action="{{ url_for('settings.settings') }}">
+    <!-- Company Information -->
+    <div class="card mb-4 border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+          <i class="fa-solid fa-building text-primary me-2"></i> {{ _('Company Info') }}
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">Company {{ _('Name') }}</label>
+            <input type="text" name="company_name" class="form-control"
+              value="{{ settings.company_name if settings else 'Help Desk System' }}" required>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">Company {{ _('Email') }}</label>
+            <input type="email" name="company_email" class="form-control"
+              value="{{ settings.company_email if settings else '' }}" required>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('Phone') }}</label>
+            <input type="text" name="company_phone" class="form-control"
+              value="{{ settings.company_phone if settings else '' }}">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('Address') }}</label>
+            <input type="text" name="company_address" class="form-control"
+              value="{{ settings.company_address if settings else '' }}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Configuration -->
+    <div class="card mb-4 border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+          <i class="fa-solid fa-envelope text-primary me-2"></i> {{ _('Email') }} Configuration (SMTP)
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('SMTP Server') }}</label>
+            <input type="text" name="smtp_server" class="form-control"
+              value="{{ settings.smtp_server if settings else 'smtp.gmail.com' }}" placeholder="e.g., smtp.gmail.com">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('SMTP Port') }}</label>
+            <input type="number" name="smtp_port" class="form-control"
+              value="{{ settings.smtp_port if settings else 587 }}" placeholder="587">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('SMTP Username') }}</label>
+            <input type="text" name="smtp_username" class="form-control"
+              value="{{ settings.smtp_username if settings else '' }}" placeholder="your-email@example.com">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('SMTP Password') }}</label>
+            <input type="password" name="smtp_password" class="form-control"
+              value="{{ settings.smtp_password if settings else '' }}" placeholder="Enter SMTP password">
+          </div>
+          <div class="col-md-12">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="smtp_use_tls" id="smtpTls" {% if settings and
+                settings.smtp_use_tls %}checked{% endif %}>
+              <label class="form-check-label fw-semibold" for="smtpTls">{{ _('Use TLS/STARTTLS') }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <button type="button" class="btn btn-outline-primary"
+            onclick="alert('{{ _('Test Email SMTP functionality') }}')">
+            <i class="fa-solid fa-paper-plane me-1"></i> {{ _('Test Email Configuration') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket Defaults -->
+    <div class="card mb-4 border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+          <i class="fa-solid fa-ticket text-primary me-2"></i> {{ _('Ticket Defaults') }}
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('Default Priority') }}</label>
+            <select name="default_priority" class="form-select">
+              {% for priority in priorities %}
+              <option value="{{ priority.priority_name }}" {% if settings and
+                settings.default_priority==priority.priority_name %}selected{% endif %}>
+                {{ priority.priority_name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('Items Per Page') }}</label>
+            <select name="items_per_page" class="form-select">
+              <option value="10" {% if settings and settings.items_per_page==10 %}selected{% endif %}>10</option>
+              <option value="25" {% if not settings or settings.items_per_page==25 %}selected{% endif %}>25</option>
+              <option value="50" {% if settings and settings.items_per_page==50 %}selected{% endif %}>50</option>
+              <option value="100" {% if settings and settings.items_per_page==100 %}selected{% endif %}>100</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="auto_assign_tickets" id="autoAssign" {% if settings
+                and settings.auto_assign_tickets %}checked{% endif %}>
+              <label class="form-check-label fw-semibold" for="autoAssign">{{ _('Auto Assign Tickets') }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Preferences -->
+    <div class="card mb-4 border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+          <i class="fa-solid fa-sliders text-primary me-2"></i> {{ _('System Preferences') }}
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">{{ _('Timezone') }}</label>
+            <select name="timezone" class="form-select">
+              <option value="UTC" {% if settings and settings.timezone=='UTC' %}selected{% endif %}>UTC</option>
+              <option value="America/New_York" {% if settings and settings.timezone=='America/New_York' %}selected{%
+                endif %}>Eastern Time (ET)</option>
+              <option value="America/Chicago" {% if settings and settings.timezone=='America/Chicago' %}selected{% endif
+                %}>Central Time (CT)</option>
+              <option value="America/Denver" {% if settings and settings.timezone=='America/Denver' %}selected{% endif
+                %}>Mountain Time (MT)</option>
+              <option value="America/Los_Angeles" {% if settings and settings.timezone=='America/Los_Angeles'
+                %}selected{% endif %}>Pacific Time (PT)</option>
+              <option value="Europe/London" {% if settings and settings.timezone=='Europe/London' %}selected{% endif %}>
+                London (GMT)</option>
+              <option value="Europe/Paris" {% if settings and settings.timezone=='Europe/Paris' %}selected{% endif %}>
+                Paris (CET)</option>
+              <option value="Asia/Kolkata" {% if settings and settings.timezone=='Asia/Kolkata' %}selected{% endif %}>
+                India (IST)</option>
+              <option value="Asia/Dubai" {% if settings and settings.timezone=='Asia/Dubai' %}selected{% endif %}>Dubai
+                (GST)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between">
+      <a href="{{ url_for('super_admin.super_admin_dashboard') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> {{ _('Back') }} to {{ _('Dashboard') }}
+      </a>
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-floppy-disk me-1"></i> {{ _('Save Settings') }}
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

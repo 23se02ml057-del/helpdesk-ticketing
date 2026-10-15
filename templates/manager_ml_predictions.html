@@ -1,0 +1,124 @@
+{% extends "layout_support_manager.html" %}
+
+{% block title %}
+ML {{ _('Prediction History') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <h5 class="fw-bold mb-0">ML {{ _('Prediction History') }}</h5>
+                    <a href="{{ url_for('support_manager.ml_model') }}" class="btn btn-sm btn-secondary">
+                        <i class="fa fa-arrow-left"></i> {{ _('Back') }} to ML Model
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <form method="GET" class="d-flex gap-2" data-ajax-search
+                              data-search-url="{{ url_for('support_manager.api_ml_predictions_search') }}"
+                              data-table-target="tbody"
+                              data-page-type="ml-predictions">
+                            <input type="text" name="search" class="form-control form-control-sm"
+                                   placeholder="{{ _('Search') }} by ticket number or title..."
+                                   value="{{ search }}">
+                            <button type="submit" class="btn btn-sm btn-primary">{{ _('Search') }}</button>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;" >
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark bg-dark text-white">
+                                <tr>
+                                    <th>{{ _('Ticket') }}</th>
+                                    <th>{{ _('Title') }}</th>
+                                    <th>{{ _('Priority') }}</th>
+                                    <th>{{ _('Status') }}</th>
+                                    <th>{{ _('Model') }}</th>
+                                    <th>{{ _('Predicted') }}</th>
+                                    <th>{{ _('Actual') }}</th>
+                                    <th>{{ _('Error') }}</th>
+                                    <th>SLA</th>
+                                    <th>{{ _('Prediction Date') }}</th>
+                                    <th>{{ _('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pred in predictions %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('support_manager.ticket_detail', ticket_id=pred[1]) }}" class="text-decoration-none fw-semibold">
+                                            {{ pred[2] }}
+                                        </a>
+                                    </td>
+                                    <td>{{ pred[3][:50] }}{% if pred[3] and pred[3]|length > 50 %}...{% endif %}</td>
+                                    <td>{{ pred[4] or 'N/A' }}</td>
+                                    <td>{{ pred[5] or 'N/A' }}</td>
+                                    <td><span class="badge bg-info">{{ pred[6] or 'N/A' }}</span></td>
+                                    <td>
+                                        {% if pred[7] %}
+                                            {{ "%.0f"|format(pred[7]) }} min
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if pred[11] %}
+                                            {{ "%.0f"|format(pred[11]) }} min
+                                        {% else %}
+                                            <span class="text-muted">{{ _('Awaiting') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if pred[12] %}
+                                            {{ "%.0f"|format(pred[12]) }} min
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if pred[15] %}
+                                            {{ pred[15] }}h
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ pred[10].strftime('%Y-%m-%d %H:%M') if pred[10] else 'N/A' }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('support_manager.ticket_detail', ticket_id=pred[1]) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-eye"></i> {{ _('View') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="11" class="text-center py-4 text-muted">
+                                        <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="mb-0">{{ _('No Ml Predictions Found') }}</p>
+                                        <p class="small">{{ _('Ml Predictions Generated') }}</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if not predictions %}
+                    <div class="text-center py-4">
+                        <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">{{ _('No Ml Predictions Found') }}</p>
+                        <p class="text-muted small">{{ _('Ml Predictions Generated') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

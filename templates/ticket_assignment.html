@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Ticket') }} {{ _('Assign') }}ment
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+<!-- ================= Header ================= -->
+
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body">
+        <div class="row align-items-center gy-3">
+            <!-- Left -->
+            <div class="col-12 col-lg-6">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-ticket text-primary fs-2 me-3"></i>
+                    <div>
+                        <h2 class="fw-bold mb-1">
+                            {{ _('Ticket') }} {{ _('Assign') }}ment
+                        </h2>
+                        <p class="text-muted mb-0">
+                            {{ _('Assign') }} support tickets to agents
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right -->
+            <div class="col-12 col-lg-6 text-lg-end">
+                <a href="/super-admin-dashboard"
+                   class="btn btn-secondary  w-lg-auto h-auto">
+                    <i class="fa-solid fa-house me-2"></i>
+                    {{ _('Dashboard') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ================= Search ================= -->
+
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body">
+        <form method="GET" data-ticket-assignment-search>
+            <div class="row g-3">
+                <div class="col-12 col-lg-13">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="search"
+                            placeholder="Search Ticket Number, Title, Requester..."
+                            value="{{ search }}">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if search %}
+<div class="text-end mb-4">
+    <a href="/ticket-assignment" class="btn btn-outline-secondary btn-sm">
+        <i class="fa-solid fa-xmark me-1"></i> Clear search
+    </a>
+</div>
+{% endif %}
+
+<!-- ================= Back Button ================= -->
+{% if search %}
+<div class="text-end mb-4">
+    <a href="/ticket-assignment"
+       class="btn btn-dark">
+        <i class="fa fa-arrow-left me-2"></i>
+        {{ _('Back') }} to {{ _('All Tickets') }}
+    </a>
+</div>
+{% endif %}
+    <!-- Table -->
+    <div class="table-scroll">
+                    <table class="table table-bordered table-hover table-sm" style="table-layout: fixed; width:100%;">
+        <thead class="table-dark">
+            <tr>
+                <th>{{ _('No') }}</th>
+                <th>{{ _('Ticket Number') }}</th>
+                <th>{{ _('Title') }}</th>
+                <th>{{ _('Assigned To') }}</th>
+                <th>{{ _('Action') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in assignments %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ ticket.ticket_number }}</td>
+                <td>{{ ticket.title }}</td>
+                <td>
+                    {% if ticket.first_name %}
+                        {{ ticket.first_name }} {{ ticket.last_name }}
+                    {% else %}
+                        <span class="text-danger">Not {{ _('Assign') }}ed</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Assign Button triggers modal -->
+                    <button class="btn btn-success btn-sm h-auto"
+                            data-bs-toggle="modal"
+                            data-bs-target="#assignModal"
+                            data-ticket-id="{{ ticket.ticket_id }}"
+                            data-ticket-number="{{ ticket.ticket_number }}"
+                            data-ticket-title="{{ ticket.title }}">
+                        {{ _('Assign') }}
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% if assignments|length == 0 %}
+            <tr id="no-ticket-assignments-row">
+                <td colspan="5" class="text-center text-danger">No {{ _('Tickets') }} Found</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Assign {{ _('Ticket') }} Modal -->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Centered -->
+        <div class="modal-content">
+            <form method="POST" action="/assign-ticket">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel">{{ _('Assign Ticket') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Ticket Number') }}</label>
+                        <input type="text" id="ticketNumber" name="ticket_number" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Support {{ _('Agent') }}</label>
+                        <select name="assigned_to" class="form-select" required>
+                            <option value="">Select Support {{ _('Agent') }}</option>
+                            {% for user in users %}
+                                <option value="{{ user.user_id }}">
+                                    {{ user.first_name }} {{ user.last_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="hidden" id="ticketId" name="ticket_id">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">{{ _('Assign Ticket') }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Modal Data Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var assignModal = document.getElementById('assignModal');
+    assignModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var ticketId = button.getAttribute('data-ticket-id');
+        var ticketNumber = button.getAttribute('data-ticket-number');
+        var ticketTitle = button.getAttribute('data-ticket-title');
+
+        assignModal.querySelector('#ticketId').value = ticketId;
+        assignModal.querySelector('#ticketNumber').value = ticketNumber;
+    });
+});
+</script>
+
+<script src="{{ url_for('static', filename='js/ticket-assignment-search.js') }}"></script>
+{% endblock %}

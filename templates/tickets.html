@@ -1,0 +1,475 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Tickets') }}
+{% endblock %}
+
+{% block topbar_title %}
+{{ _('Tickets') }}
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Tickets-specific styles */
+    .tickets-page .sa-card {
+        border-radius: 12px;
+    }
+    
+    /* Filter card styles */
+    .tickets-page .filter-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin-bottom: 1rem;
+    }
+    
+    .tickets-page .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .tickets-page .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 180px;
+    }
+    
+    .tickets-page .filter-group label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .tickets-page .filter-group .form-select {
+        height: 40px;
+        font-size: 0.875rem;
+        border-radius: 8px;
+        border-color: #cbd5e1;
+        flex: 1;
+        min-width: 140px;
+    }
+    
+    @media (max-width: 768px) {
+        .tickets-page .filter-group {
+            min-width: 100%;
+        }
+    }
+    
+    /* Status badges for tickets */
+    .badge-ticket-open { background: #fee2e2; color: #dc2626; }
+    .badge-ticket-inprogress { background: #fef3c7; color: #d97706; }
+    .badge-ticket-resolved { background: #dcfce7; color: #16a34a; }
+    .badge-ticket-closed { background: #e2e8f0; color: #475569; }
+    .badge-ticket-onhold { background: #dbeafe; color: #2563eb; }
+    .badge-ticket-new { background: #dbeafe; color: #2563eb; }
+    
+    /* Priority badges */
+    .badge-priority-critical,
+    .badge-priority-high { background: #fee2e2; color: #dc2626; }
+    .badge-priority-medium { background: #fef3c7; color: #d97706; }
+    .badge-priority-low { background: #dcfce7; color: #16a34a; }
+    
+    /* Action column responsive styles */
+    .tickets-page .sa-col-actions {
+        white-space: nowrap;
+    }
+    
+    .tickets-page .sa-col-actions .btn {
+        flex-shrink: 0;
+    }
+    
+    /* Medium screens: show icons only, hide text */
+    @media (max-width: 991.98px) {
+        .tickets-page .sa-col-actions .btn .btn-text {
+            display: none;
+        }
+        .tickets-page .sa-col-actions .btn {
+            padding: 0.375rem 0.5rem;
+        }
+    }
+    
+    /* Small screens: stack buttons vertically */
+    @media (max-width: 575.98px) {
+        .tickets-page .sa-col-actions .d-inline-flex {
+            flex-direction: column;
+            gap: 0.25rem !important;
+        }
+        .tickets-page .sa-col-actions .btn {
+            width: 100%;
+            justify-content: center;
+            padding: 0.375rem 0.5rem;
+        }
+        .tickets-page .sa-col-actions .btn .btn-text {
+            display: inline;
+        }
+    }
+    
+    /* Ensure table responsiveness */
+    .tickets-page .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent action buttons from being clipped */
+    .tickets-page .table-responsive .table {
+        min-width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sa-page tickets-page">
+    <!-- Page Header -->
+    <div class="sa-page-header">
+        <div class="sa-page-header__text">
+            <h1 class="sa-page-title">
+                <i class="fa-solid fa-ticket text-primary me-2"></i>
+                {{ _('Tickets') }}
+            </h1>
+            <p class="sa-page-subtitle">{{ _('Manage Support Tickets') }}</p>
+        </div>
+        <div class="sa-page-header__actions">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTicketModal">
+                <i class="fa-solid fa-plus"></i>
+                {{ _('Add Ticket') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="filter-card">
+        <form method="GET" class="ticket-search-form" data-ticket-search data-api-url="{{ url_for('tickets.api_tickets_search') }}">
+            <div class="filter-row">
+                <div class="filter-group sa-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="form-control ticket-search-input" name="search" placeholder="{{ _('Search Ticket Number') }}" value="{{ search }}" aria-label="{{ _('Search Ticket Number') }}">
+                    <button type="button" class="search-clear" title="{{ _('Clear Search') }}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <label>{{ _('Status') }}</label>
+                    <select name="status" class="form-select ticket-status-filter" aria-label="{{ _('Status') }}">
+                        <option value="">{{ _('All') }}</option>
+                        {% for status_option in statuses %}
+                            <option value="{{ status_option.status_name }}" {% if status == status_option.status_name %}selected{% endif %}>{{ status_option.status_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+        <div id="ticketSearchStatus" class="ticket-search-status text-muted small d-none" role="status">
+            <span class="spinner-border spinner-border-sm me-1"></span><span class="ticket-search-label">{{ _('Searching') }}</span>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="mb-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Results Bar -->
+    <div class="sa-result-bar">
+        <h3>{{ _('Tickets List') }}</h3>
+        <span class="result-count" id="ticketsCount">{{ _('Showing') }} <span class="pagination-showing-start">{{ (pagination.page - 1) * pagination.per_page + 1 if pagination.total > 0 else 0 }}</span> - <span class="pagination-showing-end">{{ [pagination.page * pagination.per_page, pagination.total]|min }}</span> {{ _('Of') }} <span class="pagination-showing-total">{{ pagination.total }}</span> {{ _('Tickets') }}</span>
+    </div>
+
+    <!-- Tickets Table -->
+    <div class="sa-card sa-table-wrap">
+        <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 tickets-table">
+                        <thead class="table-dark sticky-top">
+                            <tr>
+                                <th class="ps-4 py-3 sa-col-index" style="width:50px;">{{ _('No') }}</th>
+                                <th class="py-3" style="width:130px;">{{ _('Ticket No ') }}</th>
+                                <th class="py-3">{{ _('Title') }}</th>
+                                <th class="py-3" style="width:120px;">{{ _('Category') }}</th>
+                                <th class="py-3" style="width:100px;">{{ _('Priority') }}</th>
+                                <th class="py-3" style="width:100px;">{{ _('Status') }}</th>
+                                <th class="py-3" style="width:120px;">{{ _('Requester') }}</th>
+                                <th class="py-3" style="width:120px;">{{ _('Agent') }}</th>
+                                <th class="py-3" style="width:120px;">{{ _('Issue Type') }}</th>
+                                 <th class="py-3 sa-col-date" style="width:130px;">{{ _('Created') }}</th>
+                                 <th class="text-center py-3 pe-4 sa-col-actions" style="width:150px;">{{ _('Action ') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsTableBody">
+                            {% for ticket in tickets %}
+                            <tr>
+                                <td class="ps-4 text-muted">{{ loop.index }}</td>
+                                <td class="fw-semibold">{{ ticket.ticket_number }}</td>
+                                <td>{{ ticket.title }}</td>
+                                <td>{{ ticket.category_name }}</td>
+                                <td>
+                                    {% if ticket.priority_name in ['Critical', 'High'] %}
+                                        <span class="badge badge-priority-critical">{{ ticket.priority_name }}</span>
+                                    {% elif ticket.priority_name == 'Medium' %}
+                                        <span class="badge badge-priority-medium">{{ ticket.priority_name }}</span>
+                                    {% elif ticket.priority_name == 'Low' %}
+                                        <span class="badge badge-priority-low">{{ ticket.priority_name }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ ticket.priority_name }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if ticket.status_name == 'Open' %}
+                                        <span class="badge badge-ticket-open">{{ ticket.status_name }}</span>
+                                    {% elif ticket.status_name == 'In Progress' %}
+                                        <span class="badge badge-ticket-inprogress">{{ ticket.status_name }}</span>
+                                    {% elif ticket.status_name == 'Resolved' %}
+                                        <span class="badge badge-ticket-resolved">{{ ticket.status_name }}</span>
+                                    {% elif ticket.status_name == 'Closed' %}
+                                        <span class="badge badge-ticket-closed">{{ ticket.status_name }}</span>
+                                    {% elif ticket.status_name == 'On Hold' %}
+                                        <span class="badge badge-ticket-onhold">{{ ticket.status_name }}</span>
+                                    {% elif ticket.status_name == 'New' %}
+                                        <span class="badge badge-ticket-new">{{ ticket.status_name }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ ticket.status_name }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ ticket.requester_first or '' }} {{ ticket.requester_last or '' }}</td>
+                                <td>{{ ticket.agent_first or '' }} {{ ticket.agent_last or '' }}</td>
+                                <td>{% if ticket.issue_name %}<span class="badge bg-info">{{ ticket.issue_name }}</span>{% else %}<span class="text-muted">-</span>{% endif %}</td>
+                                 <td class="sa-col-date">{{ ticket.created_at.strftime('%d %b %Y') if ticket.created_at else '-' }}</td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex gap-2">
+                                        <a href="{{ url_for('super_admin.ticket_detail', ticket_id=ticket.ticket_id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-eye"></i> <span class="btn-text">{{ _('View') }}</span>
+                                        </a>
+                                        <button class="btn btn-warning btn-sm h-auto text-dark" data-bs-toggle="modal" data-bs-target="#editTicketModal" data-id="{{ ticket.ticket_id }}" data-number="{{ ticket.ticket_number }}" data-title="{{ ticket.title }}" data-description="{{ ticket.description }}" data-category="{{ ticket.category_name }}" data-priority="{{ ticket.priority_name }}" data-status="{{ ticket.status_name }}" data-requester-id="{{ ticket.requester_id or '' }}" data-assigned-to="{{ ticket.assigned_to or '' }}" data-issue-type-id="{{ ticket.issue_type_id or '' }}" data-department-id="{{ ticket.department_id or '' }}">
+                                            <i class="fa-solid fa-pen"></i> <span class="btn-text">{{ _('Edit') }}</span>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm h-auto" data-bs-toggle="modal" data-bs-target="#deleteTicketModal" data-id="{{ ticket.ticket_id }}" data-number="{{ ticket.ticket_number }}">
+                                            <i class="fa-solid fa-trash"></i> <span class="btn-text">{{ _('Delete') }}</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr id="no-tickets-row">
+                                <td colspan="11" class="text-center py-5 text-muted bg-white sa-empty">
+                                    <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>{{ _('No Support Tickets Found') }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2">
+        <div class="text-muted small">
+            {{ _('Showing') }} <span class="pagination-showing-start">{{ (pagination.page - 1) * pagination.per_page + 1 if pagination.total > 0 else 0 }}</span> -
+            <span class="pagination-showing-end">{{ [pagination.page * pagination.per_page, pagination.total]|min }}</span>
+            {{ _('Of') }} <span class="pagination-showing-total">{{ pagination.total }}</span> {{ _('Tickets') }}
+        </div>
+        <nav aria-label="Ticket pagination">
+            <ul class="pagination mb-0 sa-pagination">
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link pagination-prev" data-page="{{ pagination.prev_num if pagination.has_prev else pagination.page }}" href="{{ url_for('tickets.tickets_page', page=(pagination.prev_num if pagination.has_prev else pagination.page), search=search, status=status) }}" aria-label="{{ _('Previous') }}">
+                        <i class="fa fa-chevron-left me-1"></i>{{ _('Previous') }}
+                    </a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link pagination-page-indicator" data-page="{{ pagination.page }}" data-total-pages="{{ pagination.total_pages }}">Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+                </li>
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link pagination-next" data-page="{{ pagination.next_num if pagination.has_next else pagination.page }}" href="{{ url_for('tickets.tickets_page', page=(pagination.next_num if pagination.has_next else pagination.page), search=search, status=status) }}" aria-label="{{ _('Next') }}">
+                        {{ _('Next') }}<i class="fa fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Add Ticket Modal -->
+<div class="modal fade" id="addTicketModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">{{ _('Add Ticket') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="/add-ticket">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Title') }}</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Category') }}</label>
+                        <select name="category_name" class="form-select">
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if session.get('role_id') in [1, 5, 2] %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Priority') }}</label>
+                        <select name="priority_name" class="form-select">
+                            <option value="High">{{ _('High') }}</option>
+                            <option value="Medium">{{ _('Medium') }}</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Status') }}</label>
+                        <select name="status_name" class="form-select">
+                            {% for status_option in statuses %}
+                            <option value="{{ status_option.status_name }}">{{ status_option.status_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">{{ _('Save') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Ticket Modal -->
+<div class="modal fade" id="editTicketModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">{{ _('Edit Ticket') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="ticket_id" id="editTicketId">
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Ticket Number') }}</label>
+                        <input type="text" id="editTicketNumber" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Title') }}</label>
+                        <input type="text" name="title" id="editTitle" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Description') }}</label>
+                        <textarea name="description" id="editDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Category') }}</label>
+                        <select name="category_name" id="editCategory" class="form-select">
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Priority') }}</label>
+                        <select name="priority_name" id="editPriority" class="form-select">
+                            {% for pri in priorities %}
+                            <option value="{{ pri.priority_name }}">{{ pri.priority_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Status') }}</label>
+                        <select name="status_name" id="editStatus" class="form-select">
+                            {% for status_option in statuses %}
+                            <option value="{{ status_option.status_name }}">{{ status_option.status_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Requester') }}</label>
+                        <select name="requester_id" id="editRequester" class="form-select">
+                            <option value="">{{ _('Select Requester') }}</option>
+                            {% for req in requesters %}
+                            <option value="{{ req.user_id }}">{{ req.first_name }} {{ req.last_name }} ({{ req.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Assigned Agent') }}</label>
+                        <select name="assigned_to" id="editAssignedTo" class="form-select">
+                            <option value="">{{ _('Unassigned') }}</option>
+                            {% for agt in agents %}
+                            <option value="{{ agt.user_id }}">{{ agt.first_name }} {{ agt.last_name }} ({{ agt.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Issue Type') }}</label>
+                        <select name="issue_type_id" id="editIssueType" class="form-select">
+                            <option value="">{{ _('Select Issue Type') }}</option>
+                            {% for it in issue_types %}
+                            <option value="{{ it.issue_type_id }}">{{ it.issue_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Department') }}</label>
+                        <select name="department_id" id="editDepartment" class="form-select">
+                            <option value="">{{ _('Select Department') }}</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-warning">{{ _('Update') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Ticket Modal -->
+<div class="modal fade" id="deleteTicketModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm {{ _('Delete') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ _('Delete Confirmation') }} ticket <strong id="deleteTicketNumber"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button id="deleteConfirmBtn" type="submit" class="btn btn-danger">Yes, {{ _('Delete') }}</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/ticket-search.js') }}"></script>
+{% endblock %}

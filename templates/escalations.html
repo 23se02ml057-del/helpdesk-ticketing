@@ -1,0 +1,672 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Escalation') }} {{ _('Rules') }}
+{% endblock %}
+
+{% block topbar_title %}
+{{ _('Escalation') }} {{ _('Rules') }}
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Escalations-specific styles */
+    .escalations-page .sa-card {
+        border-radius: 12px;
+    }
+    
+    /* Filter card styles */
+    .escalations-page .filter-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin-bottom: 1rem;
+    }
+    
+    .escalations-page .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .escalations-page .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .escalations-page .filter-group label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .escalations-page .filter-group .form-select {
+        height: 40px;
+        font-size: 0.875rem;
+        border-radius: 8px;
+        border-color: #cbd5e1;
+        flex: 1;
+        min-width: 160px;
+    }
+    
+    @media (max-width: 768px) {
+        .escalations-page .filter-group {
+            min-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sa-page escalations-page">
+    <!-- Page Header -->
+    <div class="sa-page-header">
+        <div class="sa-page-header__text">
+            <h1 class="sa-page-title">
+                <i class="fa-solid fa-arrow-up-right-dots text-primary me-2"></i>
+                {{ _('Escalation') }} {{ _('Rules') }}
+            </h1>
+            <p class="sa-page-subtitle">{{ _('Manage escalation rules subtitle') }}</p>
+        </div>
+        <div class="sa-page-header__actions">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEscalationModal">
+                <i class="fa-solid fa-plus"></i>
+                {{ _('Add escalation rule') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="sa-stat-grid">
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--blue">
+                <i class="fa-solid fa-arrow-up-right-dots"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('total escalation rules') }}</p>
+                <p class="sa-stat-card__value">{{ total_escalations or 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--green">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('active escalation rules') }}</p>
+                <p class="sa-stat-card__value">{{ active_escalations or 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--amber">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('inactive escalation rules') }}</p>
+                <p class="sa-stat-card__value">{{ inactive_escalations or 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="filter-card">
+        <form method="GET" data-escalation-search>
+            <div class="filter-row">
+                <div class="filter-group sa-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="form-control" name="search" placeholder="{{ _('search escalation rules') }}" value="{{ search }}" autocomplete="off">
+                    <button type="button" class="search-clear" title="{{ _('Clear Search') }}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-group">
+                    <label>{{ _('Priority') }}</label>
+                    <select name="priority_name" class="form-select" id="priorityFilter">
+                        <option value="">{{ _('All Priorities') }}</option>
+                        {% for pri in priorities %}
+                        <option value="{{ pri.priority_name }}" {% if priority_filter == pri.priority_name %}selected{% endif %}>{{ pri.priority_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>{{ _('Status') }}</label>
+                    <select name="status" class="form-select" id="statusFilter">
+                        <option value="">{{ _('All Statuses') }}</option>
+                        <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>{{ _('Active') }}</option>
+                        <option value="Inactive" {% if status_filter == 'Inactive' %}selected{% endif %}>{{ _('Inactive') }}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Bar -->
+    <div class="sa-result-bar">
+        <h3>{{ _('Escalation rules list') }}</h3>
+        <span class="result-count" id="escalationsCount">{{ _('Showing') }} <span id="visibleCount">{{ escalations|length }}</span> {{ _('Of') }} {{ total_escalations or 0 }} {{ _('Escalation rules') }}</span>
+    </div>
+
+    <!-- Escalations Table -->
+    <div class="sa-card sa-table-wrap" id="escalationsTableWrap">
+        <table class="sa-table">
+            <thead>
+                <tr>
+                    <th class="sa-col-index">#</th>
+                    <th>{{ _('Priority') }}</th>
+                    <th>{{ _('Sla response time') }}</th>
+                    <th>{{ _('Escalation after') }}</th>
+                    <th>{{ _('Notify role') }}</th>
+                    <th style="width: 100px;">{{ _('Status') }}</th>
+                    <th class="sa-col-actions" style="width: 160px;">{{ _('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody id="escalationsTableBody">
+                {% for escalation in escalations %}
+                <tr data-escalation-id="{{ escalation.escalation_id }}">
+                    <td class="sa-col-index">{{ loop.index }}</td>
+                    <td>
+                        {% if escalation.priority_name in ['Critical', 'High'] %}
+                            <span class="badge badge-priority-high">{{ escalation.priority_name }}</span>
+                        {% elif escalation.priority_name == 'Medium' %}
+                            <span class="badge badge-priority-medium">{{ escalation.priority_name }}</span>
+                        {% elif escalation.priority_name == 'Low' %}
+                            <span class="badge badge-priority-low">{{ escalation.priority_name }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ escalation.priority_name }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ escalation.response_time }} {{ _('Minutes') }}</td>
+                    <td>{{ escalation.escalation_after }} {{ _('Minutes') }}</td>
+                    <td>{{ escalation.notify_role }}</td>
+                    <td>
+                        {% if escalation.status == 'Active' %}
+                            <span class="sa-status-badge sa-status-badge--active toggle" data-escalation-id="{{ escalation.escalation_id }}" data-status="Active">
+                                <i class="fa-solid fa-circle"></i> {{ _('Active') }}
+                            </span>
+                        {% else %}
+                            <span class="sa-status-badge sa-status-badge--inactive toggle" data-escalation-id="{{ escalation.escalation_id }}" data-status="Inactive">
+                                <i class="fa-solid fa-circle"></i> {{ _('Inactive') }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="sa-col-actions">
+                        <div class="sa-table-actions">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEscalationModal"
+                                    data-id="{{ escalation.escalation_id }}"
+                                    data-priority="{{ escalation.priority_name }}"
+                                    data-response="{{ escalation.response_time }}"
+                                    data-after="{{ escalation.escalation_after }}"
+                                    data-role="{{ escalation.notify_role }}"
+                                    data-status="{{ escalation.status }}">
+                                <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                            </button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEscalationModal"
+                                    data-id="{{ escalation.escalation_id }}"
+                                    data-priority="{{ escalation.priority_name }}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="sa-empty">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p class="sa-empty__title">{{ _('No Escalation Rules Found') }}</p>
+                        <p class="sa-empty__subtitle">{{ _('Try Changing Search') }}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination %}
+    <nav class="sa-pagination" aria-label="Escalation Rules pagination">
+        <ul class="pagination mb-0">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link pagination-prev" data-page="{{ pagination.prev_num if pagination.has_prev else pagination.page }}" href="{{ url_for('escalations.escalations', page=(pagination.prev_num if pagination.has_prev else pagination.page), search=search, priority_name=priority_filter, status=status_filter) }}" aria-label="{{ _('Previous') }}">
+                    <i class="fa fa-chevron-left me-1"></i>{{ _('Previous') }}
+                </a>
+            </li>
+            <li class="page-item">
+                <span class="page-link pagination-page-indicator" data-page="{{ pagination.page }}" data-total-pages="{{ pagination.total_pages }}">Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+            </li>
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link pagination-next" data-page="{{ pagination.next_num if pagination.has_next else pagination.page }}" href="{{ url_for('escalations.escalations', page=(pagination.next_num if pagination.has_next else pagination.page), search=search, priority_name=priority_filter, status=status_filter) }}" aria-label="{{ _('Next') }}">
+                    {{ _('Next') }}<i class="fa fa-chevron-right ms-1"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Add Escalation Rule Modal -->
+<div class="modal fade" id="addEscalationModal" tabindex="-1" aria-labelledby="addEscalationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title" id="addEscalationModalLabel"><i class="fa-solid fa-plus me-2"></i>{{ _('Add escalation rule') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('escalations.add_escalation') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="sa-form-group">
+                        <label>{{ _('Priority') }}</label>
+                        <select name="priority_name" class="form-select" required>
+                            <option value="">{{ _('Select priority') }}</option>
+                            {% for pri in priorities %}
+                            <option value="{{ pri.priority_name }}">{{ pri.priority_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Sla response time') }} ({{ _('Minutes') }})</label>
+                        <input type="number" name="response_time" class="form-control" required min="1" placeholder="{{ _('Enter sla response time') }}">
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Escalation after') }} ({{ _('Minutes') }})</label>
+                        <input type="number" name="escalation_after" class="form-control" required min="1" placeholder="{{ _('Enter escalation after') }}">
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Notify role') }}</label>
+                        <select name="notify_role" class="form-select" required>
+                            <option value="">{{ _('Select Role') }}</option>
+                            {% for role in roles %}
+                            <option value="{{ role.role_name }}">{{ role.role_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Status') }}</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-save me-1"></i> {{ _('Save') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Escalation Rule Modal -->
+<div class="modal fade" id="editEscalationModal" tabindex="-1" aria-labelledby="editEscalationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="editEscalationModalLabel"><i class="fa-solid fa-pen me-2"></i>{{ _('Edit escalation rule') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editEscalationForm" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="sa-form-group">
+                        <label>{{ _('Priority') }}</label>
+                        <select name="priority_name" id="editPriorityName" class="form-select" required>
+                            <option value="">{{ _('Select priority') }}</option>
+                            {% for pri in priorities %}
+                            <option value="{{ pri.priority_name }}">{{ pri.priority_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('SLA response time') }} ({{ _('Minutes') }})</label>
+                        <input type="number" name="response_time" id="editResponseTime" class="form-control" required min="1">
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Escalation after') }} ({{ _('Minutes') }})</label>
+                        <input type="number" name="escalation_after" id="editEscalationAfter" class="form-control" required min="1">
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Notify role') }}</label>
+                        <select name="notify_role" id="editNotifyRole" class="form-select" required>
+                            <option value="">{{ _('Select role') }}</option>
+                            {% for role in roles %}
+                            <option value="{{ role.role_name }}">{{ role.role_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Status') }}</label>
+                        <select name="status" id="editStatus" class="form-select" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa-solid fa-save me-1"></i> {{ _('Update') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Escalation Rule Modal -->
+<div class="modal fade" id="deleteEscalationModal" tabindex="-1" aria-labelledby="deleteEscalationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="deleteEscalationModalLabel"><i class="fa-solid fa-trash me-2"></i>{{ _('Delete escalation rule') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ _('Delete Confirmation') }} Escalation Rule <strong id="deleteEscalationPriority"></strong>?</p>
+                <p class="text-muted">{{ _('This Action Cannot Be Undone') }}</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteEscalationForm" method="POST" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash me-1"></i> {{ _('Delete') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+(function () {
+    const DEBOUNCE_MS = 300;
+    const API_URL = '/api/escalations/search';
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&')
+            .replace(/</g, '<')
+            .replace(/>/g, '>')
+            .replace(/"/g, '"');
+    }
+
+    function getBadgeClass(priorityName) {
+        if (priorityName === 'Critical' || priorityName === 'High') return 'badge-priority-high';
+        if (priorityName === 'Medium') return 'badge-priority-medium';
+        if (priorityName === 'Low') return 'badge-priority-low';
+        return 'bg-secondary';
+    }
+
+    function renderEscalations(rows) {
+        const tbody = document.getElementById('escalationsTableBody');
+        const countEl = document.getElementById('visibleCount');
+        
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="sa-empty"><i class="fa-regular fa-folder-open"></i><p class="sa-empty__title">No escalation rules found</p><p class="sa-empty__subtitle">Try changing your search or filter.</p></td></tr>';
+            if (countEl) countEl.textContent = '0';
+            return;
+        }
+
+        if (countEl) countEl.textContent = rows.length;
+
+        tbody.innerHTML = rows.map(function(e, index) {
+            const badgeClass = getBadgeClass(e.priority_name);
+            
+            return '<tr data-escalation-id="' + e.escalation_id + '">' +
+                '<td class="sa-col-index">' + (index + 1) + '</td>' +
+                '<td><span class="badge ' + badgeClass + '">' + escapeHtml(e.priority_name) + '</span></td>' +
+                '<td>' + escapeHtml(e.response_time) + ' ' + '{{ _('Minutes') }}' + '</td>' +
+                '<td>' + escapeHtml(e.escalation_after) + ' ' + '{{ _('Minutes') }}' + '</td>' +
+                '<td>' + escapeHtml(e.notify_role) + '</td>' +
+                '<td>' + (e.status === 'Active' 
+                    ? '<span class="sa-status-badge sa-status-badge--active toggle" data-escalation-id="' + e.escalation_id + '" data-status="Active"><i class="fa-solid fa-circle"></i> Active</span>'
+                    : '<span class="sa-status-badge sa-status-badge--inactive toggle" data-escalation-id="' + e.escalation_id + '" data-status="Inactive"><i class="fa-solid fa-circle"></i> Inactive</span>') + '</td>' +
+                '<td class="sa-col-actions">' +
+                    '<div class="sa-table-actions">' +
+                        '<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEscalationModal" ' +
+                            'data-id="' + e.escalation_id + '" ' +
+                            'data-priority="' + escapeHtml(e.priority_name) + '" ' +
+                            'data-response="' + escapeHtml(e.response_time) + '" ' +
+                            'data-after="' + escapeHtml(e.escalation_after) + '" ' +
+                            'data-role="' + escapeHtml(e.notify_role) + '" ' +
+                            'data-status="' + escapeHtml(e.status) + '">' +
+                            '<i class="fa-solid fa-pen"></i> Edit</button>' +
+                        '<button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEscalationModal" ' +
+                            'data-id="' + e.escalation_id + '" ' +
+                            'data-priority="' + escapeHtml(e.priority_name) + '">' +
+                            '<i class="fa-solid fa-trash"></i></button>' +
+                    '</div>' +
+                '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    function updatePagination(data) {
+        const pageIndicator = document.querySelector('.pagination-page-indicator');
+        if (pageIndicator) {
+            pageIndicator.textContent = 'Page ' + data.page + ' of ' + data.total_pages;
+            pageIndicator.dataset.page = data.page;
+            pageIndicator.dataset.totalPages = data.total_pages;
+        }
+        const prevBtn = document.querySelector('.pagination-prev');
+        const nextBtn = document.querySelector('.pagination-next');
+        if (prevBtn) {
+            prevBtn.closest('.page-item').classList.toggle('disabled', data.page <= 1);
+            prevBtn.dataset.page = data.page > 1 ? data.page - 1 : data.page;
+        }
+        if (nextBtn) {
+            nextBtn.closest('.page-item').classList.toggle('disabled', data.page >= data.total_pages);
+            nextBtn.dataset.page = data.page < data.total_pages ? data.page + 1 : data.page;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form[data-escalation-search]');
+        if (!form) return;
+
+        const tableWrap = document.getElementById('escalationsTableWrap');
+        const tbody = document.getElementById('escalationsTableBody');
+        if (!tbody) return;
+
+        const input = form.querySelector('input[name="search"]');
+        const prioritySelect = document.getElementById('priorityFilter');
+        const statusSelect = document.getElementById('statusFilter');
+        const clearBtn = form.querySelector('.search-clear');
+        let timer;
+        let abortController = null;
+
+        function doSearch(page) {
+            page = page || 1;
+            var q = input ? input.value.trim() : '';
+            var priority = prioritySelect ? prioritySelect.value : '';
+            var status = statusSelect ? statusSelect.value : '';
+            var url = API_URL;
+            var params = [];
+            if (q) params.push('q=' + encodeURIComponent(q));
+            if (priority) params.push('priority_name=' + encodeURIComponent(priority));
+            if (status) params.push('status=' + encodeURIComponent(status));
+            params.push('page=' + page);
+            if (params.length) url += '?' + params.join('&');
+
+            if (abortController) {
+                abortController.abort();
+            }
+            abortController = new AbortController();
+
+            // Show loading
+            if (tableWrap) {
+                tableWrap.classList.add('sa-table-loading');
+            }
+
+            fetch(url, { signal: abortController.signal })
+                .then(function (res) {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(function (data) {
+                    renderEscalations(data.rows || []);
+                    updatePagination(data);
+                })
+                .catch(function (err) {
+                    if (err.name === 'AbortError') return;
+                    if (tbody) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Not Results Found</td></tr>';
+                    }
+                })
+                .finally(function () {
+                    if (tableWrap) {
+                        tableWrap.classList.remove('sa-table-loading');
+                    }
+                });
+        }
+
+        if (input) {
+            input.addEventListener('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(function() { doSearch(1); }, DEBOUNCE_MS);
+                if (clearBtn) {
+                    clearBtn.classList.toggle('visible', this.value.length > 0);
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                input.value = '';
+                clearTimeout(timer);
+                doSearch(1);
+                this.classList.remove('visible');
+                input.focus();
+            });
+        }
+
+        if (prioritySelect) {
+            prioritySelect.addEventListener('change', function () {
+                clearTimeout(timer);
+                timer = setTimeout(function() { doSearch(1); }, DEBOUNCE_MS);
+            });
+        }
+
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function () {
+                clearTimeout(timer);
+                timer = setTimeout(function() { doSearch(1); }, DEBOUNCE_MS);
+            });
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearTimeout(timer);
+            doSearch(1);
+        });
+
+        // Pagination
+        const prevBtn = document.querySelector('.pagination-prev');
+        const nextBtn = document.querySelector('.pagination-next');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.closest('.page-item')?.classList.contains('disabled')) return;
+                const pageIndicator = document.querySelector('.pagination-page-indicator');
+                const currentPage = pageIndicator ? parseInt(pageIndicator.dataset.page) || 1 : 1;
+                if (currentPage > 1) doSearch(currentPage - 1);
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.closest('.page-item')?.classList.contains('disabled')) return;
+                const pageIndicator = document.querySelector('.pagination-page-indicator');
+                const currentPage = pageIndicator ? parseInt(pageIndicator.dataset.page) || 1 : 1;
+                const totalPages = pageIndicator ? parseInt(pageIndicator.dataset.totalPages) || 1 : 1;
+                if (currentPage < totalPages) doSearch(currentPage + 1);
+            });
+        }
+
+        // Bind modal buttons
+        function bindModalButtons() {
+            const editModal = document.getElementById('editEscalationModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function(event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('editPriorityName').value = button.getAttribute('data-priority') || '';
+                    document.getElementById('editResponseTime').value = button.getAttribute('data-response') || '';
+                    document.getElementById('editEscalationAfter').value = button.getAttribute('data-after') || '';
+                    document.getElementById('editNotifyRole').value = button.getAttribute('data-role') || '';
+                    document.getElementById('editStatus').value = button.getAttribute('data-status') || 'Active';
+                    document.getElementById('editEscalationForm').action = '/escalations/update/' + button.getAttribute('data-id');
+                });
+            }
+
+            const deleteModal = document.getElementById('deleteEscalationModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function(event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('deleteEscalationPriority').textContent = button.getAttribute('data-priority') || '';
+                    document.getElementById('deleteEscalationForm').action = '/escalations/delete/' + button.getAttribute('data-id');
+                });
+            }
+        }
+
+        bindModalButtons();
+        
+        // Status toggle
+        document.addEventListener('click', function(e) {
+            var badge = e.target.closest('.sa-status-badge.toggle');
+            if (!badge) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var escalationId = badge.getAttribute('data-escalation-id');
+            var currentStatus = badge.getAttribute('data-status');
+            var newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            fetch('/api/escalations/toggle-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ escalation_id: escalationId, status: newStatus })
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error('Failed to update status');
+                return res.json();
+            })
+            .then(function(data) {
+                if (data.status === 'Active') {
+                    badge.className = 'sa-status-badge sa-status-badge--active toggle';
+                    badge.setAttribute('data-status', 'Active');
+                    badge.innerHTML = '<i class="fa-solid fa-circle"></i> Active';
+                } else {
+                    badge.className = 'sa-status-badge sa-status-badge--inactive toggle';
+                    badge.setAttribute('data-status', 'Inactive');
+                    badge.innerHTML = '<i class="fa-solid fa-circle"></i> Inactive';
+                }
+            })
+            .catch(function() {
+                alert('Failed to update status. Please try again.');
+            });
+        });
+    });
+})();
+</script>
+{% endblock %}

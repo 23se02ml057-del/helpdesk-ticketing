@@ -1,0 +1,172 @@
+{% extends "layout_support_manager.html" %}
+
+{% block title %}
+{{ _('Profile') }}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12">
+            <h3 class="fw-bold mb-1"><i class="fa-solid fa-headset text-primary me-2"></i>{{ _('Profile') }}</h3>
+            <p class="text-muted mb-0">{{ _('View') }} and edit your account details</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar style profile summary -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0 rounded-4 text-center p-4">
+                <div class="position-relative d-inline-block mx-auto mb-3" style="width:100px; height:100px;">
+                    {% if user.profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/profiles/' ~ user.profile_pic) }}"
+                        alt="Profile Picture" class="rounded-circle shadow-sm"
+                        style="width:100px; height:100px; object-fit:cover; border: 3px solid #0d6efd;"
+                        id="profileImagePreview">
+                    {% else %}
+                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+                        style="width:100px; height:100px; font-size:36px;" id="profileIconPreview">
+                        <i class="fa fa-headset"></i>
+                    </div>
+                    <img src="" alt="Profile Picture" class="rounded-circle shadow-sm d-none"
+                        style="width:100px; height:100px; object-fit:cover; border: 3px solid #0d6efd;"
+                        id="profileImagePreview">
+                    {% endif %}
+
+                    <label for="profilePicUpload"
+                        class="position-absolute bg-white rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                        style="width:30px; height:30px; bottom:0; right:0; cursor:pointer; border:1px solid #dee2e6;"
+                        title="Change Profile Picture">
+                        <i class="fa-solid fa-camera text-primary" style="font-size:12px;"></i>
+                    </label>
+                </div>
+                <h4 class="fw-bold">{{ user.first_name }} {{ user.last_name }}</h4>
+                <p class="text-muted mb-3">{{ user.email }}</p>
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <div
+                        class="d-inline-flex align-items-center bg-light text-secondary rounded-pill px-3 py-2 shadow-sm w-100 justify-content-center">
+                        <i class="fa-solid fa-briefcase me-2"></i>
+                        <span class="fw-semibold">{{ translate_role(user.role_name) }}</span>
+                    </div>
+                    {% if user.department_name %}
+                    <div
+                        class="d-inline-flex align-items-center bg-light text-secondary rounded-pill px-3 py-2 shadow-sm w-100 justify-content-center">
+                        <i class="fa-solid fa-building me-2"></i>
+                        <span class="fw-semibold">{{ translate_department(user.department_name) }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Editable Form -->
+        <div class="col-md-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white d-flex align-items-center py-3">
+                    <h5 class="fw-bold mb-0 text-primary"><i class="fa-solid fa-user-pen me-2"></i>Edit Profile</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('support_manager.profile') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="file" id="profilePicUpload" name="profile_pic" accept="image/*" class="d-none"
+                            onchange="previewImage(event)">
+
+                        <div class="row g-4 mb-4">
+                            <!-- First Name -->
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label fw-semibold text-muted">{{ _('First Name')
+                                    }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i
+                                            class="fa-solid fa-user text-muted"></i></span>
+                                    <input type="text" class="form-control border-start-0" id="firstName"
+                                        name="first_name" value="{{ user.first_name }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label fw-semibold text-muted">{{ _('Last Name')
+                                    }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i
+                                            class="fa-regular fa-user text-muted"></i></span>
+                                    <input type="text" class="form-control border-start-0" id="lastName"
+                                        name="last_name" value="{{ user.last_name }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label fw-semibold text-muted">{{ _('Email') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i
+                                            class="fa-solid fa-envelope text-muted"></i></span>
+                                    <input type="email" class="form-control border-start-0" id="email" name="email"
+                                        value="{{ user.email }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Mobile -->
+                            <div class="col-md-6">
+                                <label for="mobile" class="form-label fw-semibold text-muted">{{ _('Mobile') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i
+                                            class="fa-solid fa-phone text-muted"></i></span>
+                                    <input type="text" class="form-control border-start-0" id="mobile" name="mobile"
+                                        value="{{ user.mobile or '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end align-items-center mt-3 pt-3 border-top">
+                            <button type="submit"
+                                class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm hover-elevate">
+                                <i class="fa-solid fa-floppy-disk me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-elevate {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .hover-elevate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+</style>
+
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('profileImagePreview');
+                const icon = document.getElementById('profileIconPreview');
+
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+
+                if (icon) {
+                    icon.classList.add('d-none');
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Report
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-white shadow-sm rounded">
+    <h4 class="fw-bold text-info mb-0">
+      <i class="fa-solid fa-bell me-2"></i> Notification Report
+    </h4>
+    <a href="/reports" class="btn btn-secondary btn-sm">
+      <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-header bg-info text-white fw-bold">
+      <i class="fa-solid fa-filter me-2"></i> Filters
+    </div>
+    <div class="card-body">
+      <form method="GET" data-notification-search>
+        <div class="row g-2">
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Search</label>
+            <input type="text" name="search" class="form-control form-control-sm" value="{{ filters.search }}"
+              placeholder="Search title or message...">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Read Status</label>
+            <select name="is_read" class="form-select form-select-sm">
+              <option value="">All</option>
+              <option value="read" {% if filters.is_read=='read' %}selected{% endif %}>Read</option>
+              <option value="unread" {% if filters.is_read=='unread' %}selected{% endif %}>Unread</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Date From</label>
+            <input type="date" name="date_from" class="form-control form-control-sm" value="{{ filters.date_from }}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Date To</label>
+            <input type="date" name="date_to" class="form-control form-control-sm" value="{{ filters.date_to }}">
+          </div>
+          <div class="col-12 d-flex gap-2 mt-2">
+            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+            <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Clear</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Card -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-info text-white fw-bold">
+      <i class="fa-solid fa-chart-column me-2"></i> All Notification Report
+    </div>
+    <div class="card-body p-2">
+
+      <!-- Table with Scrollbar -->
+      <div class="table-scroll">
+        <table class="table table-bordered table-hover table-sm mb-0">
+          <thead class="table-dark sticky-top">
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>{{ _('Title') }}</th>
+              <th>{{ _('Message') }}</th>
+              <th>{{ _('Status') }}</th>
+              <th>{{ _('Date') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if report_data %}
+            {% for notification in report_data %}
+            <tr>
+              <td class="text-center">{{ notification.notification_id }}</td>
+              <td>{{ notification.first_name }} {{ notification.last_name }}</td>
+              <td><strong>{{ notification.title }}</strong></td>
+              <td>{{ notification.message }}</td>
+              <td class="text-center">
+                {% if notification.is_read %}
+                <span class="badge bg-success">{{ _('Read') }}</span>
+                {% else %}
+                <span class="badge bg-danger">{{ _('Unread') }}</span>
+                {% endif %}
+              </td>
+              <td>{{ notification.created_at }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr id="no-notifications-row">
+              <td colspan="6" class="text-center text-danger">No Notifications Found</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/notification-search.js') }}"></script>
+{% endblock %}

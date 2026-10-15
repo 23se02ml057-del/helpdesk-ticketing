@@ -1,0 +1,151 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Tickets') }}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-lg-8">
+            <h3 class="fw-bold mb-1">{{ _('All Tickets') }}</h3>
+            <p class="text-muted mb-0">{{ _('View Manage Tickets') }}</p>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-2" data-ajax-search
+                data-search-url="{{ url_for('admin.api_tickets_search') }}" data-table-target="tbody"
+                data-page-type="tickets">
+                <div class="col-12 col-sm-8">
+                    <input type="text" name="search" class="form-control" placeholder="{{ _('Search Tickets') }}"
+                        value="{{ search }}">
+                </div>
+                <div class="col-12 col-sm-4">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa fa-search me-1"></i> {{ _('Search') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- {{ _('Ticket') }}s Table -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4 py-3">{{ _('Ticket Hash') }}</th>
+                            <th class="py-3">{{ _('Title') }}</th>
+                            <th class="py-3">{{ _('Status') }}</th>
+                            <th class="py-3">{{ _('Priority') }}</th>
+                            <th class="py-3">{{ _('Category') }}</th>
+                            <th class="py-3">{{ _('Issue Type') }}</th>
+                            <th class="py-3">{{ _('Requester') }}</th>
+                            <th class="py-3">{{ _('Agent') }}</th>
+                            <th class="py-3">{{ _('Created') }}</th>
+                            <th class="py-3">{{ _('ML Estimate') }}</th>
+                            <th class="py-3 pe-4">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                        <tr>
+                            <td class="ps-4 fw-bold">{{ ticket.ticket_number }}</td>
+                            <td>{{ translate_value(ticket.title) }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if ticket.status_name == 'Open' %}bg-danger
+                                    {% elif ticket.status_name == 'In Progress' %}bg-warning text-dark
+                                    {% elif ticket.status_name == 'Resolved' %}bg-success
+                                    {% elif ticket.status_name == 'Closed' %}bg-secondary
+                                    {% elif ticket.status_name == 'On Hold' %}bg-info
+                                    {% elif ticket.status_name == 'New' %}bg-primary
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ translate_status(ticket.status_name) }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if ticket.priority_name in ['High','Critical'] %}
+                                <span class="badge bg-danger">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% elif ticket.priority_name == 'Medium' %}
+                                <span class="badge bg-warning text-dark">{{ translate_priority(ticket.priority_name)
+                                    }}</span>
+                                {% elif ticket.priority_name == 'Low' %}
+                                <span class="badge bg-success">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ translate_category(ticket.category_name) }}</td>
+                            <td>
+                                {% if ticket.issue_name %}
+                                <span class="badge bg-info">{{ ticket.issue_name }}</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ ticket.requester_first }} {{ ticket.requester_last }}</td>
+                            <td>{{ ticket.agent_first }} {{ ticket.agent_last }}</td>
+                            <td>{{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}</td>
+                            <td>
+                                {% set ml = ml_predictions_map.get(ticket.ticket_id) if ml_predictions_map else None %}
+                                {% if ml and ml.predicted_minutes %}
+                                {{ "%.0f"|format(ml.predicted_minutes // 60) }}h {{ "%.0f"|format(ml.predicted_minutes %
+                                60) }}m
+                                <small class="text-muted d-block">v{{ ml.model_version }}</small>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="pe-4">
+                                <a href="{{ url_for('admin.ticket_detail', ticket_id=ticket.ticket_id) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-eye"></i> {{ _('View') }}
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="11" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                {{ _('No Tickets Found') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if pagination and pagination.total > pagination.per_page %}
+                <nav aria-label="Ticket pagination" class="mt-3">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                            <a class="page-link"
+                                href="?page={{ pagination.prev_num }}&search={{ search|urlencode }}">&laquo;</a>
+                        </li>
+                        {% for p in range(1, pagination.total_pages + 1) %}
+                        {% if p == pagination.page %}
+                        <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ p }}&search={{ search|urlencode }}">{{
+                                p }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                            <a class="page-link"
+                                href="?page={{ pagination.next_num }}&search={{ search|urlencode }}">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

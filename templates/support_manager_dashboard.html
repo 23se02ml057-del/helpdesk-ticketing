@@ -1,0 +1,438 @@
+{% extends "layout_support_manager.html" %}
+
+{% block title %}
+{{ _('Support Manager') }} {{ _('Dashboard') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mt-3">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted small mb-1">{{ _('Total') }}</h6>
+                            <h3 class="fw-bold mb-0">{{ total_tickets }}</h3>
+                        </div>
+                        <i class="fa-solid fa-ticket fa-2x text-primary opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted small mb-1">{{ _('Open') }}</h6>
+                            <h3 class="fw-bold mb-0">{{ open_tickets }}</h3>
+                        </div>
+                        <i class="fa-solid fa-folder-open fa-2x text-danger opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted small mb-1">{{ _('Pending') }}</h6>
+                            <h3 class="fw-bold mb-0">{{ pending_tickets }}</h3>
+                        </div>
+                        <i class="fa-solid fa-clock fa-2x text-warning opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted small mb-1">{{ _('Assigned Tickets') }}</h6>
+                            <h3 class="fw-bold mb-0">{{ assigned_tickets }}</h3>
+                        </div>
+                        <i class="fa-solid fa-user-check fa-2x text-info opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted small mb-1">{{ _('Unassigned Tickets') }}</h6>
+                            <h3 class="fw-bold mb-0">{{ unassigned_tickets }}</h3>
+                        </div>
+                        <i class="fa-solid fa-user-xmark fa-2x text-secondary opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted small mb-1">{{ _('Closed') }}</h6>
+                            <h3 class="fw-bold mb-0">{{ closed_tickets }}</h3>
+                        </div>
+                        <i class="fa-solid fa-circle-check fa-2x text-success opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Escalated {{ _('Ticket') }}s Alert -->
+    {% if escalated_tickets > 0 %}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center" role="alert">
+                <i class="fa-solid fa-triangle-exclamation fa-2x me-3"></i>
+                <div>
+                    <strong>{{ escalated_tickets }}</strong> {{ _('Escalated Tickets Warning') }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Charts Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="fw-bold mb-0">{{ _('Ticket Status Distribution') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="ticketChart" style="max-height: 280px;"></canvas>
+                    {% if not status_counts %}
+                    <p class="text-center text-muted mt-3">{{ _('No Status Data') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="fw-bold mb-0">{{ _('Priority Distribution') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priorityChart" style="max-height: 280px;"></canvas>
+                    {% if not priority_counts %}
+                    <p class="text-center text-muted mt-3">{{ _('No Priority Data') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Workload & Recent {{ _('Ticket') }}s -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="fw-bold mb-0">{{ _('Agent Workload') }}</h5>
+                </div>
+                <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Agent') }}</th>
+                                    <th class="text-center">{{ _('Open') }}</th>
+                                    <th class="text-center">{{ _('Pending') }}</th>
+                                    <th class="text-center">{{ _('Closed') }}</th>
+                                    <th class="text-center">{{ _('Total') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for agent in agent_workload %}
+                                <tr>
+                                    <td class="fw-semibold">{{ agent.first_name }} {{ agent.last_name }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-danger">{{ agent.open_tickets }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark">{{ agent.pending_tickets }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">{{ agent.closed_tickets }}</span>
+                                    </td>
+                                    <td class="text-center fw-bold">{{ agent.total_assigned }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <i class="fa-regular fa-user d-block fs-3 mb-2 opacity-50"></i>
+                                        {{ _('No Agent Workload Data') }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm border-0 rounded-4 h-100" style="max-height: 400px; overflow-y: auto;">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pb-0">
+                    <h5 class="fw-bold mb-0">{{ _('Recent Tickets') }}</h5>
+                    <a href="{{ url_for('support_manager.tickets') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fa fa-list me-1"></i>{{ _('View All') }}
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Ticket Number') }}</th>
+                                    <th>{{ _('Title') }}</th>
+                                    <th>{{ _('Priority') }}</th>
+                                    <th>{{ _('Status') }}</th>
+                                    <th>{{ _('Agent') }}</th>
+                                    <th>{{ _('Created At') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in recent_tickets %}
+                                <tr>
+                                    <td class="fw-semibold">{{ ticket.ticket_number }}</td>
+                                    <td>{{ ticket.title }}</td>
+                                    <td>
+                                        {% if ticket.priority_name == 'Critical' %}
+                                            <span class="badge bg-danger">{{ _('Priority Critical') }}</span>
+                                        {% elif ticket.priority_name == 'High' %}
+                                            <span class="badge bg-danger">{{ _('Priority High') }}</span>
+                                        {% elif ticket.priority_name == 'Medium' %}
+                                            <span class="badge bg-warning text-dark">{{ _('Priority Medium') }}</span>
+                                        {% elif ticket.priority_name == 'Low' %}
+                                            <span class="badge bg-success">{{ _('Priority Low') }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ ticket.priority_name or '-' }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if ticket.status_name == 'Open' %}bg-danger
+                                            {% elif ticket.status_name == 'In Progress' %}bg-warning text-dark
+                                            {% elif ticket.status_name == 'Resolved' %}bg-success
+                                            {% elif ticket.status_name == 'Closed' %}bg-secondary
+                                            {% elif ticket.status_name == 'On Hold' %}bg-info
+                                            {% elif ticket.status_name == 'New' %}bg-primary
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ ticket.status_name }}
+                                        </span>
+                                    </td>
+                                    <td>{{ ticket.agent_first }} {{ ticket.agent_last }}</td>
+                                    <td><small class="text-muted">{{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}</small></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                        {{ _('No Tickets Found') }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLA Breach Alerts -->
+    {% if sla_breaches %}
+    <div class="row g-3 mb-4">
+        <div class="col-12" >
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="fw-bold mb-0 text-danger">
+                        <i class="fa-solid fa-clock-exclamation me-2"></i>{{ _('Sla Breach Alerts') }}
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">{{ _('Ticket Number') }}</th>
+                                    <th>{{ _('Subject') }}</th>
+                                    <th>{{ _('Priority') }}</th>
+                                    <th>{{ _('Created At') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for breach in sla_breaches %}
+                                <tr>
+                                    <td class="ps-4 fw-semibold">{{ breach.ticket_number }}</td>
+                                    <td>{{ breach.title }}</td>
+                                    <td><span class="badge bg-danger">{{ breach.priority_name }}</span></td>
+                                    <td><small class="text-muted">{{ breach.created_at.strftime('%Y-%m-%d %H:%M') if breach.created_at }}</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ML Resolution Insights -->
+    {% if ml_risk_tickets %}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white border-0 pb-0 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-brain me-2"></i>{{ _('Ml Resolution Insights') }}
+                    </h5>
+                    <a href="{{ url_for('support_manager.ml_model') }}" class="btn btn-sm btn-outline-primary">
+                        {{ _('Model Management') }}
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Ticket') }}</th>
+                                    <th>{{ _('Priority') }}</th>
+                                    <th>{{ _('Ml Estimate') }}</th>
+                                    <th>{{ _('Sla') }}</th>
+                                    <th>{{ _('Risk Level') }}</th>
+                                    <th>{{ _('Agent') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in ml_risk_tickets %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('support_manager.ticket_detail', ticket_id=t.ticket_id) }}" class="fw-semibold text-decoration-none">
+                                            {{ t.ticket_number }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if t.priority_name == 'Critical' %}
+                                            <span class="badge bg-danger">{{ _('Priority Critical') }}</span>
+                                        {% elif t.priority_name == 'High' %}
+                                            <span class="badge bg-danger">{{ _('Priority High') }}</span>
+                                        {% elif t.priority_name == 'Medium' %}
+                                            <span class="badge bg-warning text-dark">{{ _('Priority Medium') }}</span>
+                                        {% elif t.priority_name == 'Low' %}
+                                            <span class="badge bg-success">{{ _('Priority Low') }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ t.priority_name }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ "%.1f"|format(t.predicted_minutes / 60) }}{{ _('Hours') }}</td>
+                                    <td>{{ "%.1f"|format(t.sla_hours) }}{{ _('Hours') }}</td>
+                                    <td>
+                                        {% if t.risk_level == "high" %}
+                                            <span class="badge bg-danger">{{ _('Risk High') }}</span>
+                                        {% elif t.risk_level == "medium" %}
+                                            <span class="badge bg-warning text-dark">{{ _('Risk Medium') }}</span>
+                                        {% else %}
+                                            <span class="badge bg-success">{{ _('Risk Low') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ t.agent_name }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var t = window.i18n ? function(key) { return i18n.t(key); } : function(key) { return key; };
+
+    var statusLabels = {{ status_counts|map(attribute='status_name')|list|tojson }};
+    var statusData = {{ status_counts|map(attribute='ticket_count')|list|tojson }};
+
+    var ticketCanvas = document.getElementById('ticketChart');
+    if (ticketCanvas && statusLabels.length > 0) {
+        new Chart(ticketCanvas, {
+            type: 'bar',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    label: t('tickets_chart'),
+                    data: statusData,
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    } else if (ticketCanvas) {
+        ticketCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_status_data') + '</p>';
+    }
+
+    var priorityLabels = {{ priority_counts|map(attribute='priority_name')|list|tojson }};
+    var priorityData = {{ priority_counts|map(attribute='ticket_count')|list|tojson }};
+    var priorityColors = ['#198754', '#0dcaf0', '#ffc107', '#dc3545', '#6f42c1'];
+
+    var priorityCanvas = document.getElementById('priorityChart');
+    if (priorityCanvas && priorityLabels.length > 0) {
+        new Chart(priorityCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: priorityLabels,
+                datasets: [{
+                    data: priorityData,
+                    backgroundColor: priorityColors
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    } else if (priorityCanvas) {
+        priorityCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_priority_data') + '</p>';
+    }
+});
+</script>
+{% endblock %}

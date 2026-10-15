@@ -1,0 +1,248 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Ml Model Management') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <h5 class="fw-bold mb-0">{{ _('Resolution Time') }} Prediction Model</h5>
+                    <a href="{{ url_for('super_admin.ml_predictions') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fa fa-history me-1"></i>{{ _('View') }} {{ _('Prediction History') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Model {{ _('Name') }}</label>
+                            <p class="fw-bold">Ticket {{ _('Resolution Time') }} Predictor</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">{{ _('Version') }}</label>
+                            <p><span class="badge bg-info">{{ model_info.model_version }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">{{ _('Status') }}</label>
+                            <p>
+                                {% if model_info.model_version == "not_trained" %}
+                                <span class="badge bg-secondary">{{ _('Not Trained') }}</span>
+                                {% elif model_info.model_version == "error" %}
+                                <span class="badge bg-danger">{{ _('Error') }}</span>
+                                {% elif model_info.dataset_status == "limited" %}
+                                <span class="badge bg-warning text-dark">{{ _('Experimental') }}</span>
+                                {% else %}
+                                <span class="badge bg-success">{{ _('Active') }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Dataset {{ _('Status') }}</label>
+                            <p>
+                                {% if model_info.dataset_status == "no_data" %}
+                                <span class="text-danger">No {{ _('Training Data') }}</span>
+                                {% elif model_info.dataset_status == "limited" %}
+                                <span class="text-warning">{{ _('Limited Data') }}</span>
+                                {% elif model_info.dataset_status == "moderate" %}
+                                <span class="text-info">{{ _('Moderate Data') }}</span>
+                                {% else %}
+                                <span class="text-success">{{ _('Sufficient Data') }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">{{ _('Training records') }}</label>
+                            <p class="fw-bold">{{ model_info.training_records }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">{{ _('Eligible records') }}</label>
+                            <p>{{ training_stats.eligible_for_training if training_stats else 0 }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">{{ _('Last trained') }}</label>
+                            <p>{{ model_info.trained_at if model_info.trained_at else 'Never' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">{{ _('Model version') }}</label>
+                            <p>{{ model_info.model_version }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if model_info.warning %}
+            <div class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle me-2"></i>
+                <strong>{{ _('Dataset warning') }}</strong>
+                <p class="mb-0 mt-2">{{ model_info.warning }}</p>
+            </div>
+            {% endif %}
+
+            {% if model_info.sufficient_data or model_info.model_version != "not_trained" %}
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Model performance') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded-3">
+                                <label class="form-label text-muted small mb-1">MAE</label>
+                                <p class="fw-bold mb-0">
+                                    {% if model_info.mae_minutes is not none %}
+                                    {{ "%.1f"|format(model_info.mae_minutes) }} min
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded-3">
+                                <label class="form-label text-muted small mb-1">{{ _('Rmse') }}</label>
+                                <p class="fw-bold mb-0">
+                                    {% if model_info.rmse_minutes is not none %}
+                                    {{ "%.1f"|format(model_info.rmse_minutes) }} min
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded-3">
+                                <label class="form-label text-muted small mb-1">{{ _('R Squared') }}</label>
+                                <p class="fw-bold mb-0">
+                                    {% if model_info.r2 is not none %}
+                                    {{ "%.3f"|format(model_info.r2) }}
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle me-2"></i>
+                <strong>{{ _('Insufficient Data') }}</strong>
+                <p class="mb-0 mt-2">{{ _('No Model Trained Yet') }}</p>
+            </div>
+            {% endif %}
+
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Training configuration') }}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                                    style="width: 40%;">Parameter</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Value /
+                                    Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold bg-light">Model Type</td>
+                                <td>Gradient Boosting Regressor (TF-IDF + Structured Features)</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold bg-light">Text Features</td>
+                                <td>Ticket title + description + issue type (TF-IDF, n-grams 1-2)</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold bg-light">Structured Features</td>
+                                <td>Priority (encoded: Low=1, Medium=2, High=3, Critical=4)</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold bg-light">Target</td>
+                                <td>Actual resolution time (minutes) = Resolved At - Created At</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold bg-light">Training Data Eligibility</td>
+                                <td>Resolved/Closed tickets with valid timestamps, category, priority</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold bg-light">Outlier Handling</td>
+                                <td>Resolution times > 168 hours (7 days) are excluded</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">Model {{ _('Actions') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <form method="POST" action="{{ url_for('super_admin.retrain_model') }}"
+                            onsubmit="return confirmRetrain()">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fa fa-cog me-1"></i>
+                                {{ _('Retrain ML model') }}
+                            </button>
+                        </form>
+                        <a href="{{ url_for('super_admin.ml_predictions') }}" class="btn btn-outline-secondary">
+                            <i class="fa fa-history me-1"></i>
+                            {{ _('Prediction history') }}
+                        </a>
+                    </div>
+
+                    <hr>
+
+                    <h6 class="fw-bold">{{ _('Training Data') }}</h6>
+                    <div class="text-center py-3">
+                        <div class="h4 fw-bold">{{ training_stats.eligible_for_training if training_stats else 0 }}
+                        </div>
+                        <small class="text-muted">Eligible {{ _('Resolved Tickets') }}</small>
+                    </div>
+                    <div class="text-center py-3">
+                        <div class="h4 fw-bold">{{ training_stats.resolved_tickets if training_stats else 0 }}</div>
+                        <small class="text-muted">Total {{ _('Resolved Tickets') }}</small>
+                    </div>
+                    <div class="text-center py-3">
+                        <div class="h4 fw-bold">{{ training_stats.total_tickets if training_stats else 0 }}</div>
+                        <small class="text-muted">{{ _('Total Tickets') }} (all statuses)</small>
+                    </div>
+
+                    {% if retrain_result %}
+                    <hr>
+                    {% if retrain_result.success %}
+                    <div class="alert alert-success mb-0">
+                        <i class="fa fa-check-circle me-2"></i>
+                        <strong>{{ _('Training Completed Successfully') }}</strong>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger mb-0">
+                        <i class="fa fa-times-circle me-2"></i>
+                        <strong>{{ _('Training Failed') }}</strong>
+                        <p class="mb-0 mt-2">{{ _('Existing Model Preserved') }}</p>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmRetrain() {
+        var eligible = {{ training_stats.eligible_for_training if training_stats else 0 }};
+    var msg = "Training data available: " + eligible + " eligible tickets. Are you sure you want to retrain?";
+    return confirm(msg);
+    }
+</script>
+{% endblock %}

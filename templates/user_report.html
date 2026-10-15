@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Report
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+      <i class="fa-solid fa-users text-primary"></i>
+      {{ _('User Report') }}
+    </h2>
+    <a href="/reports" class="btn btn-secondary">
+      <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card shadow-sm border-0 rounded-3 mb-3">
+    <div class="card-header bg-white fw-bold">
+      <i class="fa-solid fa-filter me-2"></i> Filters
+    </div>
+    <div class="card-body">
+      <form method="GET" class="row g-2">
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Role</label>
+          <select name="role" class="form-select">
+            <option value="">All</option>
+            {% for r in roles %}
+            <option value="{{ r.role_name }}" {% if filters.role==r.role_name %}selected{% endif %}>{{ r.role_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Status</label>
+          <select name="status" class="form-select">
+            <option value="">All</option>
+            <option value="Active" {% if filters.status=='Active' %}selected{% endif %}>Active</option>
+            <option value="Inactive" {% if filters.status=='Inactive' %}selected{% endif %}>Inactive</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Date From</label>
+          <input type="date" name="date_from" class="form-control" value="{{ filters.date_from }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Date To</label>
+          <input type="date" name="date_to" class="form-control" value="{{ filters.date_to }}">
+        </div>
+        <div class="col-12 d-flex gap-2 mt-2">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <a href="{{ request.path }}" class="btn btn-secondary">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Card -->
+  <div class="card shadow-sm border-0 rounded-3">
+
+    <div class="card-header bg-primary text-white fw-bold">
+      <i class="fa-solid fa-address-book me-2"></i> All Users Report
+    </div>
+
+    <div class="card-body p-2">
+
+      <div class="table-scroll">
+        <div class="flex-grow-1 overflow-auto" style="max-height:450px;">
+          <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark sticky-top">
+              <tr>
+                <th>User {{ _('Name') }}</th>
+                <th>{{ _('Email') }}</th>
+                <th>{{ _('Department') }}</th>
+                <th>{{ _('Role') }}</th>
+                <th>{{ _('Status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if report_data %}
+              {% for user in report_data %}
+              <tr>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.department_name }}</td>
+                <td>{{ user.role_name }}</td>
+                <td class="text-center">
+                  {% if user.status=="Active" %}
+                  <span class="badge bg-success">Active</span>
+                  {% else %}
+                  <span class="badge bg-danger">Inactive</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-danger">
+                  No Users Found
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .card {
+      border-radius: 10px;
+    }
+
+    table th {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    table td {
+      font-size: 0.85rem;
+    }
+  </style>
+  {% endblock %}

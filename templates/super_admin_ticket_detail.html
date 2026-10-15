@@ -1,0 +1,239 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Ticket') }} {{ ticket.ticket_number if ticket }} - {{ _('Ticket Details') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-3">
+    <div class="col">
+      <a href="{{ url_for('tickets.tickets_page') }}{% if request.query_string %}?{{ request.query_string.decode() }}{% endif %}" class="btn btn-sm btn-secondary">
+        <i class="fa fa-arrow-left me-1"></i> {{ _('Back') }} to {{ _('Tickets') }}
+      </a>
+    </div>
+  </div>
+
+  {% if not ticket %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow border-0 rounded-4 text-center">
+        <div class="card-body p-5">
+          <i class="fa-solid fa-triangle-exclamation fa-4x text-warning mb-3"></i>
+          <h3>{{ _('Ticket Not Found') }}</h3>
+          <p class="text-muted">{{ _('Ticket') }} {{ _('Not Found') }}</p>
+          <a href="{{ url_for('tickets.tickets_page') }}" class="btn btn-primary mt-2">{{ _('Tickets') }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0">{{ ticket.ticket_number }} — {{ ticket.title }}</h5>
+          <span class="badge bg-{% if ticket.status_name == 'Open' %}primary{% elif ticket.status_name == 'In Progress' %}info{% elif ticket.status_name == 'Resolved' %}success{% elif ticket.status_name == 'Closed' %}secondary{% else %}warning text-dark{% endif %}">
+            {{ translate_status(ticket.status_name) }}
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Ticket Number') }}</label>
+              <p class="fw-bold mb-0">{{ ticket.ticket_number }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Priority') }}</label>
+              <p class="mb-0">{% if ticket.priority_name %}<span class="badge bg-{% if ticket.priority_name == 'Critical' or ticket.priority_name == 'High' %}danger{% elif ticket.priority_name == 'Medium' %}warning text-dark{% elif ticket.priority_name == 'Low' %}success{% else %}secondary{% endif %}">{{ translate_priority(ticket.priority_name) }}</span>{% else %}<span class="text-muted">{{ _('Not Specified') }}</span>{% endif %}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Category') }}</label>
+              <p class="mb-0">{% if ticket.category_name %}{{ translate_category(ticket.category_name) }}{% else %}<span class="text-muted">{{ _('Not Specified') }}</span>{% endif %}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Issue Type') }}</label>
+              {% if ticket.issue_name %}
+                <span class="badge bg-info">{{ translate_value(ticket.issue_name) }}</span>
+              {% else %}
+                <span class="text-muted">{{ _('Not Specified') }}</span>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Requester') }}</label>
+              <p class="mb-0">{{ ticket.requester_first }} {{ ticket.requester_last }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Requester') }} {{ _('Email') }}</label>
+              <p class="mb-0">{{ ticket.requester_email }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Requester') }} {{ _('Phone') }}</label>
+              <p class="mb-0">{{ ticket.requester_phone if ticket.requester_phone else _('Not Specified') }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Assign') }}ed {{ _('Agent') }}</label>
+              {% if ticket.agent_first and ticket.agent_last %}
+                <p class="mb-0">{{ ticket.agent_first }} {{ ticket.agent_last }} ({{ ticket.agent_email }})</p>
+              {% else %}
+                <p class="text-muted mb-0">{{ _('Unassigned') }}</p>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Department') }}</label>
+              {% if ticket.department_name %}
+                <p class="mb-0">{{ translate_department(ticket.department_name) }}</p>
+              {% else %}
+                <p class="text-muted mb-0">{{ _('Unassigned') }}</p>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Created') }} {{ _('Date') }}</label>
+              <p class="mb-0">{{ ticket.created_at.strftime('%Y-%m-%d %H:%M') if ticket.created_at else 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Updated') }} {{ _('Date') }}</label>
+              <p class="mb-0">{{ ticket.updated_at.strftime('%Y-%m-%d %H:%M') if ticket.updated_at else 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Assigned') }} {{ _('Date') }}</label>
+              <p class="mb-0">{{ ticket.assigned_at.strftime('%Y-%m-%d %H:%M') if ticket.assigned_at else 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Due') }} {{ _('Date') }}</label>
+              <p class="mb-0">{{ ticket.due_date.strftime('%Y-%m-%d %H:%M') if ticket.due_date else 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Resolved') }} {{ _('Date') }}</label>
+              <p class="mb-0">{{ ticket.resolved_at.strftime('%Y-%m-%d %H:%M') if ticket.resolved_at else 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Rating') }}</label>
+              <p class="mb-0">{{ ticket.rating if ticket.rating else 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Reopen') }} {{ _('Count') }}</label>
+              <p class="mb-0">{{ ticket.reopen_count if ticket.reopen_count else 0 }}</p>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted">{{ _('Source') }}</label>
+              <p class="mb-0">{{ ticket.source if ticket.source else 'N/A' }}</p>
+            </div>
+            <div class="col-12">
+              <label class="form-label text-muted">{{ _('Description') }}</label>
+              <p class="mb-0">{{ ticket.description }}</p>
+            </div>
+            {% if ticket.ai_summary %}
+            <div class="col-12">
+              <label class="form-label text-muted">{{ _('Ai Summary') }}</label>
+              <div class="alert alert-info mb-0">
+                <i class="fa-solid fa-robot me-2"></i>
+                {{ ticket.ai_summary }}
+              </div>
+            </div>
+            {% endif %}
+            <div class="col-12">
+              <label class="form-label text-muted">{{ _('Ai Suggested Reply') }}</label>
+              {% if ticket.ai_suggested_reply %}
+                <div class="alert alert-success mb-0">
+                  <i class="fa-solid fa-robot me-2"></i>
+                  {{ ticket.ai_suggested_reply }}
+                </div>
+              {% else %}
+                <form method="POST" action="{{ url_for('tickets.generate_ai_summary', ticket_id=ticket.ticket_id) }}" class="d-inline">
+                  <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> {{ _('Generate Ai Summary') }}
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+            <div class="col-12">
+          <label class="form-label text-muted">{{ _('Ml Estimate') }}</label>
+          {% if ml_prediction and ml_prediction.prediction_status == 'success' %}
+            <div class="alert alert-info mb-0">
+              <strong>Estimated resolution minutes:</strong>
+              {{ "%.0f"|format(ml_prediction.predicted_resolution_minutes // 60) }}h {{ "%.0f"|format(ml_prediction.predicted_resolution_minutes % 60) }}m
+                  {% if ml_prediction.lower_bound_minutes and ml_prediction.upper_bound_minutes %}
+                    ({{ "%.0f"|format(ml_prediction.lower_bound_minutes // 60) }}h – {{ "%.0f"|format(ml_prediction.upper_bound_minutes // 60) }}h)
+                  {% endif %}
+                </div>
+              {% else %}
+                <p class="text-muted mb-0">ML prediction unavailable</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      {% if attachments %}
+      <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-header bg-white">
+          <h5 class="fw-bold mb-0"><i class="fa fa-paperclip me-2"></i>{{ _('Attachments') }}</h5>
+        </div>
+        <div class="card-body">
+          {% for att in attachments %}
+          <div class="d-flex align-items-center mb-2">
+            <i class="fa fa-file text-primary me-2"></i>
+            <div>
+              <a href="{{ url_for('static', filename='uploads/tickets/' + att.file_name) }}" class="text-decoration-none">{{ att.file_name }}</a>
+              <small class="text-muted d-block">{{ att.uploaded_at.strftime('%Y-%m-%d') if att.uploaded_at else '' }}</small>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-header bg-white">
+          <h5 class="fw-bold mb-0"><i class="fa fa-comments me-2"></i>{{ _('Comments') }}</h5>
+        </div>
+        <div class="card-body">
+          {% if comments %}
+            {% for comment in comments %}
+            <div class="mb-3">
+              <div class="d-flex align-items-center mb-1">
+                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-2" style="width:30px; height:30px; font-size:12px;">
+                  <i class="fa fa-user"></i>
+                </div>
+                <div>
+                  <strong>{{ comment.first_name }} {{ comment.last_name }}</strong>
+                  <small class="text-muted">({{ translate_role(comment.role_name) }}{% if comment.is_internal %} — {{ _('Internal Note') }}{% endif %})</small>
+                </div>
+              </div>
+              <p class="mb-0 text-muted">{{ comment.comment_text }}</p>
+              <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') if comment.created_at else '' }}</small>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted text-center">{{ _('No Comments') }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white">
+          <h5 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2"></i>{{ _('Status') }} {{ _('History') }}</h5>
+        </div>
+        <div class="card-body">
+          {% if status_history %}
+            {% for h in status_history %}
+            <div class="mb-2 small">
+              <strong>{{ h.old_status }}</strong> <i class="fa fa-arrow-right mx-1 text-muted"></i> <strong>{{ h.new_status }}</strong>
+              <div class="text-muted">
+                {{ h.changed_by_name or _('System') }} — {{ h.changed_at.strftime('%Y-%m-%d %H:%M') if h.changed_at else '' }}
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted text-center">{{ _('No Changes') }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "layout_support_agent.html" %}
+
+{% block title %}
+My {{ _('Profile') }}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-12 col-lg-4">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fa-solid fa-user text-primary me-2"></i> {{ _('Profile') }} Information
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
+                         style="width: 80px; height: 80px; font-size: 32px;">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <h4 class="fw-bold">{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p class="text-muted mb-1">{{ translate_role(user.role_name) }}</p>
+                    {% if user.department_name %}
+                    <span class="badge bg-info">{{ translate_department(user.department_name) }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fa-solid fa-circle-info text-primary me-2"></i> {{ _('Account Details') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('First Name') }}</label>
+                            <input type="text" class="form-control" value="{{ user.first_name }}" readonly>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Last Name') }}</label>
+                            <input type="text" class="form-control" value="{{ user.last_name }}" readonly>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Email') }}</label>
+                            <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Mobile') }}</label>
+                            <input type="text" class="form-control" value="{{ user.mobile or 'N/A' }}" readonly>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Role') }}</label>
+                            <input type="text" class="form-control" value="{{ translate_role(user.role_name) }}" readonly>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Department') }}</label>
+                            <input type="text" class="form-control" value="{{ translate_department(user.department_name) or 'N/A' }}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fa-solid fa-brain text-warning me-2"></i> {{ _('Skills') }}
+                    </h5>
+                    {% if skills %}
+                    <span class="badge bg-primary rounded-pill">{{ skills|length }}</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if skills %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in skills %}
+                        <span class="skill-chip">
+                            <i class="fa-solid fa-check-circle me-1"></i>
+                            {{ translate_skill(skill.skill_name) }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="fa-regular fa-circle-xmark d-block fs-3 mb-2 opacity-50"></i>
+                        <p class="mb-0">{{ _('No Skills Assigned Yet') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "layout_support_manager.html" %}
+
+
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border-left: 3px solid transparent;
+    }
+    .stat-card.total { border-left-color: #0d6efd; }
+    .stat-card.open { border-left-color: #dc3545; }
+    .stat-card.progress { border-left-color: #ffc107; }
+    .stat-card.resolved { border-left-color: #198754; }
+    .stat-card.closed { border-left-color: #6c757d; }
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.35em 0.7em;
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-lg-8 col-md-7 col-sm-12">
+            <h3 class="fw-bold mb-1">{{ _('Reports') }} & Analytics</h3>
+            <p class="text-muted mb-0">{{ _('View') }} ticket statistics and performance metrics</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card total">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-ticket fa-2x text-primary mb-2"></i>
+                    <h6 class="text-muted small mb-1">{{ _('Total Tickets') }}</h6>
+                    <h2 class="fw-bold text-primary mb-0">{{ total_tickets }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card open">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-folder-open fa-2x text-danger mb-2"></i>
+                    <h6 class="text-muted small mb-1">{{ _('Open') }}</h6>
+                    <h2 class="fw-bold text-danger mb-0">{{ open_tickets }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card progress">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-spinner fa-2x text-warning mb-2"></i>
+                    <h6 class="text-muted small mb-1">{{ _('In Progress') }}</h6>
+                    <h2 class="fw-bold text-warning mb-0">{{ in_progress }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card resolved">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-circle-check fa-2x text-success mb-2"></i>
+                    <h6 class="text-muted small mb-1">{{ _('Resolved') }}</h6>
+                    <h2 class="fw-bold text-success mb-0">{{ resolved }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card closed">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-box-archive fa-2x text-secondary mb-2"></i>
+                    <h6 class="text-muted small mb-1">{{ _('Closed') }}</h6>
+                    <h2 class="fw-bold text-secondary mb-0">{{ closed }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-layer-group fa-2x text-info mb-2"></i>
+                    <h6 class="text-muted small mb-1">{{ _('Categories') }}</h6>
+                    <h2 class="fw-bold text-info mb-0">{{ category_data|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Tickets') }} by {{ _('Status') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Tickets') }} by {{ _('Priority') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priorityChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Performance Table -->
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-header bg-white">
+            <h5 class="fw-bold mb-0">{{ _('Agent') }} Performance</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 py-3">{{ _('Agent') }}</th>
+                            <th class="py-3">{{ _('Total Tickets') }}</th>
+                            <th class="py-3">{{ _('Resolved') }}</th>
+                             <th class="py-3">{{ _('Active') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agent in agent_performance %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ agent.first_name }} {{ agent.last_name }}</td>
+                            <td>{{ agent.total_tickets }}</td>
+                            <td><span class="badge bg-success">{{ agent.resolved_tickets }}</span></td>
+                            <td><span class="badge bg-warning text-dark">{{ agent.pending_tickets }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">{{ _('No Agent Data Available') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var t = window.i18n ? function(key) { return i18n.t(key); } : function(key) { return key; };
+
+    var statusLabels = {{ status_data|map(attribute='status_name')|list|tojson }};
+    var statusCounts = {{ status_data|map(attribute='ticket_count')|list|tojson }};
+
+    var statusCanvas = document.getElementById('statusChart');
+    if (statusCanvas && statusLabels.length > 0) {
+        new Chart(statusCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    data: statusCounts,
+                    backgroundColor: ['#dc3545', '#ffc107', '#198754', '#6c757d', '#17a2b8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    } else if (statusCanvas) {
+        statusCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_status_data') + '</p>';
+    }
+
+    var priorityLabels = {{ priority_data|map(attribute='priority_name')|list|tojson }};
+    var priorityCounts = {{ priority_data|map(attribute='ticket_count')|list|tojson }};
+
+    var priorityCanvas = document.getElementById('priorityChart');
+    if (priorityCanvas && priorityLabels.length > 0) {
+        new Chart(priorityCanvas, {
+            type: 'bar',
+            data: {
+                labels: priorityLabels,
+                datasets: [{
+                    label: t('tickets_chart'),
+                    data: priorityCounts,
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    } else if (priorityCanvas) {
+        priorityCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_priority_data') + '</p>';
+    }
+});
+</script>
+{% endblock %}

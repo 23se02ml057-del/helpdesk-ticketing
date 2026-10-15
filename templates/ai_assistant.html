@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('Ai Assistant Helpdesk') }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins','Noto Sans','Segoe UI',sans-serif;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .chat-header .badge {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.2);
+        }
+        .chat-messages {
+            height: 450px;
+            overflow-y: auto;
+            padding: 20px 30px;
+            background: #fafafa;
+        }
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .message.user .message-bubble {
+            background: #4f46e5;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .message.ai .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .message-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .message.user .message-label {
+            text-align: right;
+        }
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: 75px;
+        }
+        .typing-indicator.active {
+            display: flex;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #9ca3af;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        .chat-input-area {
+            padding: 16px 30px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .quick-actions button {
+            font-size: 0.8rem;
+            border-radius: 20px;
+            padding: 6px 14px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .input-group input {
+            flex: 1;
+            border-radius: 24px;
+            border: 1px solid #d1d5db;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+        }
+        .input-group input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+        }
+        .input-group button {
+            border-radius: 24px;
+            padding: 12px 24px;
+            background: #4f46e5;
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+        .input-group button:hover {
+            background: #4338ca;
+        }
+        .welcome-message {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+        .welcome-message i {
+            font-size: 3rem;
+            color: #4f46e5;
+            margin-bottom: 16px;
+        }
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        .status-bar {
+            padding: 10px 30px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.8rem;
+            color: #6b7280;
+            display: flex;
+            justify-content: space-between;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+        .status-dot.error {
+            background: #ef4444;
+        }
+        .status-dot.checking {
+            background: #f59e0b;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <i class="bi bi-robot fs-3"></i>
+            <div>
+                <h3>{{ _('Ai Assistant') }}</h3>
+                <span class="badge">{{ _('Powered By Openrouter') }}</span>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message" id="welcomeMessage">
+                <i class="bi bi-chat-dots d-block"></i>
+                <h4>Hello, {{ user_name }}!</h4>
+                <p>{{ _('Ai Assistant Intro') }}</p>
+                <ul class="list-unstyled text-start d-inline-block">
+                    <li>• Answering questions about tickets</li>
+                    <li>• Suggesting responses to customers</li>
+                    <li>• Analyzing ticket sentiment</li>
+                    <li>• General help desk guidance</li>
+                </ul>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="chat-input-area">
+            <div class="quick-actions">
+                <button class="btn btn-outline-primary btn-sm" onclick="sendQuick{{ _('Message') }}('How do I prioritize tickets?')">
+                    <i class="bi bi-lightning"></i> {{ _('Prioritize Tickets') }}
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="sendQuick{{ _('Message') }}('What is the escalation process?')">
+                    <i class="bi bi-arrow-up-right"></i> {{ _('Escalation') }} process
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="sendQuick{{ _('Message') }}('How do I handle angry customers?')">
+                    <i class="bi bi-emoji-frown"></i> {{ _('Angry Customers') }}
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="sendQuick{{ _('Message') }}('What are the {{ _('Sla Rules Ai') }}?')">
+                    <i class="bi bi-clock"></i> {{ _('Sla Rules Ai') }}
+                </button>
+            </div>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="userMessage" 
+                    placeholder="{{ _('Type') }} your message here..." 
+                    onkeypress="if(event.key==='Enter') send{{ _('Message') }}()"
+                    autocomplete="off"
+                >
+                <button onclick="send{{ _('Message') }}()">
+                    <i class="bi bi-send"></i> {{ _('Send') }}
+                </button>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">{{ _('Checking Ai Service') }}</span>
+            </div>
+            <span id="modelInfo"></span>
+        </div>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+        let isFirstMessage = true;
+        
+        async function checkAIHealth() {
+            try {
+                const response = await fetch('/api/ai/health');
+                const data = await response.json();
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+                const modelInfo = document.getElementById('modelInfo');
+                
+                if (data.success) {
+                    statusDot.classList.remove('error', 'checking');
+                    statusText.textContent = i18n.t('ai_service_active');
+                    modelInfo.textContent = `Model: ${data.model || 'Unknown'}`;
+                } else {
+                    statusDot.classList.add('error');
+                    statusText.textContent = data.message || 'AI Service Error';
+                }
+            } catch (error) {
+                document.getElementById('statusDot').classList.add('error');
+                document.getElementById('statusText').textContent = i18n.t('cannot_connect_ai');
+            }
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('userMessage');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            if (isFirstMessage) {
+                document.getElementById('welcomeMessage').style.display = 'none';
+                isFirstMessage = false;
+            }
+            
+            addMessageToUI('user', message);
+            conversationHistory.push({ role: 'user', content: message });
+            
+            input.value = '';
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        history: conversationHistory[:-1]
+                    })
+                });
+                
+                const data = await response.json();
+                hideTypingIndicator();
+                
+                if (data.success) {
+                    addMessageToUI('ai', data.response);
+                    conversationHistory.push({ role: 'assistant', content: data.response });
+                } else {
+                    addMessageToUI('ai', `Error: ${data.error}`);
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessageToUI('ai', 'Sorry, I encountered a network error. Please try again.');
+            }
+        }
+        
+        function addMessageToUI(sender, text) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'message-label';
+            labelDiv.textContent = sender === 'user' ? 'You' : 'AI Assistant';
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'message-bubble';
+            bubbleDiv.textContent = text;
+            
+            messageDiv.appendChild(labelDiv);
+            messageDiv.appendChild(bubbleDiv);
+            
+            messagesDiv.insertBefore(messageDiv, typingIndicator);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').classList.add('active');
+        }
+        
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').classList.remove('active');
+        }
+        
+        function sendQuickMessage(text) {
+            document.getElementById('userMessage').value = text;
+            sendMessage();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAIHealth();
+        });
+    </script>
+</body>
+</html>

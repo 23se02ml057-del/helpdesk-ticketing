@@ -1,0 +1,180 @@
+<!-- Super Admin Sidebar -->
+<aside class="sidebar sa-sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='favicon.svg') }}" alt="Help Desk Logo">
+            <div class="logo-text">
+                <h4>{{ _('Help Desk') }}</h4>
+                <small>{{ _('Management System') }}</small>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="{{ _('Main Menu') }}">
+        <ul class="sidebar-menu">
+            <li class="menu-title">{{ _('Dashboard') }}</li>
+            <li>
+                <a href="{{ url_for('super_admin.super_admin_dashboard') }}"
+                    class="{% if request.endpoint == 'super_admin.super_admin_dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>{{ _('Dashboard') }}</span>
+                </a>
+            </li>
+
+            <li class="menu-title">{{ _('User Management') if _('User Management') != 'user_management' else 'User
+                Management' }}</li>
+            <li>
+                <a href="{{ url_for('users.get_users') }}"
+                    class="{% if request.endpoint=='users.get_users' %}active{% endif %}">
+                    <i class="fa-solid fa-users"></i>
+                    <span>{{ _('Users') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('roles.roles_page') }}"
+                    class="{% if request.endpoint=='roles.roles_page' %}active{% endif %}">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>{{ _('Roles') }}</span>
+                </a>
+            </li>
+
+            <li class="menu-title">{{ _('Organization') if _('Organization') != 'organization' else 'Organization' }}
+            </li>
+            <li>
+                <a href="{{ url_for('departments.departments_page') }}"
+                    class="{% if request.endpoint=='departments.departments_page' %}active{% endif %}">
+                    <i class="fa-solid fa-building"></i>
+                    <span>{{ _('Departments') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('customers.customers_page') }}"
+                    class="{% if request.endpoint=='customers.customers_page' %}active{% endif %}">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span>{{ _('Customers') }}</span>
+                </a>
+            </li>
+
+            <li class="menu-title">{{ _('Ticket Configuration') if _('Ticket Configuration') != 'ticket_configuration'
+                else 'Ticket Configuration' }}</li>
+            <li>
+                <a href="{{ url_for('categories.categories_page') }}"
+                    class="{% if request.endpoint=='categories.categories_page' %}active{% endif %}">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>{{ _('Categories') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('priorities.priorities_page') }}"
+                    class="{% if request.endpoint=='priorities.priorities_page' %}active{% endif %}">
+                    <i class="fa-solid fa-flag"></i>
+                    <span>{{ _('Priorities') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('ticket_status.ticket_status_page') }}"
+                    class="{% if request.endpoint=='ticket_status.ticket_status_page' %}active{% endif %}">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <span>{{ _('Ticket') }} {{ _('Status') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('skills.skills_page') }}"
+                    class="{% if request.endpoint=='skills.skills_page' %}active{% endif %}">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>{{ _('Skills') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('issue_types.issue_types_page') }}"
+                    class="{% if request.endpoint=='issue_types.issue_types_page' %}active{% endif %}">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>{{ _('Types Of Issues') }}</span>
+                </a>
+            </li>
+
+            <li class="menu-title">SLA &amp; {{ _('Escalation') }}</li>
+            <li>
+                <a href="{{ url_for('sla_rules.sla_rules') }}"
+                    class="{% if request.endpoint=='sla_rules.sla_rules' %}active{% endif %}">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>{{ _('Sla Rules') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('escalations.escalations') }}"
+                    class="{% if request.endpoint=='escalations.escalations' %}active{% endif %}">
+                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+                    <span>{{ _('Escalation') }}</span>
+                </a>
+            </li>
+
+            <li class="menu-title">{{ _('Operations') if _('Operations') != 'operations' else 'Operations' }}</li>
+            <li>
+                <a href="{{ url_for('tickets.tickets_page') }}"
+                    class="{% if request.endpoint=='tickets.tickets_page' %}active{% endif %}">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>{{ _('Tickets') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('ticket_assignment.ticket_assignment') }}"
+                    class="{% if request.endpoint=='ticket_assignment.ticket_assignment' %}active{% endif %}">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span>{{ _('Ticket Assignment') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('reports.reports') }}"
+                    class="{% if request.endpoint=='reports.reports' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>{{ _('Reports') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('super_admin.ml_model') }}"
+                    class="{% if request.endpoint in ['super_admin.ml_model', 'super_admin.ml_predictions'] %}active{% endif %}">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>{{ _('Ml Model') }}</span>
+                </a>
+            </li>
+
+            <li class="menu-title">{{ _('System') if _('System') != 'system' else 'System' }}</li>
+            <li>
+                <a href="{{ url_for('super_admin.profile') }}"
+                    class="{% if request.endpoint=='super_admin.profile' %}active{% endif %}">
+                    <i class="fa-solid fa-user"></i>
+                    <span>{{ _('Profile') if _('Profile') != 'profile' else 'My Profile' }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('notifications.notifications') }}"
+                    class="{% if request.endpoint=='notifications.notifications' %}active{% endif %}">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>{{ _('Notifications') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('settings.settings') }}"
+                    class="{% if request.endpoint=='settings.settings' %}active{% endif %}">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>{{ _('Settings') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('auth.change_password') }}"
+                    class="{% if request.endpoint=='auth.change_password' %}active{% endif %}">
+                    <i class="fa-solid fa-key"></i>
+                    <span>{{ _('Change Password') }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>{{ _('Logout') }}</span>
+        </a>
+    </div>
+</aside>

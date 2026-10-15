@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Report
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-white shadow-sm rounded">
+    <h4 class="fw-bold text-primary mb-0">
+      <i class="fa-solid fa-clock me-2"></i> {{ _('Sla Report') }}
+    </h4>
+    <a href="/reports" class="btn btn-secondary btn-sm">
+      <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-header bg-white fw-bold">
+      <i class="fa-solid fa-filter me-2"></i> Filters
+    </div>
+    <div class="card-body">
+      <form method="GET" class="row g-2">
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Status</label>
+          <select name="status" class="form-select">
+            <option value="">All</option>
+            <option value="Active" {% if filters.status=='Active' %}selected{% endif %}>Active</option>
+            <option value="Inactive" {% if filters.status=='Inactive' %}selected{% endif %}>Inactive</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Priority</label>
+          <select name="priority" class="form-select">
+            <option value="">All</option>
+            {% for p in priorities %}
+            <option value="{{ p.priority_name }}" {% if filters.priority==p.priority_name %}selected{% endif %}>{{
+              p.priority_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 d-flex gap-2 mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+          <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Card -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white fw-bold">
+      <i class="fa-solid fa-chart-column me-2"></i> SLA Rules Report
+    </div>
+    <div class="card-body p-2">
+
+      <!-- Table with Scrollbar -->
+      <div class="table-scroll">
+        <table class="table table-bordered table-hover table-sm mb-0">
+          <thead class="table-dark sticky-top">
+            <tr>
+              <th>ID</th>
+              <th>{{ _('Priority') }}</th>
+              <th>Response Time</th>
+              <th>Resolution Time</th>
+              <th>{{ _('Status') }}</th>
+              <th>Created {{ _('Date') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if report_data %}
+            {% for rule in report_data %}
+            <tr>
+              <td class="text-center">{{ loop.index }}</td>
+              <td>{{ rule.priority_name }}</td>
+              <td>{{ rule.response_time }} Hours</td>
+              <td>{{ rule.resolution_time }} Hours</td>
+              <td class="text-center">
+                {% if rule.status=="Active" %}
+                <span class="badge bg-success">Active</span>
+                {% else %}
+                <span class="badge bg-danger">Inactive</span>
+                {% endif %}
+              </td>
+              <td>{{ rule.created_at }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-danger">No SLA Rules Found</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

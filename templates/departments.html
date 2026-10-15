@@ -1,0 +1,620 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Departments') }}
+{% endblock %}
+
+{% block topbar_title %}
+{{ _('Departments') }}
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Departments-specific styles */
+    .departments-page .sa-card {
+        border-radius: 12px;
+    }
+    
+    /* Filter card styles */
+    .departments-page .filter-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin-bottom: 1rem;
+    }
+    
+    .departments-page .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .departments-page .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .departments-page .filter-group label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .departments-page .filter-group .form-select {
+        height: 40px;
+        font-size: 0.875rem;
+        border-radius: 8px;
+        border-color: #cbd5e1;
+        flex: 1;
+        min-width: 160px;
+    }
+    
+    @media (max-width: 768px) {
+        .departments-page .filter-group {
+            min-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sa-page departments-page">
+    <!-- Page Header -->
+    <div class="sa-page-header">
+        <div class="sa-page-header__text">
+            <h1 class="sa-page-title">
+                <i class="fa-solid fa-building text-primary me-2"></i>
+                {{ _('Departments') }}
+            </h1>
+            <p class="sa-page-subtitle">{{ _('Manage Departments Subtitle') }}</p>
+        </div>
+        <div class="sa-page-header__actions">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+                <i class="fa-solid fa-plus"></i>
+                {{ _('Add Department') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="sa-stat-grid">
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--blue">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Total Departments') }}</p>
+                <p class="sa-stat-card__value">{{ total_departments or 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--green">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Active Departments') }}</p>
+                <p class="sa-stat-card__value">{{ active_departments or 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--amber">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Inactive Departments') }}</p>
+                <p class="sa-stat-card__value">{{ inactive_departments or 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="filter-card">
+        <form method="GET" data-department-search>
+            <div class="filter-row">
+                <div class="filter-group sa-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="form-control" name="search" placeholder="{{ _('Search Departments') }}" value="{{ search }}" autocomplete="off">
+                    <button type="button" class="search-clear" title="{{ _('Clear Search') }}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-group">
+                    <label>{{ _('Status') }}</label>
+                    <select name="status" class="form-select" id="statusFilter">
+                        <option value="">{{ _('All Statuses') }}</option>
+                        <option value="Active" {% if status == 'Active' %}selected{% endif %}>{{ _('Active') }}</option>
+                        <option value="Inactive" {% if status == 'Inactive' %}selected{% endif %}>{{ _('Inactive') }}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Bar -->
+    <div class="sa-result-bar">
+        <h3>{{ _('Departments List') }}</h3>
+        <span class="result-count" id="departmentsCount">{{ _('Showing') }} <span id="visibleCount">{{ departments|length }}</span> {{ _('Of') }} {{ total_departments or 0 }} {{ _('Departments') }}</span>
+    </div>
+
+    <!-- Departments Table -->
+    <div class="sa-card sa-table-wrap" id="departmentsTableWrap" style="height: 500px; overflow-y: auto;">
+        <table class="sa-table">
+            <thead>
+                <tr>
+                    <th class="sa-col-index">#</th>
+                    <th class="sa-col-name">{{ _('Department Name') }}</th>
+                    <th>{{ _('Description') }}</th>
+                    <th style="width: 100px;">{{ _('Status') }}</th>
+                    <th style="width: 140px;">{{ _('Created Date') }}</th>
+                    <th class="sa-col-actions" style="width: 160px;">{{ _('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody id="departmentsTableBody">
+                {% for department in departments %}
+                <tr data-department-id="{{ department.department_id }}">
+                    <td class="sa-col-index">{{ loop.index }}</td>
+                    <td class="sa-col-name">
+                        <i class="fa-solid fa-building text-primary me-2"></i>
+                        {{ department.department_name }}
+                    </td>
+                    <td class="sa-cell-truncate">{{ department.description or '-' }}</td>
+                    <td>
+                        {% if department.status == 'Active' %}
+                            <span class="sa-status-badge sa-status-badge--active toggle" data-department-id="{{ department.department_id }}" data-status="Active">
+                                <i class="fa-solid fa-circle"></i> {{ _('Active') }}
+                            </span>
+                        {% else %}
+                            <span class="sa-status-badge sa-status-badge--inactive toggle" data-department-id="{{ department.department_id }}" data-status="Inactive">
+                                <i class="fa-solid fa-circle"></i> {{ _('Inactive') }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="sa-col-date">
+                        {% if department.created_at %}
+                            {{ department.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td class="sa-col-actions">
+                        <div class="sa-table-actions">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editDepartmentModal"
+                                    data-id="{{ department.department_id }}"
+                                    data-name="{{ department.department_name }}"
+                                    data-description="{{ department.description or '' }}"
+                                    data-status="{{ department.status }}">
+                                <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                            </button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal"
+                                    data-id="{{ department.department_id }}"
+                                    data-name="{{ department.department_name }}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="sa-empty">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p class="sa-empty__title">{{ _('No Departments Found') }}</p>
+                        <p class="sa-empty__subtitle">{{ _('Try Changing Search') }}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination %}
+    <nav class="sa-pagination" aria-label="Departments pagination">
+        <ul class="pagination mb-0">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link pagination-prev" data-page="{{ pagination.prev_num if pagination.has_prev else pagination.page }}" href="{{ url_for('departments.departments_page', page=(pagination.prev_num if pagination.has_prev else pagination.page), search=search, status=status) }}" aria-label="{{ _('Previous') }}">
+                    <i class="fa fa-chevron-left me-1"></i>{{ _('Previous') }}
+                </a>
+            </li>
+            <li class="page-item">
+                <span class="page-link pagination-page-indicator" data-page="{{ pagination.page }}" data-total-pages="{{ pagination.total_pages }}">Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+            </li>
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link pagination-next" data-page="{{ pagination.next_num if pagination.has_next else pagination.page }}" href="{{ url_for('departments.departments_page', page=(pagination.next_num if pagination.has_next else pagination.page), search=search, status=status) }}" aria-label="{{ _('Next') }}">
+                    {{ _('Next') }}<i class="fa fa-chevron-right ms-1"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Add Department Modal -->
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title" id="addDepartmentModalLabel"><i class="fa-solid fa-plus me-2"></i>{{ _('Add Department') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('departments.save_department') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="sa-form-group">
+                        <label>{{ _('Department Name') }}</label>
+                        <input type="text" name="department_name" class="form-control" required placeholder="{{ _('Enter Department Name') }}">
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="{{ _('Enter Description') }}"></textarea>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Status') }}</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-save me-1"></i> {{ _('Save') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Department Modal -->
+<div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="editDepartmentModalLabel"><i class="fa-solid fa-pen me-2"></i>{{ _('Edit Department') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editDepartmentForm" method="POST" action="{{ url_for('departments.update_department', id=0) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="sa-form-group">
+                        <label>{{ _('Department Name') }}</label>
+                        <input type="text" name="department_name" id="editDepartmentName" class="form-control" required>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3" id="editDepartmentDescription"></textarea>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Status') }}</label>
+                        <select name="status" class="form-select" id="editDepartmentStatus" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa-solid fa-save me-1"></i> {{ _('Update') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Department Modal -->
+<div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="deleteDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="deleteDepartmentModalLabel"><i class="fa-solid fa-trash me-2"></i>{{ _('Delete Department') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ _('Delete Confirmation') }} <strong id="deleteDepartmentName"></strong>?</p>
+                <p class="text-muted">{{ _('This Action Cannot Be Undone') }}</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteDepartmentForm" method="POST" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash me-1"></i> {{ _('Delete') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+(function () {
+    const DEBOUNCE_MS = 300;
+    const API_URL = '/api/departments/search';
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&')
+            .replace(/</g, '<')
+            .replace(/>/g, '>')
+            .replace(/"/g, '"');
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr || dateStr === '-' || dateStr === 'N/A') return 'N/A';
+        try {
+            var d = new Date(dateStr);
+            if (isNaN(d.getTime())) return escapeHtml(dateStr);
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var day = d.getDate();
+            var month = months[d.getMonth()];
+            var year = d.getFullYear();
+            var hours = d.getHours();
+            var minutes = d.getMinutes();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            hours = String(hours).padStart(2, '0');
+            minutes = String(minutes).padStart(2, '0');
+            return day + ' ' + month + ' ' + year + ', ' + hours + ':' + minutes + ' ' + ampm;
+        } catch (e) {
+            return escapeHtml(dateStr);
+        }
+    }
+
+    function renderDepartments(rows) {
+        const tbody = document.getElementById('departmentsTableBody');
+        const countEl = document.getElementById('visibleCount');
+        
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="sa-empty"><i class="fa-regular fa-folder-open"></i><p class="sa-empty__title">No departments found</p><p class="sa-empty__subtitle">Try changing your search or filter.</p></td></tr>';
+            if (countEl) countEl.textContent = '0';
+            return;
+        }
+
+        if (countEl) countEl.textContent = rows.length;
+
+        tbody.innerHTML = rows.map(function(d, index) {
+            var statusBadge = d.status === 'Active' 
+                ? '<span class="sa-status-badge sa-status-badge--active toggle" data-department-id="' + d.department_id + '" data-status="Active"><i class="fa-solid fa-circle"></i> Active</span>'
+                : '<span class="sa-status-badge sa-status-badge--inactive toggle" data-department-id="' + d.department_id + '" data-status="Inactive"><i class="fa-solid fa-circle"></i> Inactive</span>';
+            
+            return '<tr data-department-id="' + d.department_id + '">' +
+                '<td class="sa-col-index">' + (index + 1) + '</td>' +
+                '<td class="sa-col-name"><i class="fa-solid fa-building text-primary me-2"></i> ' + escapeHtml(d.department_name) + '</td>' +
+                '<td class="sa-cell-truncate">' + escapeHtml(d.description || '-') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td class="sa-col-date">' + formatDate(d.created_at) + '</td>' +
+                '<td class="sa-col-actions">' +
+                    '<div class="sa-table-actions">' +
+                        '<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" ' +
+                            'data-id="' + d.department_id + '" ' +
+                            'data-name="' + escapeHtml(d.department_name) + '" ' +
+                            'data-description="' + escapeHtml(d.description || '') + '" ' +
+                            'data-status="' + escapeHtml(d.status) + '">' +
+                            '<i class="fa-solid fa-pen"></i> Edit</button>' +
+                        '<button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" ' +
+                            'data-id="' + d.department_id + '" ' +
+                            'data-name="' + escapeHtml(d.department_name) + '">' +
+                            '<i class="fa-solid fa-trash"></i></button>' +
+                    '</div>' +
+                '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    function updatePagination(data) {
+        const pageIndicator = document.querySelector('.pagination-page-indicator');
+        if (pageIndicator) {
+            pageIndicator.textContent = 'Page ' + data.page + ' of ' + data.total_pages;
+            pageIndicator.dataset.page = data.page;
+            pageIndicator.dataset.totalPages = data.total_pages;
+        }
+        const prevBtn = document.querySelector('.pagination-prev');
+        const nextBtn = document.querySelector('.pagination-next');
+        if (prevBtn) {
+            prevBtn.closest('.page-item').classList.toggle('disabled', data.page <= 1);
+            prevBtn.dataset.page = data.page > 1 ? data.page - 1 : data.page;
+        }
+        if (nextBtn) {
+            nextBtn.closest('.page-item').classList.toggle('disabled', data.page >= data.total_pages);
+            nextBtn.dataset.page = data.page < data.total_pages ? data.page + 1 : data.page;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form[data-department-search]');
+        if (!form) return;
+
+        const tableWrap = document.getElementById('departmentsTableWrap');
+        const tbody = document.getElementById('departmentsTableBody');
+        if (!tbody) return;
+
+        const input = form.querySelector('input[name="search"]');
+        const statusSelect = document.getElementById('statusFilter');
+        const clearBtn = form.querySelector('.search-clear');
+        let timer;
+        let abortController = null;
+
+        function doSearch(page) {
+            page = page || 1;
+            var q = input ? input.value.trim() : '';
+            var status = statusSelect ? statusSelect.value : '';
+            var url = API_URL;
+            var params = [];
+            if (q) params.push('q=' + encodeURIComponent(q));
+            if (status) params.push('status=' + encodeURIComponent(status));
+            params.push('page=' + page);
+            if (params.length) url += '?' + params.join('&');
+
+            if (abortController) {
+                abortController.abort();
+            }
+            abortController = new AbortController();
+
+            // Show loading
+            if (tableWrap) {
+                tableWrap.classList.add('sa-table-loading');
+            }
+
+            fetch(url, { signal: abortController.signal })
+                .then(function (res) {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(function (data) {
+                    renderDepartments(data.rows || []);
+                    updatePagination(data);
+                })
+                .catch(function (err) {
+                    if (err.name === 'AbortError') return;
+                    if (tbody) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Not Results Found</td></tr>';
+                    }
+                })
+                .finally(function () {
+                    if (tableWrap) {
+                        tableWrap.classList.remove('sa-table-loading');
+                    }
+                });
+        }
+
+        if (input) {
+            input.addEventListener('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(function() { doSearch(1); }, DEBOUNCE_MS);
+                if (clearBtn) {
+                    clearBtn.classList.toggle('visible', this.value.length > 0);
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                input.value = '';
+                clearTimeout(timer);
+                doSearch(1);
+                this.classList.remove('visible');
+                input.focus();
+            });
+        }
+
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function () {
+                doSearch(1);
+            });
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearTimeout(timer);
+            doSearch(1);
+        });
+
+        // Pagination
+        const prevBtn = document.querySelector('.pagination-prev');
+        const nextBtn = document.querySelector('.pagination-next');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.closest('.page-item')?.classList.contains('disabled')) return;
+                const pageIndicator = document.querySelector('.pagination-page-indicator');
+                const currentPage = pageIndicator ? parseInt(pageIndicator.dataset.page) || 1 : 1;
+                if (currentPage > 1) doSearch(currentPage - 1);
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.closest('.page-item')?.classList.contains('disabled')) return;
+                const pageIndicator = document.querySelector('.pagination-page-indicator');
+                const currentPage = pageIndicator ? parseInt(pageIndicator.dataset.page) || 1 : 1;
+                const totalPages = pageIndicator ? parseInt(pageIndicator.dataset.totalPages) || 1 : 1;
+                if (currentPage < totalPages) doSearch(currentPage + 1);
+            });
+        }
+
+        // Bind modal buttons
+        function bindModalButtons() {
+            const editModal = document.getElementById('editDepartmentModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function(event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('editDepartmentName').value = button.getAttribute('data-name') || '';
+                    document.getElementById('editDepartmentDescription').value = button.getAttribute('data-description') || '';
+                    document.getElementById('editDepartmentStatus').value = button.getAttribute('data-status') || 'Active';
+                    document.getElementById('editDepartmentForm').action = '/update-department/' + button.getAttribute('data-id');
+                });
+            }
+
+            const deleteModal = document.getElementById('deleteDepartmentModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function(event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('deleteDepartmentName').textContent = button.getAttribute('data-name') || '';
+                    document.getElementById('deleteDepartmentForm').action = '/delete-department/' + button.getAttribute('data-id');
+                });
+            }
+        }
+
+        bindModalButtons();
+        
+        // Status toggle
+        document.addEventListener('click', function(e) {
+            var badge = e.target.closest('.sa-status-badge.toggle');
+            if (!badge) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var departmentId = badge.getAttribute('data-department-id');
+            var currentStatus = badge.getAttribute('data-status');
+            var newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            fetch('/api/departments/toggle-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ department_id: departmentId, status: newStatus })
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error('Failed to update status');
+                return res.json();
+            })
+            .then(function(data) {
+                if (data.status === 'Active') {
+                    badge.className = 'sa-status-badge sa-status-badge--active toggle';
+                    badge.setAttribute('data-status', 'Active');
+                    badge.innerHTML = '<i class="fa-solid fa-circle"></i> Active';
+                } else {
+                    badge.className = 'sa-status-badge sa-status-badge--inactive toggle';
+                    badge.setAttribute('data-status', 'Inactive');
+                    badge.innerHTML = '<i class="fa-solid fa-circle"></i> Inactive';
+                }
+            })
+            .catch(function() {
+                alert('Failed to update status. Please try again.');
+            });
+        });
+    });
+})();
+</script>
+{% endblock %}

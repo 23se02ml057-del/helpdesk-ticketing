@@ -1,0 +1,302 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Category Management') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+
+
+
+    <!-- Page Header -->
+    <div class="row bg-light rounded align-items-center justify-content-between mx-0 p-4 mb-4 shadow-sm">
+        <div class="col-auto">
+            <h3 class="mb-0 fw-bold text-dark">
+                <i class="fa-solid fa-folder-open text-primary me-2"></i>{{ _('Category Management') }}
+            </h3>
+            <p class="text-muted mb-0 mt-1">{{ _('Manage Categories Subtitle') }}</p>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="fa-solid fa-plus me-2"></i>{{ _('Add Category') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Card -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label text-muted small fw-bold text-uppercase">{{ _('Search Categories')
+                        }}</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i
+                                class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0" placeholder="Search categories..."
+                            id="category-search-input" value="{{ search or '' }}" autocomplete="off">
+                        <button class="btn btn-outline-secondary d-none" id="category-search-clear" type="button"><i
+                                class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <h5 class="fw-semibold mb-0 text-dark">{{ _('Categories List') }}</h5>
+        <span
+            class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill"
+            id="category-count">
+            {{ _('Showing') }} {{ categories|length }} {{ _('Categories') }}
+        </span>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0" id="categories-table">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4 py-3" style="width: 60px;">#</th>
+                            <th class="py-3">{{ _('Category Name') }}</th>
+                            <th class="py-3">{{ _('Created Date') }}</th>
+                            <th class="text-center pe-4 py-3" style="width: 150px;">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categories-tbody" class="border-top-0">
+                        {% for category in categories %}
+                        <tr data-category-name="{{ category[0] }}"
+                            data-created-at="{{ category[1].isoformat() if category[1] else '' }}">
+                            <td class="ps-4 text-muted">{{ loop.index }}</td>
+                            <td class="fw-medium text-dark"><i
+                                    class="fa-solid fa-folder text-primary me-2 opacity-75"></i>{{ category[0] }}</td>
+                            <td class="text-muted">
+                                {% if category[1] %}
+                                {{ category[1].strftime('%d %b %Y, %I:%M %p') }}
+                                {% else %}
+                                <span class="text-black-50">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#editCategoryModal" data-category-name="{{ category[0] }}"
+                                        onclick="prepareEditModal(this)">
+                                        <i class="fa-solid fa-pen lh-1"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#deleteCategoryModal" data-category-name="{{ category[0] }}"
+                                        onclick="prepareDeleteModal(this)">
+                                        <i class="fa-solid fa-trash lh-1"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr class="no-category-row">
+                            <td colspan="4" class="text-center py-5">
+                                <div class="text-muted mb-3"><i class="fa-regular fa-folder-open fa-3x opacity-50"></i>
+                                </div>
+                                <h5 class="text-dark">{{ _('No Categories Found') }}</h5>
+                                <p class="text-muted small">{{ _('Try Changing Search') }}</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {# Hidden row for dynamic JS search filter hiding #}
+                        <tr class="no-category-row" style="display: none;">
+                            <td colspan="4" class="text-center py-5">
+                                <div class="text-muted mb-3"><i class="fa-regular fa-folder-open fa-3x opacity-50"></i>
+                                </div>
+                                <h5 class="text-dark">{{ _('No Categories Found') }}</h5>
+                                <p class="text-muted small">{{ _('Try Changing Search') }}</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-pen me-2"></i>{{ _('Edit Category') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/update-category" method="POST">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="old_category" id="edit-old-category">
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Category') }} {{ _('Name') }} <span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="category_name" id="edit-category-name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>{{ _('Update')
+                        }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Category Modal -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-trash me-2"></i>Confirm {{ _('Delete') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-3"></i>
+                <h5 class="text-dark">{{ _('Delete Confirmation') }}</h5>
+                <p class="mb-2"><strong id="delete-category-text-name" class="text-primary fs-5"></strong></p>
+                <p class="text-muted mb-0 small">{{ _('This Action Cannot Be Undone') }}</p>
+            </div>
+            <div class="modal-footer border-0 bg-light justify-content-center">
+                <form id="deleteCategoryForm" method="POST" action="/delete-category">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="category_name" id="delete-category-name">
+                    <button type="button" class="btn btn-secondary px-4 me-2" data-bs-dismiss="modal">{{ _('Cancel')
+                        }}</button>
+                    <button type="submit" class="btn btn-danger px-4" id="submitDeleteFormBtn">
+                        <i class="fa-solid fa-trash me-1"></i> {{ _('Delete') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-plus me-2"></i>{{ _('Add Category') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="/add-category">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Category') }} {{ _('Name') }} <span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="category_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-check me-1"></i>{{ _('Save')
+                        }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    // Direct robust binding for modal action triggers
+    function prepareEditModal(btn) {
+        var name = btn.getAttribute('data-category-name');
+        document.getElementById('edit-old-category').value = name;
+        document.getElementById('edit-category-name').value = name;
+    }
+
+    function prepareDeleteModal(btn) {
+        var name = btn.getAttribute('data-category-name');
+        document.getElementById('delete-category-name').value = name;
+        document.getElementById('delete-category-text-name').textContent = name;
+    }
+
+    // Protection for form actions natively failing
+    document.getElementById('deleteCategoryForm').addEventListener('submit', function () {
+        document.getElementById('submitDeleteFormBtn').disabled = true;
+    });
+
+    (function () {
+        const DEBOUNCE_MS = 300;
+
+        function applyCategoryFilters() {
+            var searchInput = document.getElementById('category-search-input');
+            var tbody = document.getElementById('categories-tbody');
+            var countBadge = document.getElementById('category-count');
+            if (!tbody) return;
+
+            var searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            var rows = tbody.querySelectorAll('tr[data-category-name]');
+            var visibleCount = 0;
+
+            rows.forEach(function (row) {
+                var categoryName = (row.getAttribute('data-category-name') || '').toLowerCase();
+                var matchesSearch = !searchTerm || categoryName.indexOf(searchTerm) !== -1;
+
+                if (matchesSearch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (countBadge) {
+                countBadge.textContent = 'Showing ' + visibleCount + ' categor' + (visibleCount === 1 ? 'y' : 'ies');
+            }
+
+            var noCategoryRows = tbody.querySelectorAll('.no-category-row');
+            if (noCategoryRows.length > 1) {
+                // The second one is our dynamic empty state
+                noCategoryRows[1].style.display = visibleCount === 0 ? '' : 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var searchInput = document.getElementById('category-search-input');
+            var clearBtn = document.getElementById('category-search-clear');
+            var timer;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(applyCategoryFilters, DEBOUNCE_MS);
+
+                    if (clearBtn) {
+                        if (this.value.length > 0) {
+                            clearBtn.classList.remove('d-none');
+                        } else {
+                            clearBtn.classList.add('d-none');
+                        }
+                    }
+                });
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function () {
+                    if (searchInput) searchInput.value = '';
+                    clearTimeout(timer);
+                    applyCategoryFilters();
+                    this.classList.add('d-none');
+                    if (searchInput) searchInput.focus();
+                });
+            }
+
+            applyCategoryFilters();
+        });
+    })();
+</script>
+{% endblock %}

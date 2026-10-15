@@ -1,0 +1,668 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Skills') }}
+{% endblock %}
+
+{% block topbar_title %}
+{{ _('Skills') }}
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Skills-specific styles */
+    .skills-page .sa-card {
+        border-radius: 12px;
+    }
+    
+    /* Filter card styles */
+    .skills-page .filter-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin-bottom: 1rem;
+    }
+    
+    .skills-page .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .skills-page .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .skills-page .filter-group label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .skills-page .filter-group .form-select {
+        height: 40px;
+        font-size: 0.875rem;
+        border-radius: 8px;
+        border-color: #cbd5e1;
+        flex: 1;
+        min-width: 160px;
+    }
+    
+    @media (max-width: 768px) {
+        .skills-page .filter-group {
+            min-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sa-page skills-page">
+    <!-- Page Header -->
+    <div class="sa-page-header">
+        <div class="sa-page-header__text">
+            <h1 class="sa-page-title">
+                <i class="fa-solid fa-brain text-primary me-2"></i>
+                {{ _('Skills') }}
+            </h1>
+            <p class="sa-page-subtitle">{{ _('Manage Skills Subtitle') }}</p>
+        </div>
+        <div class="sa-page-header__actions">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSkillModal">
+                <i class="fa-solid fa-plus"></i>
+                {{ _('Add Skill') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="sa-stat-grid">
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--blue">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Total Skills') }}</p>
+                <p class="sa-stat-card__value">{{ total_skills or 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--green">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Active Skills') }}</p>
+                <p class="sa-stat-card__value">{{ active_skills or 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--amber">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Categories') }}</p>
+                <p class="sa-stat-card__value">{{ categories|length if categories else 0 }}</p>
+            </div>
+        </div>
+        <div class="sa-stat-card">
+            <div class="sa-stat-card__icon sa-stat-card__icon--slate">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div>
+                <p class="sa-stat-card__label">{{ _('Departments') }}</p>
+                <p class="sa-stat-card__value">{{ departments|length if departments else 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="filter-card">
+        <form method="GET" data-skill-search>
+            <div class="filter-row">
+                <div class="filter-group sa-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="form-control" name="search" placeholder="{{ _('Search Skills') }}" value="{{ search }}" autocomplete="off">
+                    <button type="button" class="search-clear" title="{{ _('Clear Search') }}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-group">
+                    <label>{{ _('Department') }}</label>
+                    <select name="department_id" class="form-select" id="departmentFilter">
+                        <option value="">{{ _('All Departments') }}</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.department_id }}" {% if department_filter == dept.department_id|string %}selected{% endif %}>{{ dept.department_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>{{ _('Category') }}</label>
+                    <select name="category_name" class="form-select" id="categoryFilter">
+                        <option value="">{{ _('All Categories') }}</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.category_name }}" {% if category_filter == cat.category_name %}selected{% endif %}>{{ cat.category_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Bar -->
+    <div class="sa-result-bar">
+        <h3>{{ _('Skills List') }}</h3>
+        <span class="result-count" id="skillsCount">{{ _('Showing') }} <span id="visibleCount">{{ skills|length }}</span> {{ _('Of') }} {{ total_skills or 0 }} {{ _('Skills') }}</span>
+    </div>
+
+    <!-- Skills Table -->
+    <div class="sa-card sa-table-wrap" style="height: 500px; overflow-y: auto;">
+        <table class="sa-table" >
+            <thead>
+                <tr>
+                    <th class="sa-col-index">#</th>
+                    <th class="sa-col-name">{{ _('Skill Name') }}</th>
+                    <th>{{ _('Department') }}</th>
+                    <th>{{ _('Category') }}</th>
+                    <th style="width: 100px;">{{ _('Status') }}</th>
+                    <th class="sa-col-actions" style="width: 160px;">{{ _('Actions') }}</th>
+                </tr>
+            </thead>
+            <tbody id="skillsTableBody">
+                {% for skill in skills %}
+                <tr data-skill-id="{{ skill.skill_id }}">
+                    <td class="sa-col-index">{{ loop.index }}</td>
+                    <td class="sa-col-name">
+                        <i class="fa-solid fa-brain text-primary me-2"></i>
+                        {{ skill.skill_name }}
+                    </td>
+                    <td>{{ skill.department_name or '-' }}</td>
+                    <td>
+                        {% if skill.category_display %}
+                            <span class="badge bg-info">{{ skill.category_display }}</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if skill.status == 'Active' %}
+                            <span class="sa-status-badge sa-status-badge--active toggle" data-skill-id="{{ skill.skill_id }}" data-status="Active">
+                                <i class="fa-solid fa-circle"></i> {{ _('Active') }}
+                            </span>
+                        {% else %}
+                            <span class="sa-status-badge sa-status-badge--inactive toggle" data-skill-id="{{ skill.skill_id }}" data-status="Inactive">
+                                <i class="fa-solid fa-circle"></i> {{ _('Inactive') }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="sa-col-actions">
+                        <div class="sa-table-actions">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSkillModal"
+                                    data-id="{{ skill.skill_id }}"
+                                    data-name="{{ skill.skill_name }}"
+                                    data-category="{{ skill.category }}"
+                                    data-status="{{ skill.status }}"
+                                    data-department="{{ skill.department_name or '' }}">
+                                <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                            </button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSkillModal"
+                                    data-id="{{ skill.skill_id }}"
+                                    data-name="{{ skill.skill_name }}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="sa-empty">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p class="sa-empty__title">{{ _('No Skills Found') }}</p>
+                        <p class="sa-empty__subtitle">{{ _('Try Changing Search') }}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination (if needed for server-side) -->
+    {% if pagination %}
+    <nav class="sa-pagination" aria-label="Skills pagination">
+        <ul class="pagination mb-0">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link" href="?page={{ pagination.prev_num }}&search={{ search|urlencode }}&department_id={{ department_filter|urlencode }}&category_name={{ category_filter|urlencode }}"><i class="fa fa-chevron-left"></i></a>
+            </li>
+            <li class="page-item active"><span class="page-link">Page {{ pagination.page }} of {{ pagination.total_pages }}</span></li>
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link" href="?page={{ pagination.next_num }}&search={{ search|urlencode }}&department_id={{ department_filter|urlencode }}&category_name={{ category_filter|urlencode }}"><i class="fa fa-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title" id="addSkillModalLabel"><i class="fa-solid fa-plus me-2"></i>{{ _('Add Skill') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('skills.save_skill') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="sa-form-group">
+                        <label>{{ _('Skill Name') }}</label>
+                        <input type="text" name="skill_name" class="form-control" required placeholder="{{ _('Enter Skill Name') }}">
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Department') }}</label>
+                        <select name="department_id" class="form-select" id="addDepartmentId" required>
+                            <option value="">{{ _('Select Department') }}</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Category') }}</label>
+                        <select name="category_name" class="form-select" id="addCategoryName" required>
+                            <option value="">{{ _('Select Category') }}</option>
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Status') }}</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-save me-1"></i> {{ _('Save') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Skill Modal -->
+<div class="modal fade" id="editSkillModal" tabindex="-1" aria-labelledby="editSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="editSkillModalLabel"><i class="fa-solid fa-pen me-2"></i>{{ _('Edit Skill') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editSkillForm" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="sa-form-group">
+                        <label>{{ _('Skill Name') }}</label>
+                        <input type="text" name="skill_name" id="editSkillName" class="form-control" required>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Department') }}</label>
+                        <select name="department_id" class="form-select" id="editDepartmentId" required>
+                            <option value="">{{ _('Select Department') }}</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Category') }}</label>
+                        <select name="category_name" class="form-select" id="editCategoryName" required>
+                            <option value="">{{ _('Select Category') }}</option>
+                        </select>
+                    </div>
+                    <div class="sa-form-group">
+                        <label>{{ _('Status') }}</label>
+                        <select name="status" class="form-select" id="editStatus" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa-solid fa-save me-1"></i> {{ _('Update') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Skill Modal -->
+<div class="modal fade" id="deleteSkillModal" tabindex="-1" aria-labelledby="deleteSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="deleteSkillModalLabel"><i class="fa-solid fa-trash me-2"></i>{{ _('Delete Skill') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ _('Delete Confirmation') }} <strong id="deleteSkillName"></strong>?</p>
+                <p class="text-muted">{{ _('This Action Cannot Be Undone') }}</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteSkillForm" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa-solid fa-trash me-1"></i> {{ _('Delete') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+(function () {
+    const DEBOUNCE_MS = 300;
+    const API_URL = '/api/skills/search';
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&')
+            .replace(/</g, '<')
+            .replace(/>/g, '>')
+            .replace(/"/g, '"');
+    }
+
+    function renderSkills(rows) {
+        const tbody = document.getElementById('skillsTableBody');
+        const countEl = document.getElementById('visibleCount');
+        
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="sa-empty"><i class="fa-regular fa-folder-open"></i><p class="sa-empty__title">No skills found</p><p class="sa-empty__subtitle">Try changing your search or filter.</p></td></tr>';
+            if (countEl) countEl.textContent = '0';
+            return;
+        }
+
+        if (countEl) countEl.textContent = rows.length;
+
+        tbody.innerHTML = rows.map(function(s, index) {
+            var statusBadge = s.status === 'Active' 
+                ? '<span class="sa-status-badge sa-status-badge--active toggle" data-skill-id="' + s.skill_id + '" data-status="Active"><i class="fa-solid fa-circle"></i> Active</span>'
+                : '<span class="sa-status-badge sa-status-badge--inactive toggle" data-skill-id="' + s.skill_id + '" data-status="Inactive"><i class="fa-solid fa-circle"></i> Inactive</span>';
+            
+            return '<tr data-skill-id="' + s.skill_id + '">' +
+                '<td class="sa-col-index">' + (index + 1) + '</td>' +
+                '<td class="sa-col-name"><i class="fa-solid fa-brain text-primary me-2"></i> ' + escapeHtml(s.skill_name) + '</td>' +
+                '<td>' + escapeHtml(s.department_name || '-') + '</td>' +
+                '<td>' + (s.category_display && s.category_display !== '-' ? '<span class="badge bg-info">' + escapeHtml(s.category_display) + '</span>' : '<span class="text-muted">-</span>') + '</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td class="sa-col-actions">' +
+                    '<div class="sa-table-actions">' +
+                        '<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSkillModal" ' +
+                            'data-id="' + s.skill_id + '" ' +
+                            'data-name="' + escapeHtml(s.skill_name) + '" ' +
+                            'data-category="' + escapeHtml(s.category || '') + '" ' +
+                            'data-status="' + escapeHtml(s.status) + '" ' +
+                            'data-department="' + escapeHtml(s.department_name || '') + '">' +
+                            '<i class="fa-solid fa-pen"></i> Edit</button>' +
+                        '<button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSkillModal" ' +
+                            'data-id="' + s.skill_id + '" ' +
+                            'data-name="' + escapeHtml(s.skill_name) + '">' +
+                            '<i class="fa-solid fa-trash"></i></button>' +
+                    '</div>' +
+                '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    function updateCategoryOptions(departmentId, selectId) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+        
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">' + '{{ _('Select Category') }}' + '</option>';
+        select.disabled = !departmentId;
+        
+        if (!departmentId) return;
+        
+        fetch('/api/categories?department_id=' + encodeURIComponent(departmentId))
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                data.forEach(function(cat) {
+                    const opt = document.createElement('option');
+                    opt.value = cat.category_name;
+                    opt.textContent = cat.category_name;
+                    select.appendChild(opt);
+                });
+                
+                // Restore previous selection if it exists
+                if (currentValue) {
+                    select.value = currentValue;
+                }
+            })
+            .catch(function() {
+                select.innerHTML = '<option value="">Error loading categories</option>';
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form[data-skill-search]');
+        if (!form) return;
+
+        const searchInput = form.querySelector('input[name="search"]');
+        const departmentSelect = document.getElementById('departmentFilter');
+        const categorySelect = document.getElementById('categoryFilter');
+        const clearBtn = form.querySelector('.search-clear');
+        let timer;
+        let abortController = null;
+
+        // Category dependent on department - Add modal
+        const addDeptSelect = document.getElementById('addDepartmentId');
+        if (addDeptSelect) {
+            addDeptSelect.addEventListener('change', function() {
+                updateCategoryOptions(this.value, 'addCategoryName');
+            });
+        }
+
+        // Category dependent on department - Edit modal
+        const editDeptSelect = document.getElementById('editDepartmentId');
+        if (editDeptSelect) {
+            editDeptSelect.addEventListener('change', function() {
+                updateCategoryOptions(this.value, 'editCategoryName');
+            });
+        }
+
+        // Search with debounce
+        function doSearch() {
+            var q = searchInput ? searchInput.value.trim() : '';
+            var dept = departmentSelect ? departmentSelect.value : '';
+            var cat = categorySelect ? categorySelect.value : '';
+            var url = API_URL;
+            var params = [];
+            if (q) params.push('q=' + encodeURIComponent(q));
+            if (dept) params.push('department_id=' + encodeURIComponent(dept));
+            if (cat) params.push('category_name=' + encodeURIComponent(cat));
+            if (params.length) url += '?' + params.join('&');
+
+            if (abortController) {
+                abortController.abort();
+            }
+            abortController = new AbortController();
+
+            // Show loading
+            const tbody = document.getElementById('skillsTableBody');
+            if (tbody) {
+                tbody.classList.add('sa-table-loading');
+            }
+
+            fetch(url, { signal: abortController.signal })
+                .then(function (res) {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(function (data) {
+                    renderSkills(data.rows || []);
+                })
+                .catch(function (err) {
+                    if (err.name === 'AbortError') return;
+                    const tbody = document.getElementById('skillsTableBody');
+                    if (tbody) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Error loading results</td></tr>';
+                    }
+                })
+                .finally(function () {
+                    const tbody = document.getElementById('skillsTableBody');
+                    if (tbody) {
+                        tbody.classList.remove('sa-table-loading');
+                    }
+                });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(doSearch, DEBOUNCE_MS);
+                if (clearBtn) {
+                    clearBtn.classList.toggle('visible', this.value.length > 0);
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                clearTimeout(timer);
+                doSearch();
+                this.classList.remove('visible');
+                searchInput.focus();
+            });
+        }
+
+        if (departmentSelect) {
+            departmentSelect.addEventListener('change', function () {
+                clearTimeout(timer);
+                timer = setTimeout(doSearch, DEBOUNCE_MS);
+            });
+        }
+
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function () {
+                clearTimeout(timer);
+                timer = setTimeout(doSearch, DEBOUNCE_MS);
+            });
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearTimeout(timer);
+            doSearch();
+        });
+
+        // Bind modal buttons
+        function bindModalButtons() {
+            // Edit modal
+            const editModal = document.getElementById('editSkillModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    document.getElementById('editSkillName').value = button.getAttribute('data-name') || '';
+                    document.getElementById('editDepartmentId').value = button.getAttribute('data-department') || '';
+                    document.getElementById('editStatus').value = button.getAttribute('data-status') || 'Active';
+                    
+                    // Update categories based on department
+                    const deptVal = button.getAttribute('data-department');
+                    if (deptVal) {
+                        // Find department_id from name
+                        const deptOption = Array.from(document.getElementById('editDepartmentId').options).find(o => o.text === deptVal);
+                        if (deptOption) {
+                            updateCategoryOptions(deptOption.value, 'editCategoryName');
+                            // Set category after categories load
+                            setTimeout(() => {
+                                document.getElementById('editCategoryName').value = button.getAttribute('data-category') || '';
+                            }, 100);
+                        }
+                    } else {
+                        document.getElementById('editCategoryName').value = button.getAttribute('data-category') || '';
+                    }
+                    
+                    document.getElementById('editSkillForm').action = '/update-skill/' + button.getAttribute('data-id');
+                });
+            }
+
+            // Delete modal
+            const deleteModal = document.getElementById('deleteSkillModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    document.getElementById('deleteSkillName').textContent = button.getAttribute('data-name') || '';
+                    document.getElementById('deleteSkillForm').action = '/delete-skill/' + button.getAttribute('data-id');
+                });
+            }
+        }
+
+        bindModalButtons();
+        
+        // Status toggle
+        document.addEventListener('click', function(e) {
+            const badge = e.target.closest('.sa-status-badge.toggle');
+            if (!badge) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const skillId = badge.getAttribute('data-skill-id');
+            const currentStatus = badge.getAttribute('data-status');
+            const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            fetch('/skills/api/toggle-status/' + skillId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error('Failed to update status');
+                return res.json();
+            })
+            .then(function(data) {
+                // Update badge
+                if (data.status === 'Active') {
+                    badge.className = 'sa-status-badge sa-status-badge--active toggle';
+                    badge.setAttribute('data-status', 'Active');
+                    badge.innerHTML = '<i class="fa-solid fa-circle"></i> Active';
+                } else {
+                    badge.className = 'sa-status-badge sa-status-badge--inactive toggle';
+                    badge.setAttribute('data-status', 'Inactive');
+                    badge.innerHTML = '<i class="fa-solid fa-circle"></i> Inactive';
+                }
+            })
+            .catch(function() {
+                alert('Failed to update status. Please try again.');
+            });
+        });
+    });
+})();
+</script>
+{% endblock %}

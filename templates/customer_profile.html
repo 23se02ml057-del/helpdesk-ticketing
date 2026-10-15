@@ -1,0 +1,88 @@
+{% extends "layout_customer.html" %}
+
+{% block title %}
+{{ _('Profile') }}
+{% endblock %}
+
+{% block page_title %}
+{{ _('Profile') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-lg-8">
+            <h3 class="fw-bold mb-1">My {{ _('Profile') }}</h3>
+            <p class="text-muted mb-0">{{ _('View') }} your account details</p>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white">
+            <h5 class="fw-bold mb-0">{{ _('Account Information') }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-3 d-flex flex-column justify-content-center align-items-center position-relative">
+                    <form id="avatarUploadForm" action="{{ url_for('customer.upload_customer_photo') }}" method="POST"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="file" id="profileImageInput" name="profile_image" accept="image/*" class="d-none"
+                            onchange="document.getElementById('avatarUploadForm').submit();">
+
+                        <div class="position-relative" style="cursor: pointer;"
+                            onclick="document.getElementById('profileImageInput').click();">
+                            {% if user.profile_image %}
+                            <img src="{{ url_for('static', filename='uploads/profile/' ~ user.profile_image) }}"
+                                class="rounded-circle object-fit-cover shadow-sm border"
+                                style="width: 100px; height: 100px; border-width: 3px !important;"
+                                alt="Profile Picture">
+                            {% else %}
+                            <div class="bg-light text-secondary rounded-circle d-flex justify-content-center align-items-center shadow-sm border"
+                                style="width: 100px; height: 100px; font-size: 36px; border-width: 3px !important;">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            {% endif %}
+
+                            <!-- Camera Icon Badge -->
+                            <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+                                style="width: 32px; height: 32px; transform: translate(10%, 10%); border: 2px solid white;"
+                                title="Upload Photo">
+                                <i class="fa-solid fa-camera small"></i>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-10">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('First Name') }}</label>
+                            <p class="fw-semibold">{{ user.first_name }}</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Last Name') }}</label>
+                            <p class="fw-semibold">{{ user.last_name }}</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Email') }}</label>
+                            <p class="fw-semibold">{{ user.email }}</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Mobile') }}</label>
+                            <p class="fw-semibold">{{ user.mobile or 'N/A' }}</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Role') }}</label>
+                            <p class="fw-semibold">{{ translate_role(user.role_name) }}</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Department') }}</label>
+                            <p class="fw-semibold">{{ translate_department(user.department_name) or 'N/A' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

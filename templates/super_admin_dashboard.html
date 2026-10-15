@@ -1,0 +1,344 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ _('Super Admin') }} {{ _('Dashboard') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid dashboard-container">
+
+  <!-- Dashboard Header -->
+  <div class="row align-items-center mb-4">
+    <div class="col-lg-8 col-md-7 col-sm-12">
+      <h3 class="fw-bold mb-1">{{ _('Super Admin') }} {{ _('Dashboard') }}</h3>
+      <p class="text-muted mb-0">{{ _('Welcome To Help Desk') }}</p>
+    </div>
+    <div class="col-lg-4 col-md-5 col-sm-12 text-md-end mt-3 mt-md-0">
+      <span class="badge bg-primary fs-6 px-3 py-2">{{ _('Super Admin') }}</span>
+    </div>
+  </div>
+
+  <!-- =========================
+       Statistics Cards
+  ========================= -->
+  <div class="row g-3 mb-4">
+    <!-- Users -->
+    <div class="col-6 col-md-4 col-lg">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-users fa-2x text-primary mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Total Users') }}</h6>
+          <h2 class="fw-bold text-primary">{{ total_users }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Departments -->
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-building fa-2x text-success mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Total Departments') }}</h6>
+          <h2 class="fw-bold text-success">{{ total_departments }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-brain fa-2x text-warning mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Skills') }}</h6>
+          <h2 class="fw-bold text-warning">{{ total_skills }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers -->
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-user-group fa-2x text-info mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Total Customers') }}</h6>
+          <h2 class="fw-bold text-info">{{ total_customers }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- {{ _('Ticket') }}s -->
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-ticket fa-2x text-warning mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Total Tickets') }}</h6>
+          <h2 class="fw-bold text-warning">{{ total_tickets }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open -->
+    <div class="col-6 col-md-6 col-lg-3">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-folder-open fa-2x text-danger mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Open Tickets') }}</h6>
+          <h2 class="fw-bold text-danger">{{ open_tickets }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closed -->
+    <div class="col-6 col-md-6 col-lg-3">
+      <div class="card dashboard-card h-100 border-0">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-circle-check fa-2x text-success mb-2"></i>
+          <h6 class="text-muted mb-1">{{ _('Closed Tickets') }}</h6>
+          <h2 class="fw-bold text-success">{{ closed_tickets }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       Charts Section
+  ========================= -->
+  <div class="row g-4 mb-4">
+    <!-- {{ _('Ticket') }} Analytics -->
+    <div class="col-12 col-xl-8">
+      <div class="card chart-card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold">
+            <i class="fa-solid fa-chart-column text-primary me-2"></i> {{ _('Ticket Analytics') }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <canvas id="ticketChart" style="max-height:350px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doughnut Chart -->
+    <div class="col-12 col-xl-4">
+      <div class="card chart-card h-100">
+        <div class="card-header">
+          <h5 class="mb-0 fw-bold">
+            <i class="fa-solid fa-chart-pie text-success me-2"></i> {{ _('Tickets By Category') }}
+          </h5>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 300px;">
+          <canvas id="pieChart" style="max-height:350px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================
+       Recent {{ _('Ticket') }}s & Top Agents
+  =========================== -->
+  <div class="row g-4">
+    <!-- Recent {{ _('Ticket') }}s -->
+    <div class="col-12 col-lg-8">
+      <div class="card table-card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="fa-solid fa-ticket text-primary me-2"></i> {{ _('Recent Tickets') }}
+          </h5>
+          <span class="badge bg-primary rounded-pill">{{ recent_tickets|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-scroll">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>{{ _('Ticket Number') }}</th>
+                  <th>{{ _('Title') }}</th>
+                  <th>{{ _('Status') }}</th>
+                  <th>{{ _('Priority') }}</th>
+                  <th>{{ _('Category') }}</th>
+                  <th>{{ _('Created At') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ticket in recent_tickets %}
+                <tr>
+                  <td><strong>{{ ticket.ticket_number }}</strong></td>
+                  <td>{{ translate_value(ticket.title) }}</td>
+                  <td>
+                    {% if ticket.status_name=="Open" %}
+                      <span class="badge bg-danger">{{ translate_status('Open') }}</span>
+                    {% elif ticket.status_name=="Closed" %}
+                      <span class="badge bg-success">{{ translate_status('Closed') }}</span>
+                    {% elif ticket.status_name=="In Progress" %}
+                      <span class="badge bg-warning text-dark">{{ translate_status('In Progress') }}</span>
+                    {% elif ticket.status_name=="On Hold" %}
+                      <span class="badge bg-info">{{ translate_status('On Hold') }}</span>
+                    {% elif ticket.status_name=="New" %}
+                      <span class="badge bg-primary">{{ translate_status('New') }}</span>
+                    {% elif ticket.status_name=="Resolved" %}
+                      <span class="badge bg-success">{{ translate_status('Resolved') }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ translate_status(ticket.status_name) }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if ticket.ai_suggested_priority %}
+                      {% if ticket.ai_suggested_priority == 'Critical' %}
+                        <span class="badge bg-danger">{{ translate_priority('Critical') }}</span>
+                      {% elif ticket.ai_suggested_priority == 'High' %}
+                        <span class="badge bg-warning text-dark">{{ translate_priority('High') }}</span>
+                      {% elif ticket.ai_suggested_priority == 'Medium' %}
+                        <span class="badge bg-info">{{ translate_priority('Medium') }}</span>
+                      {% elif ticket.ai_suggested_priority == 'Low' %}
+                        <span class="badge bg-success">{{ translate_priority('Low') }}</span>
+                      {% endif %}
+                    {% else %}
+                      <span class="badge bg-secondary">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if ticket.ai_suggested_category %}
+                      <span class="badge bg-primary">{{ translate_category(ticket.ai_suggested_category) }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary">-</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   
+    <!-- Top Agents -->
+<div class="col-12 col-lg-4">
+        <!-- Card Header -->
+        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center flex-wrap">
+            <h5 class="fw-bold mb-0" >
+                <i class="fa-solid fa-user-check text-success me-2"></i>
+                {{ _('Top Agents') }}
+            </h5>
+            <span class="badge bg-success rounded-pill">
+                {{ top_agents|length }}
+            </span>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
+            <div class="table-scroll">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{{ _('Agent') }}</th>
+                            <th class="text-center">{{ _('Solved') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if top_agents %}
+                            {% for agent in top_agents %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-2"
+                                             style="width:40px;height:40px;">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">
+                                                {{ agent.first_name }} {{ agent.last_name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success rounded-pill px-3 py-2">
+                                        {{ agent.total_tickets }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center py-4 text-muted">
+                                    {{ _('No Agents Found') }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for i18n to be ready
+    var t = window.i18n ? function(key) { return i18n.t(key); } : function(key) { return key; };
+
+    var ticketCanvas = document.getElementById("ticketChart");
+    var statusLabels = {{ status_labels | tojson }};
+    var statusCounts = {{ status_counts | tojson }};
+
+    if (ticketCanvas && statusLabels.length > 0) {
+        var ticketChart = new Chart(ticketCanvas, {
+            type: 'bar',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    label: t('tickets_chart'),
+                    data: statusCounts,
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    } else if (ticketCanvas) {
+        ticketCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_status_data') + '</p>';
+    }
+
+    var pieCanvas = document.getElementById("pieChart");
+    var pieLabels = {{ pie_labels | tojson }};
+    var pieCounts = {{ pie_counts | tojson }};
+
+    if (pieCanvas && pieLabels.length > 0) {
+        var pieChart = new Chart(pieCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieCounts,
+                    backgroundColor: [
+                        '#0d6efd', '#198754', '#ffc107', '#dc3545',
+                        '#6f42c1', '#fd7e14', '#20c997', '#6610f2'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    } else if (pieCanvas) {
+        pieCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_priority_data') + '</p>';
+    }
+});
+</script>
+{% endblock %}

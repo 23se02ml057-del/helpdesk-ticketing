@@ -1,0 +1,3311 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Help Desk 1.0\\n"
+"Report-Msgid-To: \\n"
+"POT-Creation-Date: 2026-09-02 09:00+0000\\n"
+"PO-Revision-Date: 2026-09-02 09:00+0000\\n"
+"Last-Translator: Help Desk Team\\n"
+"Language: zh\\n"
+"Language-Team: Chinese\\n"
+"MIME-Version: 1.0\\n"
+"Content-Type: text/plain; charset=UTF-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+
+# Language Names
+msgid "language_en"
+msgstr "English"
+
+msgid "language_zh"
+msgstr "中文"
+
+msgid "language_de"
+msgstr "Deutsch"
+
+msgid "language_fr"
+msgstr "Français"
+
+msgid "language_tr"
+msgstr "Türkçe"
+
+msgid "language_gu"
+msgstr "ગુજરાતી"
+
+msgid "language_name"
+msgstr "语言"
+
+# Navigation - Sidebar
+msgid "main_menu"
+msgstr "主菜单"
+
+msgid "dashboard"
+msgstr "仪表板"
+
+msgid "users"
+msgstr "用户"
+
+msgid "customers"
+msgstr "客户"
+
+msgid "agents"
+msgstr "代理"
+
+msgid "departments"
+msgstr "部门"
+
+msgid "tickets"
+msgstr "工单"
+
+msgid "skills"
+msgstr "技能"
+
+msgid "notifications"
+msgstr "通知"
+
+msgid "reports"
+msgstr "报告"
+
+msgid "settings"
+msgstr "设置"
+
+msgid "profile"
+msgstr "个人资料"
+
+msgid "logout"
+msgstr "退出登录"
+
+msgid "ticket_assignment"
+msgstr "工单分配"
+
+msgid "categories"
+msgstr "分类"
+
+msgid "types_of_issues"
+msgstr "问题类型"
+
+msgid "priorities"
+msgstr "优先级"
+
+msgid "sla_rules"
+msgstr "SLA规则"
+
+msgid "escalation"
+msgstr "升级"
+
+msgid "escalations"
+msgstr "升级"
+
+msgid "ml_model"
+msgstr "机器学习模型"
+
+msgid "ml_predictions"
+msgstr "机器学习预测"
+
+msgid "change_password"
+msgstr "修改密码"
+
+msgid "roles"
+msgstr "角色"
+
+# Header/Brand
+msgid "help_desk"
+msgstr "服务台"
+
+msgid "management_system"
+msgstr "管理系统"
+
+msgid "helpdesk"
+msgstr "服务台"
+
+msgid "admin_panel"
+msgstr "管理面板"
+
+msgid "customer_portal"
+msgstr "客户门户"
+
+msgid "support_agent"
+msgstr "支持代理"
+
+msgid "support_manager"
+msgstr "支持经理"
+
+msgid "super_admin"
+msgstr "超级管理员"
+
+# Common Actions
+msgid "add"
+msgstr "添加"
+
+msgid "edit"
+msgstr "编辑"
+
+msgid "delete"
+msgstr "删除"
+
+msgid "save"
+msgstr "保存"
+
+msgid "cancel"
+msgstr "取消"
+
+msgid "update"
+msgstr "更新"
+
+msgid "submit"
+msgstr "提交"
+
+msgid "search"
+msgstr "搜索"
+
+msgid "filter"
+msgstr "筛选"
+
+msgid "clear"
+msgstr "清除"
+
+msgid "view"
+msgstr "查看"
+
+msgid "close"
+msgstr "关闭"
+
+msgid "back"
+msgstr "返回"
+
+msgid "next"
+msgstr "下一步"
+
+msgid "previous"
+msgstr "上一步"
+
+msgid "download"
+msgstr "下载"
+
+msgid "upload"
+msgstr "上传"
+
+msgid "assign"
+msgstr "分配"
+
+msgid "reply"
+msgstr "回复"
+
+msgid "approve"
+msgstr "批准"
+
+msgid "reject"
+msgstr "拒绝"
+
+msgid "reset"
+msgstr "重置"
+
+msgid "create"
+msgstr "创建"
+
+msgid "send"
+msgstr "发送"
+
+msgid "resend"
+msgstr "重新发送"
+
+msgid "refresh"
+msgstr "刷新"
+
+msgid "export"
+msgstr "导出"
+
+msgid "import"
+msgstr "导入"
+
+msgid "actions"
+msgstr "操作"
+
+msgid "confirm"
+msgstr "确认"
+
+msgid "select"
+msgstr "选择"
+
+# Status Values (display only)
+msgid "status_open"
+msgstr "开放中"
+
+msgid "status_pending"
+msgstr "待处理"
+
+msgid "status_closed"
+msgstr "已关闭"
+
+msgid "status_new"
+msgstr "新建"
+
+msgid "status_in_progress"
+msgstr "进行中"
+
+msgid "status_on_hold"
+msgstr "已搁置"
+
+msgid "status_resolved"
+msgstr "已解决"
+
+# Priority Values (display only)
+msgid "priority_low"
+msgstr "低"
+
+msgid "priority_medium"
+msgstr "中"
+
+msgid "priority_high"
+msgstr "高"
+
+msgid "priority_critical"
+msgstr "严重"
+
+# User Status
+msgid "status_active"
+msgstr "活跃"
+
+msgid "status_inactive"
+msgstr "未激活"
+
+# Notification Status
+msgid "status_read"
+msgstr "已读"
+
+msgid "status_unread"
+msgstr "未读"
+
+# Common Labels
+msgid "name"
+msgstr "名称"
+
+msgid "email"
+msgstr "电子邮件"
+
+msgid "password"
+msgstr "密码"
+
+msgid "confirm_password"
+msgstr "确认密码"
+
+msgid "full_name"
+msgstr "全名"
+
+msgid "phone"
+msgstr "电话"
+
+msgid "role"
+msgstr "角色"
+
+msgid "department"
+msgstr "部门"
+
+msgid "status"
+msgstr "状态"
+
+msgid "created_at"
+msgstr "创建时间"
+
+msgid "updated_at"
+msgstr "更新时间"
+
+msgid "date"
+msgstr "日期"
+
+msgid "description"
+msgstr "描述"
+
+msgid "title"
+msgstr "标题"
+
+msgid "message"
+msgstr "消息"
+
+msgid "type"
+msgstr "类型"
+
+msgid "category"
+msgstr "分类"
+
+msgid "priority"
+msgstr "优先级"
+
+msgid "requester"
+msgstr "请求者"
+
+msgid "assigned_to"
+msgstr "分配给"
+
+# Login Page
+msgid "login"
+msgstr "登录"
+
+msgid "login_title"
+msgstr "登录您的账户"
+
+msgid "remember_me"
+msgstr "记住我"
+
+msgid "forgot_password"
+msgstr "忘记密码？"
+
+msgid "dont_have_account"
+msgstr "还没有账户？"
+
+msgid "register"
+msgstr "注册"
+
+msgid "sign_in"
+msgstr "登录"
+
+msgid "signing_in"
+msgstr "正在登录..."
+
+msgid "enter_email"
+msgstr "输入您的电子邮件"
+
+msgid "enter_password"
+msgstr "输入您的密码"
+
+# Registration Page
+msgid "register_title"
+msgstr "创建账户"
+
+msgid "create_account"
+msgstr "创建账户"
+
+msgid "already_have_account"
+msgstr "已有账户？"
+
+msgid "creating_account"
+msgstr "正在创建账户..."
+
+# Forgot Password
+msgid "forgot_password_title"
+msgstr "忘记密码"
+
+msgid "forgot_password_description"
+msgstr "输入您注册的电子邮件地址，我们将向您发送重置密码的链接。"
+
+msgid "send_reset_link"
+msgstr "发送重置链接"
+
+msgid "back_to_login"
+msgstr "返回登录"
+
+# Reset Password
+msgid "reset_password_title"
+msgstr "重置密码"
+
+msgid "new_password"
+msgstr "新密码"
+
+msgid "reset_password"
+msgstr "重置密码"
+
+# Email Verification
+msgid "verify_email_title"
+msgstr "验证您的电子邮件"
+
+msgid "verification_email_sent"
+msgstr "验证邮件已发送"
+
+msgid "resend_verification_email"
+msgstr "重新发送验证邮件"
+
+msgid "please_verify_email"
+msgstr "请在登录前验证您的电子邮件"
+
+msgid "verification_required"
+msgstr "需要电子邮件验证"
+
+msgid "verification_success"
+msgstr "电子邮件验证成功"
+
+msgid "verification_expired"
+msgstr "验证链接已过期"
+
+msgid "verification_invalid"
+msgstr "无效的验证链接"
+
+msgid "verification_already_used"
+msgstr "电子邮件已验证"
+
+# Change Password
+msgid "change_password_title"
+msgstr "修改密码"
+
+msgid "current_password"
+msgstr "当前密码"
+
+msgid "save_changes"
+msgstr "保存更改"
+
+# Dashboard Statistics
+msgid "total_users"
+msgstr "用户总数"
+
+msgid "total_customers"
+msgstr "客户总数"
+
+msgid "total_tickets"
+msgstr "工单总数"
+
+msgid "open_tickets"
+msgstr "开放工单"
+
+msgid "pending_tickets"
+msgstr "待处理工单"
+
+msgid "closed_tickets"
+msgstr "已关闭工单"
+
+msgid "high_priority"
+msgstr "高优先级"
+
+msgid "assigned_tickets"
+msgstr "已分配工单"
+
+msgid "resolved_tickets"
+msgstr "已解决工单"
+
+msgid "total_agents"
+msgstr "代理总数"
+
+msgid "total_departments"
+msgstr "部门总数"
+
+msgid "recent_tickets"
+msgstr "最近工单"
+
+msgid "recent_notifications"
+msgstr "最近通知"
+
+# Ticket Management
+msgid "ticket"
+msgstr "工单"
+
+msgid "ticket_number"
+msgstr "工单编号"
+
+msgid "ticket_title"
+msgstr "工单标题"
+
+msgid "ticket_description"
+msgstr "描述"
+
+msgid "issue_type"
+msgstr "问题类型"
+
+msgid "submit_ticket"
+msgstr "提交工单"
+
+msgid "create_new_ticket"
+msgstr "创建新工单"
+
+msgid "my_tickets"
+msgstr "我的工单"
+
+msgid "all_tickets"
+msgstr "所有工单"
+
+msgid "ticket_details"
+msgstr "工单详情"
+
+msgid "comments"
+msgstr "评论"
+
+msgid "attachments"
+msgstr "附件"
+
+msgid "send_reply"
+msgstr "发送回复"
+
+msgid "close_ticket"
+msgstr "关闭工单"
+
+msgid "reopen_ticket"
+msgstr "重新打开工单"
+
+msgid "assign_ticket"
+msgstr "分配工单"
+
+msgid "ticket_history"
+msgstr "工单历史"
+
+msgid "add_comment"
+msgstr "添加评论"
+
+msgid "internal_note"
+msgstr "内部备注"
+
+msgid "customer_reply"
+msgstr "客户回复"
+
+msgid "agent_reply"
+msgstr "代理回复"
+
+msgid "no_comments"
+msgstr "暂无评论"
+
+msgid "no_attachments"
+msgstr "无附件"
+
+# User Management
+msgid "user_management"
+msgstr "用户管理"
+
+msgid "add_user"
+msgstr "添加用户"
+
+msgid "edit_user"
+msgstr "编辑用户"
+
+msgid "delete_user"
+msgstr "删除用户"
+
+msgid "user_details"
+msgstr "用户详情"
+
+msgid "search_users"
+msgstr "搜索用户..."
+
+msgid "no_users_found"
+msgstr "未找到用户"
+
+# Customer Management
+msgid "customer_management"
+msgstr "客户管理"
+
+msgid "add_customer"
+msgstr "添加客户"
+
+msgid "edit_customer"
+msgstr "编辑客户"
+
+msgid "delete_customer"
+msgstr "删除客户"
+
+msgid "customer_details"
+msgstr "客户详情"
+
+msgid "search_customers"
+msgstr "搜索客户..."
+
+msgid "no_customers_found"
+msgstr "未找到客户"
+
+# Agent Management
+msgid "agent_management"
+msgstr "代理管理"
+
+msgid "add_agent"
+msgstr "添加代理"
+
+msgid "edit_agent"
+msgstr "编辑代理"
+
+msgid "delete_agent"
+msgstr "删除代理"
+
+msgid "agent_details"
+msgstr "代理详情"
+
+msgid "search_agents"
+msgstr "搜索代理..."
+
+msgid "no_agents_found"
+msgstr "未找到代理"
+
+# Department Management
+msgid "department_management"
+msgstr "部门管理"
+
+msgid "add_department"
+msgstr "添加部门"
+
+msgid "edit_department"
+msgstr "编辑部门"
+
+msgid "delete_department"
+msgstr "删除部门"
+
+msgid "search_departments"
+msgstr "搜索部门..."
+
+msgid "no_departments_found"
+msgstr "未找到部门"
+
+# Skills Management
+msgid "skill_management"
+msgstr "技能管理"
+
+msgid "add_skill"
+msgstr "添加技能"
+
+msgid "edit_skill"
+msgstr "编辑技能"
+
+msgid "delete_skill"
+msgstr "删除技能"
+
+msgid "search_skills"
+msgstr "搜索技能..."
+
+msgid "no_skills_found"
+msgstr "未找到技能"
+
+# Category Management
+msgid "category_management"
+msgstr "分类管理"
+
+msgid "add_category"
+msgstr "添加分类"
+
+msgid "edit_category"
+msgstr "编辑分类"
+
+msgid "delete_category"
+msgstr "删除分类"
+
+# Issue Type Management
+msgid "issue_type_management"
+msgstr "问题类型管理"
+
+msgid "add_issue_type"
+msgstr "添加问题类型"
+
+msgid "edit_issue_type"
+msgstr "编辑问题类型"
+
+msgid "delete_issue_type"
+msgstr "删除问题类型"
+
+# Priority Management
+msgid "priority_management"
+msgstr "优先级管理"
+
+msgid "add_priority"
+msgstr "添加优先级"
+
+msgid "edit_priority"
+msgstr "编辑优先级"
+
+msgid "delete_priority"
+msgstr "删除优先级"
+
+# SLA Rules
+msgid "sla_management"
+msgstr "SLA规则管理"
+
+msgid "add_sla_rule"
+msgstr "添加SLA规则"
+
+msgid "edit_sla_rule"
+msgstr "编辑SLA规则"
+
+msgid "delete_sla_rule"
+msgstr "删除SLA规则"
+
+msgid "response_time"
+msgstr "响应时间"
+
+msgid "resolution_time"
+msgstr "解决时间"
+
+# Escalation Rules
+msgid "escalation_management"
+msgstr "升级管理"
+
+msgid "add_escalation"
+msgstr "添加升级规则"
+
+msgid "edit_escalation"
+msgstr "编辑升级规则"
+
+msgid "delete_escalation"
+msgstr "删除升级规则"
+
+# Notifications
+msgid "notification_management"
+msgstr "通知"
+
+msgid "mark_as_read"
+msgstr "标记为已读"
+
+msgid "mark_all_read"
+msgstr "全部标记为已读"
+
+msgid "delete_all_notifications"
+msgstr "全部删除"
+
+msgid "no_notifications"
+msgstr "无通知"
+
+msgid "search_notifications"
+msgstr "搜索通知..."
+
+# Reports
+msgid "report_tickets"
+msgstr "工单报告"
+
+msgid "report_users"
+msgstr "用户报告"
+
+msgid "report_notifications"
+msgstr "通知报告"
+
+msgid "report_sla"
+msgstr "SLA报告"
+
+msgid "report_escalation"
+msgstr "升级报告"
+
+msgid "user_report"
+msgstr "用户报告"
+
+msgid "ticket_report"
+msgstr "工单报告"
+
+msgid "sla_report"
+msgstr "SLA报告"
+
+msgid "escalation_report"
+msgstr "升级报告"
+
+msgid "notification_report"
+msgstr "通知报告"
+
+msgid "agent_performance_report"
+msgstr "智能体绩效报告"
+
+msgid "generate_report"
+msgstr "生成报告"
+
+msgid "export_csv"
+msgstr "导出CSV"
+
+# Profile
+msgid "my_profile"
+msgstr "我的个人资料"
+
+msgid "edit_profile"
+msgstr "编辑个人资料"
+
+msgid "change_photo"
+msgstr "更改照片"
+
+msgid "account_settings"
+msgstr "账户设置"
+
+# Settings
+msgid "system_settings"
+msgstr "系统设置"
+
+msgid "general_settings"
+msgstr "常规设置"
+
+msgid "email_settings"
+msgstr "电子邮件设置"
+
+msgid "company_info"
+msgstr "公司信息"
+
+# ML Model
+msgid "ml_model_management"
+msgstr "ML模型管理"
+
+msgid "model_status"
+msgstr "模型状态"
+
+msgid "model_version"
+msgstr "模型版本"
+
+msgid "model_accuracy"
+msgstr "模型准确率"
+
+msgid "training_data"
+msgstr "训练数据"
+
+msgid "last_trained"
+msgstr "上次训练"
+
+msgid "retrain_model"
+msgstr "重新训练模型"
+
+msgid "model_metrics"
+msgstr "模型指标"
+
+msgid "mae"
+msgstr "MAE"
+
+msgid "rmse"
+msgstr "RMSE"
+
+msgid "r_squared"
+msgstr "R²"
+
+msgid "prediction_history"
+msgstr "预测历史"
+
+msgid "predicted_resolution_time"
+msgstr "预测解决时间"
+
+msgid "confidence_interval"
+msgstr "置信区间"
+
+# Team Management
+msgid "team_management"
+msgstr "团队管理"
+
+msgid "team_members"
+msgstr "团队成员"
+
+# Contact
+msgid "contact_us"
+msgstr "联系我们"
+
+msgid "contact_form"
+msgstr "联系表单"
+
+msgid "subject"
+msgstr "主题"
+
+# Pagination
+msgid "showing"
+msgstr "显示"
+
+msgid "of"
+msgstr "/"
+
+msgid "results"
+msgstr "条结果"
+
+msgid "first"
+msgstr "首页"
+
+msgid "last"
+msgstr "末页"
+
+msgid "no_records_found"
+msgstr "未找到记录"
+
+msgid "no_data_available"
+msgstr "无可用数据"
+
+msgid "searching"
+msgstr "搜索中..."
+
+# Flash Messages - Success
+msgid "user_created"
+msgstr "用户创建成功。"
+
+msgid "user_updated"
+msgstr "用户更新成功。"
+
+msgid "user_deleted"
+msgstr "用户删除成功。"
+
+msgid "customer_created"
+msgstr "客户创建成功。"
+
+msgid "customer_updated"
+msgstr "客户更新成功。"
+
+msgid "customer_deleted"
+msgstr "客户删除成功。"
+
+msgid "agent_created"
+msgstr "代理创建成功。"
+
+msgid "agent_updated"
+msgstr "代理更新成功。"
+
+msgid "agent_deleted"
+msgstr "代理删除成功。"
+
+msgid "department_created"
+msgstr "部门创建成功。"
+
+msgid "department_updated"
+msgstr "部门更新成功。"
+
+msgid "department_deleted"
+msgstr "部门删除成功。"
+
+msgid "ticket_created"
+msgstr "工单创建成功。"
+
+msgid "ticket_updated"
+msgstr "工单更新成功。"
+
+msgid "ticket_deleted"
+msgstr "工单删除成功。"
+
+msgid "ticket_closed"
+msgstr "工单关闭成功。"
+
+msgid "ticket_reopened"
+msgstr "工单重新打开成功。"
+
+msgid "ticket_assigned"
+msgstr "工单分配成功。"
+
+msgid "comment_added"
+msgstr "评论添加成功。"
+
+msgid "skill_created"
+msgstr "技能创建成功。"
+
+msgid "skill_updated"
+msgstr "技能更新成功。"
+
+msgid "skill_deleted"
+msgstr "技能删除成功。"
+
+msgid "category_created"
+msgstr "分类创建成功。"
+
+msgid "category_updated"
+msgstr "分类更新成功。"
+
+msgid "category_deleted"
+msgstr "分类删除成功。"
+
+msgid "settings_saved"
+msgstr "设置保存成功。"
+
+msgid "password_changed"
+msgstr "密码修改成功。"
+
+msgid "profile_updated"
+msgstr "个人资料更新成功。"
+
+msgid "registration_success"
+msgstr "注册成功！验证邮件已发送到您的地址。"
+
+msgid "reset_email_sent"
+msgstr "密码重置邮件已发送。请检查您的收件箱。"
+
+msgid "password_reset_success"
+msgstr "密码已成功重置。"
+
+msgid "notifications_deleted"
+msgstr "所有通知已删除。"
+
+msgid "model_retrained"
+msgstr "模型重新训练成功。"
+
+# Flash Messages - Error
+msgid "error_occurred"
+msgstr "发生错误。请重试。"
+
+msgid "invalid_credentials"
+msgstr "电子邮件或密码无效。"
+
+msgid "invalid_email"
+msgstr "请输入有效的电子邮件地址。"
+
+msgid "email_required"
+msgstr "电子邮件为必填项。"
+
+msgid "password_required"
+msgstr "密码为必填项。"
+
+msgid "passwords_do_not_match"
+msgstr "密码不匹配。"
+
+msgid "email_exists"
+msgstr "电子邮件已存在。"
+
+msgid "account_not_found"
+msgstr "账户未找到。"
+
+msgid "account_inactive"
+msgstr "您的账户未激活。请联系支持。"
+
+msgid "access_denied"
+msgstr "访问被拒绝。您没有执行此操作的权限。"
+
+msgid "database_error"
+msgstr "发生数据库错误。请稍后重试。"
+
+msgid "login_failed"
+msgstr "登录失败。请重试。"
+
+msgid "registration_failed"
+msgstr "注册失败。请重试。"
+
+msgid "delete_failed"
+msgstr "删除失败。请重试。"
+
+msgid "update_failed"
+msgstr "更新失败。请重试。"
+
+msgid "something_went_wrong"
+msgstr "出现错误。"
+
+# Confirmation Messages
+msgid "delete_confirmation"
+msgstr "您确定要删除此项目吗？"
+
+msgid "delete_user_confirmation"
+msgstr "您确定要删除此用户吗？"
+
+msgid "delete_customer_confirmation"
+msgstr "您确定要删除此客户吗？"
+
+msgid "delete_agent_confirmation"
+msgstr "您确定要删除此代理吗？"
+
+msgid "delete_department_confirmation"
+msgstr "您确定要删除此部门吗？"
+
+msgid "delete_ticket_confirmation"
+msgstr "您确定要删除此工单吗？"
+
+msgid "delete_skill_confirmation"
+msgstr "您确定要删除此技能吗？"
+
+msgid "delete_notification_confirmation"
+msgstr "您确定要删除此通知吗？此操作无法撤销。"
+
+msgid "close_ticket_confirmation"
+msgstr "您确定要关闭此工单吗？"
+
+msgid "reopen_ticket_confirmation"
+msgstr "您确定要重新打开此工单吗？"
+
+# Validation Messages
+msgid "field_required"
+msgstr "此字段为必填项。"
+
+msgid "invalid_email_format"
+msgstr "请输入有效的电子邮件地址。"
+
+msgid "password_min_length"
+msgstr "密码长度至少为8个字符。"
+
+msgid "password_requirements"
+msgstr "密码必须至少8个字符，包含大写字母、小写字母和数字。"
+
+msgid "password_must_be_different"
+msgstr "新密码必须与当前密码不同。"
+
+msgid "fill_all_fields"
+msgstr "请填写所有必填字段。"
+
+# Error Pages
+msgid "page_not_found"
+msgstr "404 - 页面未找到"
+
+msgid "page_not_found_message"
+msgstr "您查找的页面不存在。"
+
+msgid "access_denied_title"
+msgstr "403 - 访问被拒绝"
+
+msgid "internal_server_error"
+msgstr "500 - 内部服务器错误"
+
+msgid "internal_server_error_message"
+msgstr "服务器端出现问题。请稍后重试。"
+
+msgid "go_back"
+msgstr "返回"
+
+msgid "go_home"
+msgstr "返回仪表板"
+
+# Charts
+msgid "tickets_chart"
+msgstr "工单"
+
+msgid "created"
+msgstr "已创建"
+
+msgid "resolved"
+msgstr "已解决"
+
+msgid "weekly_trend"
+msgstr "周趋势"
+
+msgid "department_distribution"
+msgstr "部门分布"
+
+msgid "no_status_data"
+msgstr "无状态数据可用。"
+
+msgid "no_priority_data"
+msgstr "无优先级数据可用。"
+
+# Days of week
+msgid "monday"
+msgstr "星期一"
+
+msgid "tuesday"
+msgstr "星期二"
+
+msgid "wednesday"
+msgstr "星期三"
+
+msgid "thursday"
+msgstr "星期四"
+
+msgid "friday"
+msgstr "星期五"
+
+msgid "saturday"
+msgstr "星期六"
+
+msgid "sunday"
+msgstr "星期日"
+
+msgid "mon"
+msgstr "周一"
+
+msgid "tue"
+msgstr "周二"
+
+msgid "wed"
+msgstr "周三"
+
+msgid "thu"
+msgstr "周四"
+
+msgid "fri"
+msgstr "周五"
+
+msgid "sat"
+msgstr "周六"
+
+msgid "sun"
+msgstr "周日"
+
+# Misc
+msgid "total"
+msgstr "总计"
+
+msgid "awaiting"
+msgstr "等待中"
+
+msgid "not_available"
+msgstr "不可用"
+
+msgid "all"
+msgstr "全部"
+
+msgid "none"
+msgstr "无"
+
+msgid "yes"
+msgstr "是"
+
+msgid "no"
+msgstr "否"
+
+msgid "active"
+msgstr "活跃"
+
+msgid "inactive"
+msgstr "未激活"
+
+msgid "loading"
+msgstr "加载中..."
+
+msgid "success"
+msgstr "成功"
+
+msgid "error"
+msgstr "错误"
+
+msgid "warning"
+msgstr "警告"
+
+msgid "info"
+msgstr "信息"
+
+msgid "toggle_menu"
+msgstr "切换菜单"
+
+msgid "search_placeholder"
+msgstr "搜索..."
+
+msgid "select_option"
+msgstr "选择一个选项"
+
+msgid "no_matching_records"
+msgstr "未找到匹配的记录。"
+
+msgid "error_loading_results"
+msgstr "加载结果时出错。"
+
+msgid "please_enter_reply"
+msgstr "请输入回复消息。"
+
+msgid "reply_sent"
+msgstr "回复发送成功！"
+
+msgid "error_sending_reply"
+msgstr "发送回复时出错。请重试。"
+
+msgid "deleting"
+msgstr "删除中..."
+
+msgid "clear_chat_history"
+msgstr "清除所有聊天记录？"
+
+msgid "chat_history_cleared"
+msgstr "聊天记录已清除。我能为您做些什么？"
+
+msgid "network_error"
+msgstr "网络错误。请重试。"
+
+msgid "ai_assistant"
+msgstr "AI助手"
+
+msgid "you"
+msgstr "您"
+
+msgid "ai_service_active"
+msgstr "AI服务已激活"
+
+msgid "cannot_connect_ai"
+msgstr "无法连接到AI服务"
+
+msgid "test_email_smtp"
+msgstr "测试邮件功能需要有效的SMTP凭据。"
+
+msgid "retrain_confirmation"
+msgstr "您确定要重新训练模型吗？这可能需要一些时间。"
+
+msgid "retraining"
+msgstr "重新训练中..."
+
+msgid "model_retraining"
+msgstr "模型正在重新训练。请稍候。"
+
+msgid "hours"
+msgstr "小时"
+
+msgid "minutes"
+msgstr "分钟"
+
+msgid "versions"
+msgstr "版本"
+
+msgid "prediction"
+msgstr "预测"
+
+msgid "actual"
+msgstr "实际"
+
+msgid "difference"
+msgstr "差异"
+
+msgid "no_predictions_found"
+msgstr "未找到预测"
+
+msgid "ticket_id"
+msgstr "工单ID"
+
+msgid "predicted_hours"
+msgstr "预测小时数"
+
+msgid "actual_hours"
+msgstr "实际小时数"
+
+msgid "prediction_date"
+msgstr "预测日期"
+
+msgid "model_info"
+msgstr "模型信息"
+
+msgid "training_samples"
+msgstr "训练样本"
+
+msgid "no_training_data"
+msgstr "无可用训练数据"
+
+msgid "model_not_trained"
+msgstr "模型尚未训练"
+
+msgid "ready"
+msgstr "就绪"
+
+msgid "not_ready"
+msgstr "未就绪"
+
+msgid "risk_level"
+msgstr "风险等级"
+
+msgid "risk_high"
+msgstr "高风险"
+
+msgid "risk_medium"
+msgstr "中风险"
+
+msgid "risk_low"
+msgstr "低风险"
+
+msgid "sla_breach"
+msgstr "SLA违约"
+
+msgid "sla_ok"
+msgstr "SLA正常"
+
+msgid "escalated"
+msgstr "已升级"
+
+msgid "not_escalated"
+msgstr "未升级"
+
+msgid "response_due"
+msgstr "响应截止"
+
+msgid "resolution_due"
+msgstr "解决截止"
+
+msgid "breach_time"
+msgstr "违约时间"
+
+msgid "time_remaining"
+msgstr "剩余时间"
+
+msgid "overdue"
+msgstr "逾期"
+
+msgid "due_soon"
+msgstr "即将到期"
+
+msgid "on_track"
+msgstr "按计划进行"
+
+msgid "performance"
+msgstr "性能"
+
+msgid "analytics"
+msgstr "分析"
+
+msgid "overview"
+msgstr "概览"
+
+msgid "details"
+msgstr "详情"
+
+msgid "activity"
+msgstr "活动"
+
+msgid "activities"
+msgstr "活动"
+
+msgid "log"
+msgstr "日志"
+
+msgid "logs"
+msgstr "日志"
+
+msgid "configuration"
+msgstr "配置"
+
+msgid "configurations"
+msgstr "配置"
+
+msgid "permission"
+msgstr "权限"
+
+msgid "permissions"
+msgstr "权限"
+
+msgid "group"
+msgstr "组"
+
+msgid "groups"
+msgstr "组"
+
+msgid "module"
+msgstr "模块"
+
+msgid "modules"
+msgstr "模块"
+
+msgid "feature"
+msgstr "功能"
+
+msgid "features"
+msgstr "功能"
+
+msgid "option"
+msgstr "选项"
+
+msgid "options"
+msgstr "选项"
+
+msgid "value"
+msgstr "值"
+
+msgid "values"
+msgstr "值"
+
+msgid "default"
+msgstr "默认"
+
+msgid "defaults"
+msgstr "默认"
+
+msgid "custom"
+msgstr "自定义"
+
+msgid "standard"
+msgstr "标准"
+
+msgid "advanced"
+msgstr "高级"
+
+msgid "basic"
+msgstr "基本"
+
+msgid "general"
+msgstr "常规"
+
+msgid "specific"
+msgstr "特定"
+
+msgid "other"
+msgstr "其他"
+
+msgid "others"
+msgstr "其他"
+
+msgid "more"
+msgstr "更多"
+
+msgid "less"
+msgstr "更少"
+
+msgid "show"
+msgstr "显示"
+
+msgid "hide"
+msgstr "隐藏"
+
+msgid "expand"
+msgstr "展开"
+
+msgid "collapse"
+msgstr "收起"
+
+msgid "open"
+msgstr "打开"
+
+msgid "pending"
+msgstr "待处理"
+
+msgid "processing"
+msgstr "处理中"
+
+msgid "completed"
+msgstr "已完成"
+
+msgid "failed"
+msgstr "失败"
+
+msgid "cancelled"
+msgstr "已取消"
+
+msgid "scheduled"
+msgstr "已计划"
+
+msgid "unscheduled"
+msgstr "未计划"
+
+msgid "enabled"
+msgstr "已启用"
+
+msgid "disabled"
+msgstr "已禁用"
+
+msgid "visible"
+msgstr "可见"
+
+msgid "hidden"
+msgstr "隐藏"
+
+msgid "public"
+msgstr "公开"
+
+msgid "private"
+msgstr "私有"
+
+msgid "internal"
+msgstr "内部"
+
+msgid "external"
+msgstr "外部"
+
+msgid "required"
+msgstr "必填"
+
+msgid "optional"
+msgstr "可选"
+
+msgid "mandatory"
+msgstr "强制"
+
+msgid "recommended"
+msgstr "推荐"
+
+msgid "normal"
+msgstr "正常"
+
+msgid "urgent"
+msgstr "紧急"
+
+msgid "emergency"
+msgstr "紧急情况"
+
+msgid "low"
+msgstr "低"
+
+msgid "medium"
+msgstr "中"
+
+msgid "high"
+msgstr "高"
+
+msgid "critical"
+msgstr "严重"
+
+msgid "major"
+msgstr "主要"
+
+msgid "minor"
+msgstr "次要"
+
+msgid "trivial"
+msgstr "轻微"
+
+msgid "blocker"
+msgstr "阻塞"
+
+msgid "security"
+msgstr "安全"
+
+msgid "bug"
+msgstr "缺陷"
+
+msgid "feature_request"
+msgstr "功能请求"
+
+msgid "improvement"
+msgstr "改进"
+
+msgid "task"
+msgstr "任务"
+
+msgid "question"
+msgstr "问题"
+
+msgid "incident"
+msgstr "事件"
+
+msgid "problem"
+msgstr "问题"
+
+msgid "change_request"
+msgstr "变更请求"
+
+msgid "service_request"
+msgstr "服务请求"
+
+msgid "access_request"
+msgstr "访问请求"
+
+msgid "information"
+msgstr "信息"
+
+msgid "feedback"
+msgstr "反馈"
+
+msgid "complaint"
+msgstr "投诉"
+
+msgid "suggestion"
+msgstr "建议"
+
+msgid "inquiry"
+msgstr "查询"
+
+msgid "request"
+msgstr "请求"
+
+msgid "order"
+msgstr "订单"
+
+msgid "invoice"
+msgstr "发票"
+
+msgid "payment"
+msgstr "付款"
+
+msgid "refund"
+msgstr "退款"
+
+msgid "subscription"
+msgstr "订阅"
+
+msgid "account"
+msgstr "账户"
+
+msgid "billing"
+msgstr "计费"
+
+msgid "shipping"
+msgstr "运输"
+
+msgid "delivery"
+msgstr "配送"
+
+msgid "return"
+msgstr "退货"
+
+msgid "exchange"
+msgstr "换货"
+
+msgid "warranty"
+msgstr "保修"
+
+msgid "guarantee"
+msgstr "保证"
+
+msgid "contract"
+msgstr "合同"
+
+msgid "agreement"
+msgstr "协议"
+
+msgid "terms"
+msgstr "条款"
+
+msgid "conditions"
+msgstr "条件"
+
+msgid "policy"
+msgstr "政策"
+
+msgid "privacy"
+msgstr "隐私"
+
+msgid "legal"
+msgstr "法律"
+
+msgid "compliance"
+msgstr "合规"
+
+msgid "regulation"
+msgstr "法规"
+
+msgid "guideline"
+msgstr "指南"
+
+msgid "procedure"
+msgstr "程序"
+
+msgid "process"
+msgstr "流程"
+
+msgid "workflow"
+msgstr "工作流"
+
+msgid "template"
+msgstr "模板"
+
+msgid "format"
+msgstr "格式"
+
+msgid "file"
+msgstr "文件"
+
+msgid "document"
+msgstr "文档"
+
+msgid "image"
+msgstr "图片"
+
+msgid "video"
+msgstr "视频"
+
+msgid "audio"
+msgstr "音频"
+
+msgid "link"
+msgstr "链接"
+
+msgid "url"
+msgstr "URL"
+
+msgid "address"
+msgstr "地址"
+
+msgid "location"
+msgstr "位置"
+
+msgid "region"
+msgstr "区域"
+
+msgid "country"
+msgstr "国家"
+
+msgid "city"
+msgstr "城市"
+
+msgid "state"
+msgstr "州/省"
+
+msgid "zip_code"
+msgstr "邮政编码"
+
+msgid "postal_code"
+msgstr "邮政编码"
+
+msgid "currency"
+msgstr "货币"
+
+msgid "amount"
+msgstr "金额"
+
+msgid "quantity"
+msgstr "数量"
+
+msgid "price"
+msgstr "价格"
+
+msgid "cost"
+msgstr "成本"
+
+msgid "rate"
+msgstr "费率"
+
+msgid "percentage"
+msgstr "百分比"
+
+msgid "ratio"
+msgstr "比率"
+
+msgid "score"
+msgstr "得分"
+
+msgid "rating"
+msgstr "评级"
+
+msgid "rank"
+msgstr "排名"
+
+msgid "level"
+msgstr "级别"
+
+msgid "grade"
+msgstr "等级"
+
+msgid "tier"
+msgstr "层级"
+
+msgid "class"
+msgstr "类别"
+
+msgid "version"
+msgstr "版本"
+
+msgid "release"
+msgstr "发布"
+
+msgid "build"
+msgstr "构建"
+
+msgid "revision"
+msgstr "修订"
+
+msgid "patch"
+msgstr "补丁"
+
+msgid "upgrade"
+msgstr "升级"
+
+msgid "migration"
+msgstr "迁移"
+
+msgid "backup"
+msgstr "备份"
+
+msgid "restore"
+msgstr "恢复"
+
+msgid "recovery"
+msgstr "恢复"
+
+msgid "maintenance"
+msgstr "维护"
+
+msgid "support"
+msgstr "支持"
+
+msgid "help"
+msgstr "帮助"
+
+msgid "documentation"
+msgstr "文档"
+
+msgid "guide"
+msgstr "指南"
+
+msgid "tutorial"
+msgstr "教程"
+
+msgid "faq"
+msgstr "常见问题"
+
+msgid "knowledge_base"
+msgstr "知识库"
+
+msgid "announcement"
+msgstr "公告"
+
+msgid "news"
+msgstr "新闻"
+
+msgid "event"
+msgstr "活动"
+
+msgid "calendar"
+msgstr "日历"
+
+msgid "schedule"
+msgstr "日程"
+
+msgid "appointment"
+msgstr "预约"
+
+msgid "meeting"
+msgstr "会议"
+
+msgid "reminder"
+msgstr "提醒"
+
+msgid "alert"
+msgstr "警报"
+
+msgid "notice"
+msgstr "通知"
+
+msgid "notification"
+msgstr "通知"
+
+msgid "newsletter"
+msgstr "新闻通讯"
+
+msgid "digest"
+msgstr "摘要"
+
+msgid "summary"
+msgstr "摘要"
+
+msgid "report"
+msgstr "报告"
+
+msgid "analysis"
+msgstr "分析"
+
+msgid "insight"
+msgstr "洞察"
+
+msgid "metric"
+msgstr "指标"
+
+msgid "indicator"
+msgstr "指标"
+
+msgid "benchmark"
+msgstr "基准"
+
+msgid "target"
+msgstr "目标"
+
+msgid "goal"
+msgstr "目标"
+
+msgid "objective"
+msgstr "目标"
+
+msgid "strategy"
+msgstr "策略"
+
+msgid "plan"
+msgstr "计划"
+
+msgid "roadmap"
+msgstr "路线图"
+
+msgid "timeline"
+msgstr "时间线"
+
+msgid "milestone"
+msgstr "里程碑"
+
+msgid "deadline"
+msgstr "截止日期"
+
+msgid "due_date"
+msgstr "到期日期"
+
+msgid "start_date"
+msgstr "开始日期"
+
+msgid "end_date"
+msgstr "结束日期"
+
+msgid "duration"
+msgstr "持续时间"
+
+msgid "period"
+msgstr "期间"
+
+msgid "frequency"
+msgstr "频率"
+
+msgid "interval"
+msgstr "间隔"
+
+msgid "recurrence"
+msgstr "重复"
+
+msgid "pattern"
+msgstr "模式"
+
+msgid "rule"
+msgstr "规则"
+
+msgid "condition"
+msgstr "条件"
+
+msgid "exception"
+msgstr "例外"
+
+msgid "issue"
+msgstr "问题"
+
+msgid "defect"
+msgstr "缺陷"
+
+msgid "outage"
+msgstr "中断"
+
+msgid "downtime"
+msgstr "停机时间"
+
+msgid "uptime"
+msgstr "正常运行时间"
+
+msgid "availability"
+msgstr "可用性"
+
+msgid "reliability"
+msgstr "可靠性"
+
+msgid "stability"
+msgstr "稳定性"
+
+msgid "efficiency"
+msgstr "效率"
+
+msgid "productivity"
+msgstr "生产力"
+
+msgid "quality"
+msgstr "质量"
+
+msgid "satisfaction"
+msgstr "满意度"
+
+msgid "experience"
+msgstr "体验"
+
+msgid "engagement"
+msgstr "参与度"
+
+msgid "retention"
+msgstr "留存率"
+
+msgid "churn"
+msgstr "流失率"
+
+msgid "growth"
+msgstr "增长"
+
+msgid "revenue"
+msgstr "收入"
+
+msgid "profit"
+msgstr "利润"
+
+msgid "margin"
+msgstr "利润"
+
+msgid "roi"
+msgstr "投资回报率"
+
+msgid "kpi"
+msgstr "关键绩效指标"
+
+msgid "sla"
+msgstr "SLA"
+
+msgid "sla_target"
+msgstr "SLA目标"
+
+msgid "sla_compliance"
+msgstr "SLA合规性"
+
+msgid "first_response"
+msgstr "首次响应"
+
+msgid "resolution"
+msgstr "解决"
+
+msgid "response"
+msgstr "响应"
+
+msgid "feedback"
+msgstr "反馈"
+
+msgid "satisfaction_score"
+msgstr "满意度评分"
+
+msgid "csat"
+msgstr "CSAT"
+
+msgid "nps"
+msgstr "NPS"
+
+msgid "ces"
+msgstr "CES"
+
+msgid "ticket_volume"
+msgstr "工单量"
+
+msgid "ticket_backlog"
+msgstr "工单积压"
+
+msgid "ticket_age"
+msgstr "工单时效"
+
+msgid "reopen_rate"
+msgstr "重开率"
+
+msgid "escalation_rate"
+msgstr "升级率"
+
+msgid "breach_rate"
+msgstr "违约率"
+
+msgid "compliance_rate"
+msgstr "合规率"
+
+msgid "agent_utilization"
+msgstr "代理利用率"
+
+msgid "agent_productivity"
+msgstr "代理生产力"
+
+msgid "agent_performance"
+msgstr "代理绩效"
+
+msgid "agent_satisfaction"
+msgstr "代理满意度"
+
+msgid "customer_satisfaction"
+msgstr "客户满意度"
+
+msgid "customer_effort"
+msgstr "客户努力度"
+
+msgid "customer_retention"
+msgstr "客户留存率"
+
+msgid "customer_lifetime_value"
+msgstr "客户终身价值"
+
+msgid "customer_acquisition_cost"
+msgstr "客户获取成本"
+
+msgid "cost_per_ticket"
+msgstr "每工单成本"
+
+msgid "cost_per_resolution"
+msgstr "每次解决成本"
+
+msgid "average_handle_time"
+msgstr "平均处理时间"
+
+msgid "average_resolution_time"
+msgstr "平均解决时间"
+
+msgid "average_response_time"
+msgstr "平均响应时间"
+
+msgid "average_first_response_time"
+msgstr "平均首次响应时间"
+
+msgid "average_wait_time"
+msgstr "平均等待时间"
+
+msgid "average_abandonment_rate"
+msgstr "平均放弃率"
+
+msgid "service_level"
+msgstr "服务水平"
+
+msgid "service_level_agreement"
+msgstr "服务级别协议"
+
+msgid "operational_level_agreement"
+msgstr "运营级别协议"
+
+msgid "underpinning_contract"
+msgstr "支持合同"
+
+msgid "service_catalog"
+msgstr "服务目录"
+
+msgid "service_portfolio"
+msgstr "服务组合"
+
+msgid "service_pipeline"
+msgstr "服务管道"
+
+msgid "service_improvement_plan"
+msgstr "服务改进计划"
+
+msgid "continual_service_improvement"
+msgstr "持续服务改进"
+
+msgid "service_design"
+msgstr "服务设计"
+
+msgid "service_transition"
+msgstr "服务过渡"
+
+msgid "service_operation"
+msgstr "服务运营"
+
+msgid "service_strategy"
+msgstr "服务策略"
+
+msgid "service_management"
+msgstr "服务管理"
+
+msgid "it_service_management"
+msgstr "IT服务管理"
+
+msgid "itil"
+msgstr "ITIL"
+
+msgid "cobit"
+msgstr "COBIT"
+
+msgid "iso"
+msgstr "ISO"
+
+msgid "iso_20000"
+msgstr "ISO 20000"
+
+msgid "iso_27001"
+msgstr "ISO 27001"
+
+msgid "iso_9001"
+msgstr "ISO 9001"
+
+msgid "pci_dss"
+msgstr "PCI DSS"
+
+msgid "hipaa"
+msgstr "HIPAA"
+
+msgid "gdpr"
+msgstr "GDPR"
+
+msgid "ccpa"
+msgstr "CCPA"
+
+msgid "sox"
+msgstr "SOX"
+
+msgid "basel"
+msgstr "巴塞尔"
+
+msgid "dodd_frank"
+msgstr "多德-弗兰克"
+
+msgid "mifid"
+msgstr "MiFID"
+
+msgid "emir"
+msgstr "EMIR"
+
+msgid "sftr"
+msgstr "SFTR"
+
+msgid "cftc"
+msgstr "CFTC"
+
+msgid "sec"
+msgstr "SEC"
+
+msgid "finra"
+msgstr "FINRA"
+
+msgid "fca"
+msgstr "FCA"
+
+msgid "pra"
+msgstr "PRA"
+
+msgid "ecb"
+msgstr "ECB"
+
+msgid "esma"
+msgstr "ESMA"
+
+msgid "iosco"
+msgstr "IOSCO"
+
+msgid "fsb"
+msgstr "FSB"
+
+msgid "bis"
+msgstr "BIS"
+
+msgid "imf"
+msgstr "IMF"
+
+msgid "world_bank"
+msgstr "世界银行"
+
+msgid "oecd"
+msgstr "OECD"
+
+msgid "wto"
+msgstr "WTO"
+
+msgid "unctad"
+msgstr "UNCTAD"
+
+msgid "unido"
+msgstr "UNIDO"
+
+msgid "ilo"
+msgstr "ILO"
+
+msgid "who"
+msgstr "WHO"
+
+msgid "unicef"
+msgstr "UNICEF"
+
+msgid "unesco"
+msgstr "UNESCO"
+
+msgid "fao"
+msgstr "FAO"
+
+msgid "iaea"
+msgstr "IAEA"
+
+msgid "icao"
+msgstr "ICAO"
+
+msgid "imo"
+msgstr "IMO"
+
+msgid "itu"
+msgstr "ITU"
+
+msgid "upu"
+msgstr "UPU"
+
+msgid "wmo"
+msgstr "WMO"
+
+msgid "wipo"
+msgstr "WIPO"
+
+msgid "ifad"
+msgstr "IFAD"
+
+msgid "unfpa"
+msgstr "UNFPA"
+
+msgid "unhcr"
+msgstr "UNHCR"
+
+msgid "unops"
+msgstr "UNOPS"
+
+msgid "unrwa"
+msgstr "UNRWA"
+
+msgid "unwomen"
+msgstr "联合国妇女署"
+
+msgid "world_food_programme"
+msgstr "世界粮食计划署"
+
+msgid "un_habitat"
+msgstr "联合国人居署"
+
+msgid "unodc"
+msgstr "UNODC"
+
+msgid "unfccc"
+msgstr "UNFCCC"
+
+msgid "cbd"
+msgstr "CBD"
+
+msgid "unccd"
+msgstr "UNCCD"
+
+msgid "basel_convention"
+msgstr "巴塞尔公约"
+
+msgid "rotterdam_convention"
+msgstr "鹿特丹公约"
+
+msgid "stockholm_convention"
+msgstr "斯德哥尔摩公约"
+
+msgid "minamata_convention"
+msgstr "水俣公约"
+
+msgid "montreal_protocol"
+msgstr "蒙特利尔议定书"
+
+msgid "kyoto_protocol"
+msgstr "京都议定书"
+
+msgid "paris_agreement"
+msgstr "巴黎协定"
+
+msgid "european_green_deal"
+msgstr "欧洲绿色协议"
+
+msgid "european_deal"
+msgstr "欧洲协议"
+
+msgid "digital_europe"
+msgstr "数字欧洲"
+
+msgid "horizon_europe"
+msgstr "地平线欧洲"
+
+msgid "erasmus"
+msgstr "伊拉斯谟+"
+
+msgid "european_structural_funds"
+msgstr "欧洲结构基金"
+
+msgid "cohesion_fund"
+msgstr "凝聚基金"
+
+msgid "european_regional_development_fund"
+msgstr "欧洲区域发展基金"
+
+msgid "european_social_fund"
+msgstr "欧洲社会基金"
+
+msgid "european_agricultural_fund"
+msgstr "欧洲农业基金"
+
+msgid "european_maritime_fund"
+msgstr "欧洲海事基金"
+
+msgid "european_fisheries_fund"
+msgstr "欧洲渔业基金"
+
+msgid "european_globalisation_fund"
+msgstr "欧洲全球化基金"
+
+msgid "european_adjustment_fund"
+msgstr "欧洲调整基金"
+
+msgid "european_union"
+msgstr "欧洲联盟"
+
+msgid "european_commission"
+msgstr "欧洲委员会"
+
+msgid "european_parliament"
+msgstr "欧洲议会"
+
+msgid "european_council"
+msgstr "欧洲理事会"
+
+msgid "council_of_the_european_union"
+msgstr "欧盟理事会"
+
+msgid "european_court_of_justice"
+msgstr "欧洲法院"
+
+msgid "european_court_of_auditors"
+msgstr "欧洲审计院"
+
+msgid "european_central_bank"
+msgstr "欧洲中央银行"
+
+msgid "european_investment_bank"
+msgstr "欧洲投资银行"
+
+msgid "european_ombudsman"
+msgstr "欧洲监察员"
+
+msgid "european_data_protection_supervisor"
+msgstr "欧洲数据保护监督员"
+
+msgid "european_data_protection_board"
+msgstr "欧洲数据保护委员会"
+
+msgid "european_external_action_service"
+msgstr "欧洲对外行动署"
+
+msgid "european_border_and_coast_guard"
+msgstr "欧洲边境和海岸警卫队"
+
+msgid "europol"
+msgstr "欧洲刑警组织"
+
+msgid "eurojust"
+msgstr "欧洲司法组织"
+
+msgid "european_anti_fraud_office"
+msgstr "欧洲反欺诈办公室"
+
+msgid "european_public_prosecutors_office"
+msgstr "欧洲检察官办公室"
+
+msgid "european_union_agency"
+msgstr "欧盟机构"
+
+msgid "eu_agency"
+msgstr "欧盟机构"
+
+msgid "eu_body"
+msgstr "欧盟机构"
+
+msgid "eu_institution"
+msgstr "欧盟机构"
+
+msgid "eu_office"
+msgstr "欧盟办公室"
+
+msgid "eu_service"
+msgstr "欧盟服务"
+
+msgid "eu_directorate"
+msgstr "欧盟总司"
+
+msgid "eu_department"
+msgstr "欧盟部门"
+
+msgid "eu_division"
+msgstr "欧盟司"
+
+msgid "eu_unit"
+msgstr "欧盟单位"
+
+msgid "eu_section"
+msgstr "欧盟科"
+
+msgid "eu_team"
+msgstr "欧盟团队"
+
+msgid "eu_group"
+msgstr "欧盟小组"
+
+msgid "eu_committee"
+msgstr "欧盟委员会"
+
+msgid "eu_council"
+msgstr "欧盟理事会"
+
+msgid "eu_board"
+msgstr "欧盟委员会"
+
+msgid "eu_panel"
+msgstr "欧盟小组"
+
+msgid "eu_working_group"
+msgstr "欧盟工作组"
+
+msgid "eu_task_force"
+msgstr "欧盟工作组"
+
+msgid "eu_project_group"
+msgstr "欧盟项目组"
+
+msgid "eu_steering_committee"
+msgstr "欧盟指导委员会"
+
+msgid "eu_advisory_group"
+msgstr "欧盟咨询小组"
+
+msgid "eu_expert_group"
+msgstr "欧盟专家组"
+
+msgid "eu_reference_group"
+msgstr "欧盟参考小组"
+
+msgid "eu_coordination_group"
+msgstr "欧盟协调小组"
+
+msgid "eu_liaison_group"
+msgstr "欧盟联络小组"
+
+msgid "eu_contact_group"
+msgstr "欧盟联络小组"
+
+msgid "eu_information_group"
+msgstr "欧盟信息小组"
+
+msgid "eu_network"
+msgstr "欧盟网络"
+
+msgid "eu_platform"
+msgstr "欧盟平台"
+
+msgid "eu_forum"
+msgstr "欧盟论坛"
+
+msgid "eu_community"
+msgstr "欧盟社区"
+
+msgid "eu_association"
+msgstr "欧盟协会"
+
+msgid "eu_federation"
+msgstr "欧盟联合会"
+
+msgid "eu_alliance"
+msgstr "欧盟联盟"
+
+msgid "eu_coalition"
+msgstr "欧盟联盟"
+
+msgid "eu_partnership"
+msgstr "欧盟伙伴关系"
+
+msgid "eu_collaboration"
+msgstr "欧盟合作"
+
+msgid "eu_cooperation"
+msgstr "欧盟合作"
+
+msgid "eu_coordination"
+msgstr "欧盟协调"
+
+msgid "eu_integration"
+msgstr "欧盟一体化"
+
+msgid "eu_harmonisation"
+msgstr "欧盟协调"
+
+msgid "eu_standardisation"
+msgstr "欧盟标准化"
+
+msgid "eu_certification"
+msgstr "欧盟认证"
+
+msgid "eu_accreditation"
+msgstr "欧盟认证"
+
+msgid "eu_recognition"
+msgstr "欧盟认可"
+
+msgid "eu_validation"
+msgstr "欧盟验证"
+
+msgid "eu_verification"
+msgstr "欧盟验证"
+
+msgid "eu_audit"
+msgstr "欧盟审计"
+
+msgid "eu_inspection"
+msgstr "欧盟检查"
+
+msgid "eu_assessment"
+msgstr "欧盟评估"
+
+msgid "eu_evaluation"
+msgstr "欧盟评估"
+
+msgid "eu_review"
+msgstr "欧盟审查"
+
+msgid "eu_analysis"
+msgstr "欧盟分析"
+
+msgid "eu_study"
+msgstr "欧盟研究"
+
+msgid "eu_research"
+msgstr "欧盟研究"
+
+msgid "eu_survey"
+msgstr "欧盟调查"
+
+msgid "eu_investigation"
+msgstr "欧盟调查"
+
+msgid "eu_inquiry"
+msgstr "欧盟调查"
+
+msgid "eu_examination"
+msgstr "欧盟审查"
+
+msgid "eu_testing"
+msgstr "欧盟测试"
+
+msgid "eu_trial"
+msgstr "欧盟试验"
+
+msgid "eu_pilot"
+msgstr "欧盟试点"
+
+msgid "eu_prototype"
+msgstr "欧盟原型"
+
+msgid "eu_demonstration"
+msgstr "欧盟示范"
+
+msgid "eu_implementation"
+msgstr "欧盟实施"
+
+msgid "eu_deployment"
+msgstr "欧盟部署"
+
+msgid "eu_rollout"
+msgstr "欧盟推广"
+
+msgid "eu_launch"
+msgstr "欧盟发布"
+
+msgid "eu_release"
+msgstr "欧盟发布"
+
+msgid "eu_go_live"
+msgstr "欧盟上线"
+
+msgid "eu_production"
+msgstr "欧盟生产"
+
+msgid "eu_operation"
+msgstr "欧盟运营"
+
+msgid "eu_maintenance"
+msgstr "欧盟维护"
+
+msgid "eu_support"
+msgstr "欧盟支持"
+
+msgid "eu_service_desk"
+msgstr "欧盟服务台"
+
+msgid "eu_help_desk"
+msgstr "欧盟服务台"
+
+msgid "eu_incident_management"
+msgstr "欧盟事件管理"
+
+msgid "eu_problem_management"
+msgstr "欧盟问题管理"
+
+msgid "eu_change_management"
+msgstr "欧盟变更管理"
+
+msgid "eu_release_management"
+msgstr "欧盟发布管理"
+
+msgid "eu_configuration_management"
+msgstr "欧盟配置管理"
+
+msgid "eu_asset_management"
+msgstr "欧盟资产管理"
+
+msgid "eu_service_level_management"
+msgstr "欧盟服务级别管理"
+
+msgid "eu_capacity_management"
+msgstr "欧盟容量管理"
+
+msgid "eu_availability_management"
+msgstr "欧盟可用性管理"
+
+msgid "eu_continuity_management"
+msgstr "欧盟连续性管理"
+
+msgid "eu_security_management"
+msgstr "欧盟安全管理"
+
+msgid "eu_supplier_management"
+msgstr "欧盟供应商管理"
+
+msgid "eu_risk_management"
+msgstr "欧盟风险管理"
+
+msgid "eu_financial_management"
+msgstr "欧盟财务管理"
+
+msgid "eu_knowledge_management"
+msgstr "欧盟知识管理"
+
+msgid "eu_capacity_planning"
+msgstr "欧盟容量规划"
+
+msgid "eu_performance_management"
+msgstr "欧盟绩效管理"
+
+msgid "eu_quality_management"
+msgstr "欧盟质量管理"
+
+msgid "eu_compliance_management"
+msgstr "欧盟合规管理"
+
+msgid "eu_vendor_management"
+msgstr "欧盟供应商管理"
+
+# Dashboard Additional Keys
+msgid "welcome_to_help_desk"
+msgstr "欢迎使用服务台管理系统"
+
+msgid "ticket_analytics"
+msgstr "工单分析"
+
+msgid "tickets_by_category"
+msgstr "按类别分类的工单"
+
+msgid "top_agents"
+msgstr "最佳代理"
+
+msgid "agent"
+msgstr "代理"
+
+msgid "solved"
+msgstr "已解决"
+
+msgid "admin"
+msgstr "管理员"
+
+msgid "on_hold_tickets"
+msgstr "暂停的工单"
+
+msgid "ml_high_risk"
+msgstr "ML 高风险"
+
+msgid "priority_distribution"
+msgstr "优先级分布"
+
+msgid "no_tickets_found"
+msgstr "未找到工单。"
+
+msgid "escalated_tickets_warning"
+msgstr "个工单当前已升级，需要关注。"
+
+msgid "ticket_status_distribution"
+msgstr "工单状态分布"
+
+msgid "agent_workload"
+msgstr "代理工作负载"
+
+msgid "unassigned_tickets"
+msgstr "未分配"
+
+msgid "no_agent_workload_data"
+msgstr "没有代理工作负载数据。"
+
+msgid "view_all"
+msgstr "查看全部"
+
+msgid "sla_breach_alerts"
+msgstr "SLA 违规警报"
+
+msgid "ml_resolution_insights"
+msgstr "ML 解决洞察"
+
+msgid "model_management"
+msgstr "模型管理"
+
+msgid "ml_estimate"
+msgstr "ML 估计"
+
+msgid "support_agent"
+msgstr "支持代理"
+
+msgid "recent_assigned_tickets"
+msgstr "最近分配的工单"
+
+msgid "tickets_displayed"
+msgstr "个工单已显示"
+
+msgid "view_all_my_tickets"
+msgstr "查看所有我的工单"
+
+msgid "search_by_ticket_or_title"
+msgstr "按工单号或标题搜索..."
+
+msgid "all_statuses"
+msgstr "所有状态"
+
+msgid "all_priorities"
+msgstr "所有优先级"
+
+msgid "no_tickets_match_filters"
+msgstr "没有工单符合您当前的搜索或筛选条件。"
+
+msgid "no_tickets_assigned_yet"
+msgstr "尚未为您分配任何工单。"
+
+msgid "customer"
+msgstr "客户"
+
+msgid "my_dashboard"
+msgstr "我的仪表板"
+
+msgid "quick_actions"
+msgstr "快速操作"
+
+msgid "submit_new_ticket"
+msgstr "提交新工单"
+
+msgid "view_all_tickets"
+msgstr "查看所有工单"
+
+msgid "no_tickets_yet"
+msgstr "暂无工单。"
+
+# Additional JS i18n keys
+msgid "email_and_password_required"
+msgstr "请输入电子邮件和密码"
+
+msgid "signing_in"
+msgstr "正在登录..."
+
+msgid "login_error"
+msgstr "登录时发生错误"
+
+msgid "registration_no_email"
+msgstr "注册成功，但我们无法发送验证电子邮件。请在登录后尝试重新发送验证电子邮件。"
+
+msgid "error_prefix"
+msgstr "错误："
+
+msgid "model_colon"
+msgstr "模型："
+
+msgid "ai_service_error"
+msgstr "AI服务错误"
+
+msgid "no_matching_tickets"
+msgstr "未找到匹配的工单。"
+
+msgid "no_matching_customers"
+msgstr "未找到匹配的客户。"
+
+msgid "no_matching_agents"
+msgstr "未找到匹配的代理。"
+
+msgid "no_matching_skills"
+msgstr "未找到匹配的技能。"
+
+msgid "no_matching_issue_types"
+msgstr "未找到匹配的问题类型。"
+
+msgid "no_matching_notifications"
+msgstr "未找到匹配的通知。"
+
+msgid "no_matching_predictions"
+msgstr "未找到匹配的ML预测。"
+
+msgid "no_matching_records"
+msgstr "未找到匹配的记录。"
+
+# Chatbot
+msgid "chatbot_greeting"
+msgstr "??!?????????"msgid "join_help_desk"
+msgstr "加入帮助台系统"
+
+msgid "first_name"
+msgstr "名字"
+
+msgid "last_name"
+msgstr "姓氏"
+
+msgid "department_id"
+msgstr "部门ID"
+
+msgid "enter_first_name"
+msgstr "请输入名字"
+
+msgid "enter_last_name"
+msgstr "请输入姓氏"
+
+msgid "enter_mobile"
+msgstr "请输入手机号"
+
+msgid "create_password"
+msgstr "创建密码"
+
+msgid "department_id_optional"
+msgstr "请输入部门ID（可选）"
+
+msgid "all_fields_required"
+msgstr "请填写所有必填字段"
+
+msgid "email_already_registered"
+msgstr "该邮箱已注册但未验证。请检查您的邮箱或请求新的验证链接。"
+
+msgid "registration_error"
+msgstr "注册过程中发生错误"
+
+msgid "access_denied"
+msgstr "[zh] Access Denied"
+
+msgid "agent_cannot_be_deleted_because_they_are_linked_with_other_records_please_reassign_their_tickets_first"
+msgstr "[zh] Agent cannot be deleted because they are linked with other records. Please reassign their tickets first."
+
+msgid "agent_deleted_successfully"
+msgstr "[zh] Agent deleted successfully"
+
+msgid "agent_not_found"
+msgstr "[zh] Agent not found"
+
+msgid "agent_updated_successfully"
+msgstr "[zh] Agent updated successfully"
+
+msgid "ai_summary_generated_successfully"
+msgstr "[zh] AI Summary generated successfully!"
+
+msgid "all_fields_are_required"
+msgstr "[zh] All fields are required"
+
+msgid "all_notifications_marked_as_read"
+msgstr "[zh] All notifications marked as read"
+
+msgid "all_required_fields_must_be_filled"
+msgstr "[zh] All required fields must be filled"
+
+msgid "an_error_occurred_please_try_again"
+msgstr "[zh] An error occurred. Please try again."
+
+msgid "another_issue_type_with_this_name_already_exists"
+msgstr "[zh] Another Issue Type with this name already exists"
+
+msgid "another_skill_with_this_name_already_exists"
+msgstr "[zh] Another skill with this name already exists"
+
+msgid "attachment_uploaded_successfully"
+msgstr "[zh] Attachment uploaded successfully"
+
+msgid "category_deleted_successfully_related_skills_have_been_unlinked_and_agent_assignments_removed"
+msgstr "[zh] Category deleted successfully. Related skills have been unlinked and agent assignments removed."
+
+msgid "comment_added_successfully"
+msgstr "[zh] Comment added successfully"
+
+msgid "comment_cannot_be_empty"
+msgstr "[zh] Comment cannot be empty"
+
+msgid "comment_text_is_required"
+msgstr "[zh] Comment text is required"
+
+msgid "current_password_is_incorrect"
+msgstr "[zh] Current password is incorrect"
+
+msgid "customer_added_successfully"
+msgstr "[zh] Customer added successfully"
+
+msgid "customer_cannot_be_deleted_because_they_are_linked_with_other_records_please_remove_all_associated_tickets_first"
+msgstr "[zh] Customer cannot be deleted because they are linked with other records. Please remove all associated tickets first."
+
+msgid "customer_deleted_successfully"
+msgstr "[zh] Customer deleted successfully"
+
+msgid "customer_not_found"
+msgstr "[zh] Customer not found"
+
+msgid "customer_updated_successfully"
+msgstr "[zh] Customer updated successfully"
+
+msgid "department_added_successfully"
+msgstr "[zh] Department Added Successfully!"
+
+msgid "department_already_exists"
+msgstr "[zh] Department Already Exists!"
+
+msgid "department_cannot_be_deleted_because_users_are_assigned_to_it"
+msgstr "[zh] Department cannot be deleted because users are assigned to it."
+
+msgid "department_deleted_successfully"
+msgstr "[zh] Department deleted successfully."
+
+msgid "duplicate_comment_detected"
+msgstr "[zh] Duplicate comment detected"
+
+msgid "email_is_required"
+msgstr "[zh] Email is required"
+
+msgid "error_adding_issue_type"
+msgstr "[zh] Error adding Issue Type"
+
+msgid "error_adding_skill"
+msgstr "[zh] Error adding skill"
+
+msgid "error_deleting_category"
+msgstr "[zh] Error deleting category"
+
+msgid "error_deleting_skill"
+msgstr "[zh] Error deleting skill"
+
+msgid "error_deleting_ticket_please_try_again"
+msgstr "[zh] Error deleting ticket. Please try again."
+
+msgid "error_updating_issue_type"
+msgstr "[zh] Error updating Issue Type"
+
+msgid "error_updating_skill"
+msgstr "[zh] Error updating skill"
+
+msgid "escalation_added_successfully"
+msgstr "[zh] Escalation Added Successfully"
+
+msgid "escalation_updated_successfully"
+msgstr "[zh] Escalation Updated Successfully"
+
+msgid "failed_to_delete_notification"
+msgstr "[zh] Failed to delete notification"
+
+msgid "failed_to_delete_notifications"
+msgstr "[zh] Failed to delete notifications"
+
+msgid "first_name_last_name_email_and_password_are_required"
+msgstr "[zh] First name, last name, email, and password are required"
+
+msgid "invalid_port_or_items_per_page_value"
+msgstr "[zh] Invalid port or items per page value"
+
+msgid "issue_type_added_successfully"
+msgstr "[zh] Issue Type added successfully"
+
+msgid "issue_type_already_exists"
+msgstr "[zh] Issue Type already exists"
+
+msgid "issue_type_deleted_successfully"
+msgstr "[zh] Issue Type deleted successfully"
+
+msgid "issue_type_is_in_use_and_has_been_deactivated_instead_of_deleted"
+msgstr "[zh] Issue Type is in use and has been deactivated instead of deleted"
+
+msgid "issue_type_name_and_category_are_required"
+msgstr "[zh] Issue Type Name and Category are required"
+
+msgid "issue_type_updated_successfully"
+msgstr "[zh] Issue Type updated successfully"
+
+msgid "logged_out_successfully"
+msgstr "[zh] Logged out successfully"
+
+msgid "new_password_must_be_different_from_current_password"
+msgstr "[zh] New password must be different from current password"
+
+msgid "new_passwords_do_not_match"
+msgstr "[zh] New passwords do not match"
+
+msgid "no_file_selected"
+msgstr "[zh] No file selected"
+
+msgid "notification_added_successfully"
+msgstr "[zh] Notification Added Successfully"
+
+msgid "notification_deleted"
+msgstr "[zh] Notification deleted"
+
+msgid "notification_deleted_successfully"
+msgstr "[zh] Notification Deleted Successfully"
+
+msgid "notification_marked_as_read"
+msgstr "[zh] Notification marked as read"
+
+msgid "notification_updated_successfully"
+msgstr "[zh] Notification Updated Successfully"
+
+msgid "password_changed_successfully_please_login_with_your_new_password"
+msgstr "[zh] Password changed successfully. Please login with your new password."
+
+msgid "password_reset_failed_please_try_again"
+msgstr "[zh] Password reset failed. Please try again."
+
+msgid "passwords_do_not_match"
+msgstr "[zh] Passwords do not match"
+
+msgid "please_log_in_to_access_the_ai_assistant"
+msgstr "[zh] Please log in to access the AI assistant."
+
+msgid "please_login_first"
+msgstr "[zh] Please login first"
+
+msgid "please_select_an_agent"
+msgstr "[zh] Please select an agent"
+
+msgid "please_select_category"
+msgstr "[zh] Please select category"
+
+msgid "please_select_priority"
+msgstr "[zh] Please select priority"
+
+msgid "please_select_status"
+msgstr "[zh] Please select status"
+
+msgid "priority_is_required"
+msgstr "[zh] Priority is required"
+
+msgid "priority_not_found"
+msgstr "[zh] Priority Not Found"
+
+msgid "priority_not_found_1"
+msgstr "[zh] Priority not found"
+
+msgid "role_added_successfully"
+msgstr "[zh] Role Added Successfully"
+
+msgid "role_deleted_successfully"
+msgstr "[zh] Role Deleted Successfully"
+
+msgid "role_updated_successfully"
+msgstr "[zh] Role Updated Successfully"
+
+msgid "settings_saved_successfully"
+msgstr "[zh] Settings saved successfully!"
+
+msgid "settings_updated_successfully"
+msgstr "[zh] Settings updated successfully!"
+
+msgid "skill_added_successfully"
+msgstr "[zh] Skill added successfully"
+
+msgid "skill_already_exists"
+msgstr "[zh] Skill already exists"
+
+msgid "skill_deleted_successfully"
+msgstr "[zh] Skill deleted successfully"
+
+msgid "skill_name_and_category_are_required"
+msgstr "[zh] Skill Name and Category are required"
+
+msgid "skill_not_found"
+msgstr "[zh] Skill not found"
+
+msgid "skill_updated_successfully"
+msgstr "[zh] Skill updated successfully"
+
+msgid "sla_rule_added_successfully"
+msgstr "[zh] SLA Rule Added Successfully"
+
+msgid "sla_rule_updated_successfully"
+msgstr "[zh] SLA Rule Updated Successfully"
+
+msgid "status_added_successfully"
+msgstr "[zh] Status Added Successfully"
+
+msgid "status_already_exists"
+msgstr "[zh] Status already exists"
+
+msgid "status_is_required"
+msgstr "[zh] Status is required"
+
+msgid "status_updated_successfully"
+msgstr "[zh] Status Updated Successfully"
+
+msgid "thank_you_your_message_has_been_sent_a_support_ticket_has_been_created_and_our_team_will_respond_shortly"
+msgstr "[zh] Thank you! Your message has been sent. A support ticket has been created and our team will respond shortly."
+
+msgid "this_email_address_is_already_registered"
+msgstr "[zh] This email address is already registered."
+
+msgid "ticket_assigned_successfully"
+msgstr "[zh] Ticket Assigned Successfully!"
+
+msgid "ticket_assigned_successfully_1"
+msgstr "[zh] Ticket assigned successfully"
+
+msgid "ticket_closed_successfully"
+msgstr "[zh] Ticket closed successfully"
+
+msgid "ticket_created_successfully"
+msgstr "[zh] Ticket Created Successfully!"
+
+msgid "ticket_deleted_successfully"
+msgstr "[zh] Ticket Deleted Successfully!"
+
+msgid "ticket_escalated_successfully"
+msgstr "[zh] Ticket escalated successfully"
+
+msgid "ticket_has_no_content_to_summarize"
+msgstr "[zh] Ticket has no content to summarize"
+
+msgid "ticket_marked_as_resolved"
+msgstr "[zh] Ticket marked as Resolved"
+
+msgid "ticket_not_found"
+msgstr "[zh] Ticket not found"
+
+msgid "ticket_not_found_or_not_assigned_to_you"
+msgstr "[zh] Ticket not found or not assigned to you"
+
+msgid "ticket_priority_updated_successfully"
+msgstr "[zh] Ticket priority updated successfully"
+
+msgid "ticket_reassigned_successfully"
+msgstr "[zh] Ticket reassigned successfully"
+
+msgid "ticket_reopened_successfully"
+msgstr "[zh] Ticket reopened successfully"
+
+msgid "ticket_status_updated_successfully"
+msgstr "[zh] Ticket status updated successfully"
+
+msgid "ticket_submitted_successfully"
+msgstr "[zh] Ticket submitted successfully!"
+
+msgid "ticket_updated_successfully"
+msgstr "[zh] Ticket Updated Successfully!"
+
+msgid "title_is_required"
+msgstr "[zh] Title is required"
+
+msgid "title_is_required_1"
+msgstr "[zh] Title is required."
+
+msgid "user_added_successfully"
+msgstr "[zh] User Added Successfully!"
+
+msgid "user_cannot_be_deleted_because_this_user_is_linked_with_other_records_please_remove_all_associated_tickets_comments_and_attachments_first"
+msgstr "[zh] User cannot be deleted because this user is linked with other records. Please remove all associated tickets, comments, and attachments first."
+
+msgid "user_deleted_successfully"
+msgstr "[zh] User deleted successfully."
+
+msgid "user_not_found"
+msgstr "[zh] User not found"
+
+msgid "user_updated_successfully"
+msgstr "[zh] User Updated Successfully"
+
+msgid "your_email_has_been_verified_successfully_please_login_to_continue"
+msgstr "[zh] Your email has been verified successfully. Please login to continue."

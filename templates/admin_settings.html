@@ -1,0 +1,86 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Settings') }}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-lg-8">
+            <h3 class="fw-bold mb-1"><i class="fa-solid fa-gear text-primary me-2"></i>{{ _('System Settings') }}</h3>
+            <p class="text-muted mb-0">{{ _('Manage App Config') }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white">
+            <h5 class="fw-bold mb-0">{{ _('Company Info') }}</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if config %}
+            <div class="table-scroll">
+                <table class="table table-hover align-middle mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">Company {{ _('Name') }}</td>
+                            <td class="py-3">{{ config.company_name or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">Company {{ _('Email') }}</td>
+                            <td class="py-3">{{ config.company_email or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Company Phone') }}</td>
+                            <td class="py-3">{{ config.company_phone or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">Company {{ _('Add') }}ress</td>
+                            <td class="py-3">{{ config.company_address or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Smtp Server') }}</td>
+                            <td class="py-3">{{ config.smtp_server or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Smtp Port') }}</td>
+                            <td class="py-3">{{ config.smtp_port or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Smtp Username') }}</td>
+                            <td class="py-3">{{ config.smtp_username or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Smtp Use Tls') }}</td>
+                            <td class="py-3">{{ 'Yes' if config.smtp_use_tls else 'No' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">Default {{ _('Priority') }}</td>
+                            <td class="py-3">{{ config.default_priority or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">Auto {{ _('Assign Ticket') }}s</td>
+                            <td class="py-3">{{ 'Yes' if config.auto_assign_tickets else 'No' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Items Per Page') }}</td>
+                            <td class="py-3">{{ config.items_per_page or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold ps-4 py-3">{{ _('Timezone') }}</td>
+                            <td class="py-3">{{ config.timezone or 'N/A' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="fa-regular fa-gear d-block fs-3 mb-2 opacity-50"></i>
+                {{ _('No Settings Found') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

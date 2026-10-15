@@ -1,0 +1,178 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Reports') }}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-lg-8">
+            <h3 class="fw-bold mb-1"><i class="fa-solid fa-chart-column text-primary me-2"></i>{{ _('Reports') }} &amp;
+                Analytics</h3>
+            <p class="text-muted mb-0">{{ _('View') }} system-wide statistics and performance metrics</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-ticket fa-2x text-primary mb-2"></i>
+                    <h6 class="text-muted mb-1">{{ _('Total Tickets') }}</h6>
+                    <h2 class="fw-bold text-primary">{{ total_tickets }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-users fa-2x text-info mb-2"></i>
+                    <h6 class="text-muted mb-1">Total {{ _('Customers') }}</h6>
+                    <h2 class="fw-bold text-info">{{ total_customers }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-user-group fa-2x text-warning mb-2"></i>
+                    <h6 class="text-muted mb-1">Total {{ _('Agents') }}</h6>
+                    <h2 class="fw-bold text-warning">{{ total_agents }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-user-chart fa-2x text-success mb-2"></i>
+                    <h6 class="text-muted mb-1">{{ _('Total Employees') }}</h6>
+                    <h2 class="fw-bold text-success">{{ total_employees }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Tickets') }} by {{ _('Status') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Tickets') }} by {{ _('Priority') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priorityChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Performance Table -->
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white">
+            <h5 class="fw-bold mb-0">{{ _('Agent') }} Performance</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-scroll">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4 py-3">{{ _('Agent') }}</th>
+                            <th class="py-3">{{ _('Total Tickets') }}</th>
+                            <th class="py-3">{{ _('Resolved') }}</th>
+                            <th class="py-3">{{ _('Active') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agent in agent_performance %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ agent.first_name }} {{ agent.last_name }}</td>
+                            <td>{{ agent.total_tickets }}</td>
+                            <td><span class="badge bg-success">{{ agent.resolved_tickets }}</span></td>
+                            <td><span class="badge bg-warning text-dark">{{ agent.pending_tickets }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">{{ _('No Agent Data Available') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var t = window.i18n ? function (key) { return i18n.t(key); } : function (key) { return key; };
+
+        var statusLabels = {{ status_data| map(attribute = 'status_name') | list | tojson
+    }};
+    var statusCounts = {{ status_data| map(attribute = 'ticket_count') | list | tojson }};
+
+    var statusCanvas = document.getElementById('statusChart');
+    if (statusCanvas && statusLabels.length > 0) {
+        new Chart(statusCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    data: statusCounts,
+                    backgroundColor: ['#dc3545', '#ffc107', '#198754', '#6c757d', '#17a2b8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    } else if (statusCanvas) {
+        statusCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_status_data') + '</p>';
+    }
+
+    var priorityLabels = {{ priority_data| map(attribute = 'priority_name') | list | tojson }};
+    var priorityCounts = {{ priority_data| map(attribute = 'ticket_count') | list | tojson }};
+
+    var priorityCanvas = document.getElementById('priorityChart');
+    if (priorityCanvas && priorityLabels.length > 0) {
+        new Chart(priorityCanvas, {
+            type: 'bar',
+            data: {
+                labels: priorityLabels,
+                datasets: [{
+                    label: t('tickets_chart'),
+                    data: priorityCounts,
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    } else if (priorityCanvas) {
+        priorityCanvas.parentElement.innerHTML = '<p class="text-center text-muted mt-3">' + t('no_priority_data') + '</p>';
+    }
+});
+</script>
+{% endblock %}

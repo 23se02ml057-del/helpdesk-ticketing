@@ -1,0 +1,386 @@
+{% extends "layout_customer.html" %}
+
+{% block title %}
+{{ _('Customer') }} {{ _('Dashboard') }}
+{% endblock %}
+
+{% block page_title %}
+{{ _('My Dashboard') }}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chart-container {
+        position: relative;
+        height: 250px;
+        width: 100%;
+    }
+
+    .stat-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-chart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 250px;
+        color: #9ca3af;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .empty-chart i {
+        font-size: 3rem;
+        opacity: 0.3;
+        margin-bottom: 1rem;
+    }
+
+    .empty-chart p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">{{ _('My Tickets') }}</h6>
+                        <h2 class="fw-bold text-primary mb-0">{{ total_tickets }}</h2>
+                    </div>
+                    <i class="fa-solid fa-ticket fa-2x text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">{{ _('Open Tickets') }}</h6>
+                        <h2 class="fw-bold text-danger mb-0">{{ open_tickets }}</h2>
+                    </div>
+                    <i class="fa-solid fa-folder-open fa-2x text-danger"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">{{ _('Pending Tickets') }}</h6>
+                        <h2 class="fw-bold text-warning mb-0">{{ pending_tickets }}</h2>
+                    </div>
+                    <i class="fa-solid fa-clock fa-2x text-warning"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="card shadow border-0 rounded-4 h-100 stat-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">{{ _('Solved Closed Tickets') }}</h6>
+                        <h2 class="fw-bold text-success mb-0">{{ (resolved_tickets or 0) + (closed_tickets or 0) }}</h2>
+                    </div>
+                    <i class="fa-solid fa-circle-check fa-2x text-success"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Tickets by Status -->
+        <div class="col-12 col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Tickets By Status') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if total_tickets > 0 %}
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-chart">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <p class="mb-0">{{ _('No Tickets For Chart') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Activity Over Time -->
+        <div class="col-12 col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Ticket Activity Last 30 Days') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if total_tickets > 0 %}
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-chart">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <p class="mb-0">{{ _('No Tickets For Chart') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tickets + Quick Actions -->
+    <div class="row g-4">
+        <!-- Recent Tickets -->
+        <div class="col-12 col-lg-8">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">{{ _('Recent Tickets') }}</h5>
+                    <a href="{{ url_for('customer.my_tickets') }}" class="btn btn-sm btn-outline-primary">
+                        {{ _('View All') }}
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-scroll">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>{{ _('Ticket') }}</th>
+                                    <th>{{ _('Title') }}</th>
+                                    <th>{{ _('Status') }}</th>
+                                    <th>{{ _('Created At') }}</th>
+                                    <th>{{ _('Updated At') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in recent_tickets %}
+                                <tr data-ticket-id="{{ ticket.ticket_id }}">
+                                    <td>{{ ticket.ticket_number }}</td>
+                                    <td>{{ ticket.title }}</td>
+                                    <td>
+                                        {% if ticket.status_name == 'Open' %}
+                                        <span class="badge bg-danger">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'In Progress' %}
+                                        <span class="badge bg-primary">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'Pending' %}
+                                        <span class="badge bg-warning text-dark">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'On Hold' %}
+                                        <span class="badge bg-secondary">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'Resolved' %}
+                                        <span class="badge bg-success">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'Closed' %}
+                                        <span class="badge bg-dark">{{ ticket.status_name }}</span>
+                                        {% else %}
+                                        <span class="badge bg-info">{{ ticket.status_name }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}
+                                    </td>
+                                    <td>{{ ticket.updated_at.strftime('%Y-%m-%d') if ticket.updated_at else 'N/A' }}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                        {{ _('No Tickets Yet') }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-12 col-lg-4">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold">{{ _('Quick Actions') }}</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('customer.submit_ticket') }}" class="btn btn-primary w-100 mb-2">
+                        <i class="fa-solid fa-plus-circle me-2"></i> {{ _('Submit New Ticket') }}
+                    </a>
+                    <a href="{{ url_for('customer.my_tickets') }}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fa-solid fa-list me-2"></i> {{ _('View All Tickets') }}
+                    </a>
+                    <a href="{{ url_for('customer.customer_notifications') }}" class="btn btn-outline-info w-100 mb-2">
+                        <i class="fa-solid fa-bell me-2"></i> {{ _('Notifications') }}
+                        {% if unread_count and unread_count > 0 %}
+                        <span class="badge bg-danger rounded-pill ms-auto">{{ unread_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('customer.customer_profile') }}" class="btn btn-outline-secondary w-100">
+                        <i class="fa-solid fa-user me-2"></i> {{ _('My Profile') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const statusLabels = JSON.parse('{{ status_labels | tojson | safe }}');
+        const statusCounts = JSON.parse('{{ status_counts | tojson | safe }}');
+        const activityLabels = JSON.parse('{{ activity_labels | tojson | safe }}');
+        const activityCounts = JSON.parse('{{ activity_counts | tojson | safe }}');
+
+        // Status color mapping
+        const statusColors = {
+            'Open': '#ef4444',
+            'In Progress': '#3b82f6',
+            'Pending': '#f59e0b',
+            'On Hold': '#8b5cf6',
+            'Resolved': '#22c55e',
+            'Closed': '#6b7280',
+            'New': '#14b8a6',
+            'Unknown': '#9ca3af'
+        };
+
+        // Status Chart - Doughnut
+        const statusCtx = document.getElementById('statusChart');
+        if (statusCtx && statusLabels.length > 0) {
+            const backgroundColors = statusLabels.map(label => statusColors[label] || '#9ca3af');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusCounts,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 16,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    family: "'Poppins', 'Noto Sans', sans-serif",
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.raw / total) * 100).toFixed(1);
+                                    return context.label + ': ' + context.raw + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // Activity Chart - Line
+        const activityCtx = document.getElementById('activityChart');
+        if (activityCtx && activityLabels.length > 0) {
+            new Chart(activityCtx, {
+                type: 'line',
+                data: {
+                    labels: activityLabels,
+                    datasets: [{
+                        label: JSON.parse('{{ _("Tickets Created") | tojson | safe }}'),
+                        data: activityCounts,
+                        fill: true,
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        borderColor: '#0d6efd',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointBackgroundColor: '#0d6efd',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#212529',
+                            titleFont: {
+                                family: "'Poppins', 'Noto Sans', sans-serif"
+                            },
+                            bodyFont: {
+                                family: "'Poppins', 'Noto Sans', sans-serif"
+                            },
+                            padding: 12,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'Poppins', 'Noto Sans', sans-serif",
+                                    size: 10
+                                },
+                                maxTicksLimit: 10,
+                                autoSkip: true
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f3f4f6'
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'Poppins', 'Noto Sans', sans-serif",
+                                    size: 10
+                                },
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

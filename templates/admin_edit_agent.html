@@ -1,0 +1,288 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Edit Agent') }}
+{% endblock %}
+
+
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-lg-8">
+            <h3 class="fw-bold mb-1">{{ _('Edit') }} Support {{ _('Agent') }}</h3>
+            <p class="text-muted mb-0">{{ _('Update') }} agent account details</p>
+        </div>
+        <div class="col-lg-4 text-end">
+            <a href="{{ url_for('admin.agents') }}" class="btn btn-secondary">
+                <i class="fa fa-arrow-left me-1"></i> {{ _('Back') }} to {{ _('Agents') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+            <form action="{{ url_for('admin.update_agent', agent_id=agent.user_id) }}"
+                  method="POST">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name" class="form-label">{{ _('First Name') }}</label>
+                        <input type="text"
+                               class="form-control"
+                               id="first_name"
+                               name="first_name"
+                               value="{{ agent.first_name }}"
+                               required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="last_name" class="form-label">{{ _('Last Name') }}</label>
+                        <input type="text"
+                               class="form-control"
+                               id="last_name"
+                               name="last_name"
+                               value="{{ agent.last_name }}"
+                               required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">{{ _('Email') }}</label>
+                    <input type="email"
+                           class="form-control"
+                           id="email"
+                           name="email"
+                           value="{{ agent.email }}"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="mobile" class="form-label">{{ _('Mobile') }}</label>
+                    <input type="text"
+                           class="form-control"
+                           id="mobile"
+                           name="mobile"
+                           value="{{ agent.mobile or '' }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="department_id" class="form-label">{{ _('Department') }}</label>
+                    <select class="form-select"
+                            id="department_id"
+                            name="department_id">
+                        <option value="">-- {{ _('Select Department') }} --</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.department_id }}"
+                                {% if agent.department_id == dept.department_id %}selected{% endif %}>
+                            {{ dept.department_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="status" class="form-label">{{ _('Status') }}</label>
+                    <select class="form-select"
+                            id="status"
+                            name="status">
+                        <option value="{{ _('Active') }}"
+                                {% if agent.status == 'Active' %}selected{% endif %}>
+                            {{ _('Active') }}
+                        </option>
+                        <option value="{{ _('Inactive') }}"
+                                {% if agent.status == 'Inactive' %}selected{% endif %}>
+                            {{ _('Inactive') }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">{{ _('Skills') }}</label>
+                    <div class="selected-skills-container mb-2" id="adminAgentSelectedSkills" style="display:none;">
+                        <div class="d-flex flex-wrap gap-2" id="adminAgentSkillsTags"></div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mb-2" id="adminAgentAddSkillsBtn">
+                        <i class="fa-solid fa-plus me-1"></i> {{ _('Add Skills') }}
+                    </button>
+                    <div class="skills-picker-panel" id="adminAgentSkillsPanel" style="display:none; max-height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 0.5rem;">
+                        <div class="text-center py-4 text-muted">{{ _('Loading Skills') }}</div>
+                    </div>
+                    <input type="hidden" name="skills" id="adminAgentSkillsHidden" value="{{ agent_skills | map(attribute='skill_id') | join(',') }}">
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save me-1"></i> {{ _('Update Agent') }}
+                    </button>
+                    <a href="{{ url_for('admin.agents') }}" class="btn btn-secondary">{{ _('Cancel') }}</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var skillsByCategory = [];
+    var selectedSkills = {};
+    var hidden = document.getElementById('adminAgentSkillsHidden');
+    var container = document.getElementById('adminAgentSkillsContainer');
+    var panel = document.getElementById('adminAgentSkillsPanel');
+    var addBtn = document.getElementById('adminAgentAddSkillsBtn');
+
+    function renderTags() {
+        var tagsContainer = document.getElementById('adminAgentSkillsTags');
+        var selectedContainer = document.getElementById('adminAgentSelectedSkills');
+        if (!tagsContainer || !selectedContainer || !hidden) return;
+
+        tagsContainer.innerHTML = '';
+        var ids = Object.keys(selectedSkills).sort(function(a, b) {
+            var nameA = (selectedSkills[a] || '').toLowerCase();
+            var nameB = (selectedSkills[b] || '').toLowerCase();
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+            return 0;
+        });
+
+        if (ids.length === 0) {
+            selectedContainer.style.display = 'none';
+            hidden.value = '';
+            return;
+        }
+
+        selectedContainer.style.display = 'block';
+        ids.forEach(function(id) {
+            var name = selectedSkills[id] || ('Skill ' + id);
+            var tag = document.createElement('span');
+            tag.className = 'skill-tag';
+            tag.innerHTML = '<span>' + name + '</span><button type="button" class="skill-remove" data-id="' + id + '">&times;</button>';
+            tagsContainer.appendChild(tag);
+        });
+
+        hidden.value = ids.join(',');
+    }
+
+    function renderPicker() {
+        if (!panel) return;
+        panel.innerHTML = '';
+
+        if (skillsByCategory.length === 0) {
+            panel.innerHTML = '<div class="text-center py-3 text-muted">No skills available.</div>';
+            return;
+        }
+
+        skillsByCategory.forEach(function(cat) {
+            var catDiv = document.createElement('div');
+            catDiv.className = 'mb-2';
+
+            var catHeader = document.createElement('div');
+            catHeader.className = 'fw-bold text-primary mb-1';
+            catHeader.innerHTML = '<i class="fa-solid fa-folder me-1"></i>' + cat.category_name + ' <small class="text-muted">(' + (cat.department_name || '') + ')</small>';
+            catDiv.appendChild(catHeader);
+
+            var skillsDiv = document.createElement('div');
+            skillsDiv.className = 'ms-3 mb-2';
+
+            cat.skills.forEach(function(skill) {
+                var isChecked = selectedSkills.hasOwnProperty(String(skill.skill_id));
+                var skillDiv = document.createElement('div');
+                skillDiv.className = 'form-check';
+                skillDiv.innerHTML = '<input class="form-check-input skill-checkbox" type="checkbox" value="' + skill.skill_id + '" id="adminSkill_' + skill.skill_id + '" ' + (isChecked ? 'checked' : '') + '> <label class="form-check-label" for="adminSkill_' + skill.skill_id + '">' + skill.skill_name + '</label>';
+                skillsDiv.appendChild(skillDiv);
+            });
+
+            catDiv.appendChild(skillsDiv);
+            panel.appendChild(catDiv);
+        });
+    }
+
+    function updateSelectedFromPicker() {
+        if (!panel) return;
+        panel.querySelectorAll('.skill-checkbox').forEach(function(cb) {
+            var id = String(cb.value);
+            if (cb.checked) {
+                if (!selectedSkills.hasOwnProperty(id)) {
+                    var name = cb.nextElementSibling.textContent.trim();
+                    selectedSkills[id] = name;
+                }
+            } else {
+                delete selectedSkills[id];
+            }
+        });
+    }
+
+    function buildSelectedFromHidden() {
+        selectedSkills = {};
+        if (hidden && hidden.value) {
+            hidden.value.split(',').forEach(function(id) {
+                id = id.trim();
+                if (id) {
+                    skillsByCategory.forEach(function(cat) {
+                        cat.skills.forEach(function(s) {
+                            if (String(s.skill_id) === id) {
+                                selectedSkills[id] = s.skill_name;
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    }
+
+    fetch('/users/api/skills')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            skillsByCategory = data;
+            buildSelectedFromHidden();
+            renderTags();
+            renderPicker();
+        });
+
+    if (addBtn && panel) {
+        addBtn.addEventListener('click', function() {
+            var isHidden = panel.style.display === 'none';
+            if (isHidden) {
+                renderPicker();
+                panel.style.display = 'block';
+                addBtn.innerHTML = '<i class="fa-solid fa-minus me-1"></i> Hide Skills';
+            } else {
+                panel.style.display = 'none';
+                addBtn.innerHTML = '<i class="fa-solid fa-plus me-1"></i> Add Skills';
+            }
+        });
+    }
+
+    if (panel) {
+        panel.addEventListener('change', function() {
+            updateSelectedFromPicker();
+            renderTags();
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('skill-remove')) {
+            var id = e.target.getAttribute('data-id');
+            if (id && selectedSkills.hasOwnProperty(id)) {
+                delete selectedSkills[id];
+                renderTags();
+                if (panel && panel.style.display !== 'none') {
+                    renderPicker();
+                }
+            }
+        }
+    });
+
+    var form = document.querySelector('#adminAgentSkillsContainer').closest('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            if (panel) {
+                updateSelectedFromPicker();
+            }
+            renderTags();
+        });
+    }
+});
+</script>
+{% endblock %}

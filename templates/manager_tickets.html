@@ -1,0 +1,253 @@
+{% extends "layout_support_manager.html" %}
+
+{% block title %}
+{{ _('Tickets') }}
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+    .ticket-table th {
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        border-bottom-width: 2px;
+    }
+    .ticket-table td {
+        vertical-align: middle;
+    }
+    .ticket-table tbody tr {
+        border-bottom: 1px solid #f1f3f7;
+    }
+    .table-container {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.35em 0.7em;
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-md-7 col-lg-8">
+            <h3 class="fw-bold mb-1">{{ _('Tickets') }}</h3>
+            <p class="text-muted mb-0">{{ _('Manage Support Tickets') }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input type="text" id="ticketSearch" class="form-control"
+                               placeholder="{{ _('Search Tickets') }}"
+                               value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-sm" id="statusFilter">
+                        <option value="all">All {{ _('Status') }}es</option>
+                        {% for s in statuses %}
+                        <option value="{{ s.status_name }}">{{ s.status_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-sm" id="priorityFilter">
+                        <option value="all">All {{ _('Priorities') }}</option>
+                        {% for p in priorities %}
+                        <option value="{{ p.priority_name }}">{{ p.priority_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-sm" id="categoryFilter">
+                        <option value="all">All {{ _('Categories') }}</option>
+                        {% for c in categories %}
+                        <option value="{{ c.category_name }}">{{ c.category_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-sm" id="agentFilter">
+                        <option value="all">All {{ _('Agents') }}</option>
+                        {% for a in agents %}
+                        <option value="{{ a.user_id }}">{{ a.first_name }} {{ a.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div id="noResultsMsg" class="alert alert-warning mx-3 mt-2 d-none" style="display: none;">
+                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                {{ _('No Tickets Match Filters') }}
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0" style="max-height: 600px; overflow-y: auto;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 ticket-table">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4">{{ _('Ticket Hash') }}</th>
+                            <th>{{ _('Title') }}</th>
+                            <th>{{ _('Priority') }}</th>
+                            <th>{{ _('Status') }}</th>
+                            <th>{{ _('Category') }}</th>
+                            <th>{{ _('Issue Type') }}</th>
+                            <th>{{ _('Requester') }}</th>
+                            <th>{{ _('Agent') }}</th>
+                            <th>{{ _('Created') }}</th>
+                            <th>{{ _('Ml Estimate') }}</th>
+                            <th>{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                        <tr class="ticket-row"
+                            data-status="{{ ticket.status_name }}"
+                            data-priority="{{ ticket.priority_name }}"
+                            data-category="{{ ticket.category_name or '' }}"
+                            data-agent="{{ ticket.assigned_to or '' }}"
+                            data-ticket="{{ ticket.ticket_number }}"
+                            data-title="{{ ticket.title }}">
+                            <td class="ps-4 fw-bold">{{ ticket.ticket_number }}</td>
+                            <td class="text-truncate" style="max-width: 200px;" title="{{ ticket.title }}">{{ translate_value(ticket.title) }}</td>
+                            <td>
+                                {% if ticket.priority_name == 'Critical' %}
+                                    <span class="badge bg-danger">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% elif ticket.priority_name == 'High' %}
+                                    <span class="badge bg-danger">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% elif ticket.priority_name == 'Medium' %}
+                                    <span class="badge bg-warning text-dark">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% elif ticket.priority_name == 'Low' %}
+                                    <span class="badge bg-success">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ translate_priority(ticket.priority_name) }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if ticket.status_name == 'Open' %}bg-danger
+                                    {% elif ticket.status_name == 'In Progress' %}bg-warning text-dark
+                                    {% elif ticket.status_name == 'Resolved' %}bg-success
+                                    {% elif ticket.status_name == 'Closed' %}bg-secondary
+                                    {% elif ticket.status_name == 'On Hold' %}bg-info
+                                    {% elif ticket.status_name == 'New' %}bg-primary
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ translate_status(ticket.status_name) }}
+                                </span>
+                            </td>
+                            <td>{{ translate_category(ticket.category_name) or '-' }}</td>
+                            <td>
+                                {% if ticket.issue_name %}
+                                    <span class="badge bg-info">{{ ticket.issue_name }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ ticket.requester_first }} {{ ticket.requester_last }}</td>
+                            <td>
+                                {% if ticket.agent_first and ticket.agent_last %}
+                                    {{ ticket.agent_first }} {{ ticket.agent_last }}
+                                {% else %}
+                                    <span class="text-muted">Unassigned</span>
+                                {% endif %}
+                            </td>
+                            <td><small class="text-muted">{{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}</small></td>
+                            <td>
+                                {% set ml = ml_predictions_map.get(ticket.ticket_id) if ml_predictions_map else None %}
+                                {% if ml and ml.predicted_minutes %}
+                                    {{ "%.0f"|format(ml.predicted_minutes // 60) }}h {{ "%.0f"|format(ml.predicted_minutes % 60) }}m
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('support_manager.ticket_detail', ticket_id=ticket.ticket_id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-eye"></i> {{ _('View') }}
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="11" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                {{ _('No Tickets Found') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var searchInput = document.getElementById('ticketSearch');
+    var statusFilter = document.getElementById('statusFilter');
+    var priorityFilter = document.getElementById('priorityFilter');
+    var categoryFilter = document.getElementById('categoryFilter');
+    var agentFilter = document.getElementById('agentFilter');
+    var ticketRows = document.querySelectorAll('.ticket-row');
+    var noResultsMsg = document.getElementById('noResultsMsg');
+
+    function filter{{ _('Ticket') }}s() {
+        var searchTerm = searchInput.value.toLowerCase();
+        var statusVal = statusFilter.value;
+        var priorityVal = priorityFilter.value;
+        var categoryVal = categoryFilter.value;
+        var agentVal = agentFilter.value;
+        var visibleCount = 0;
+
+        ticketRows.forEach(function(row) {
+            var ticketNum = (row.getAttribute('data-ticket') || '').toLowerCase();
+            var title = (row.getAttribute('data-title') || '').toLowerCase();
+            var status = row.getAttribute('data-status') || '';
+            var priority = row.getAttribute('data-priority') || '';
+            var category = (row.getAttribute('data-category') || '').toLowerCase();
+            var agentId = row.getAttribute('data-agent') || '';
+
+            var matchesSearch = searchTerm === '' ||
+                ticketNum.includes(searchTerm) ||
+                title.includes(searchTerm);
+
+            var matchesStatus = statusVal === 'all' || status === statusVal;
+            var matchesPriority = priorityVal === 'all' || priority === priorityVal;
+            var matchesCategory = categoryVal === 'all' || category === categoryVal.toLowerCase();
+            var matchesAgent = agentVal === 'all' || agentId === agentVal;
+
+            var isVisible = matchesSearch && matchesStatus && matchesPriority && matchesCategory && matchesAgent;
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        if (noResultsMsg) {
+            noResultsMsg.style.display = (visibleCount === 0 && ticketRows.length > 0) ? 'block' : 'none';
+        }
+    }
+
+    searchInput.addEventListener('input', filter{{ _('Ticket') }}s);
+    statusFilter.addEventListener('change', filter{{ _('Ticket') }}s);
+    priorityFilter.addEventListener('change', filter{{ _('Ticket') }}s);
+    categoryFilter.addEventListener('change', filter{{ _('Ticket') }}s);
+    agentFilter.addEventListener('change', filter{{ _('Ticket') }}s);
+
+    filter{{ _('Ticket') }}s();
+});
+</script>
+{% endblock %}

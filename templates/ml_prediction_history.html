@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}
+ML {{ _('Prediction History') }}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <h5 class="fw-bold mb-0">ML {{ _('Prediction History') }}</h5>
+                    <a href="{{ url_for('super_admin.ml_model') }}" class="btn btn-sm btn-secondary">
+                        <i class="fa fa-arrow-left"></i> {{ _('Back') }} to ML Model
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <form method="GET" data-ml-prediction-search>
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control form-control-sm"
+                                       placeholder="{{ _('Search') }} by ticket number or title..."
+                                       value="{{ search }}">
+                                <button type="submit" class="btn btn-sm btn-primary">{{ _('Search') }}</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark bg-dark text-white">
+                                <tr>
+                                    <th>{{ _('Ticket') }}</th>
+                                    <th>{{ _('Title') }}</th>
+                                    <th>{{ _('Priority') }}</th>
+                                    <th>{{ _('Status') }}</th>
+                                    <th>{{ _('Model') }}</th>
+                                    <th>{{ _('Predicted') }}</th>
+                                    <th>{{ _('Actual') }}</th>
+                                    <th>{{ _('Error') }}</th>
+                                    <th>SLA</th>
+                                    <th>{{ _('Prediction Date') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if predictions %}
+                                    {% for pred in predictions %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('super_admin.ticket_detail', ticket_id=pred[1]) }}" class="text-decoration-none">
+                                                {{ pred[2] }}
+                                            </a>
+                                        </td>
+                                        <td>{{ pred[3][:50] }}{% if pred[3] and pred[3]|length > 50 %}...{% endif %}</td>
+                                        <td>{{ pred[4] or 'N/A' }}</td>
+                                        <td>{{ pred[5] or 'N/A' }}</td>
+                                        <td><span class="badge bg-info">{{ pred[6] or 'N/A' }}</span></td>
+                                        <td>
+                                            {% if pred[7] %}
+                                                {{ "%.0f"|format(pred[7]) }} min
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if pred[11] %}
+                                                {{ "%.0f"|format(pred[11]) }} min
+                                            {% else %}
+                                                <span class="text-muted">{{ _('Awaiting') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if pred[12] %}
+                                                {{ "%.0f"|format(pred[12]) }} min
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if pred[15] %}
+                                                {{ pred[15] }}h
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ pred[10].strftime('%Y-%m-%d %H:%M') if pred[10] else 'N/A' }}
+                                            </small>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr id="no-ml-predictions-row">
+                                        <td colspan="10" class="text-center py-5 text-muted">
+                                            <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="mb-0">{{ _('No Ml Predictions Found') }}</p>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/ml-prediction-search.js') }}"></script>
+{% endblock %}

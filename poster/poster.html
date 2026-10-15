@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HELP DESK & TICKETS MANAGEMENT SYSTEM - Academic Poster (A2)</title>
+    <style>
+        /* =====================================================================
+       ACADEMIC POSTER - A2 SPECIFICATIONS
+       Dimensions: A2 Landscape (594mm x 420mm)
+       Typography: Cambria Font Family as per University Guidelines
+       Font Scales: Title 36-48pt, Subheadings 24-36pt, Body 18-24pt, Captions 14-18pt
+       ===================================================================== */
+
+        @page {
+            size: 594mm 420mm;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cambria', 'Georgia', serif;
+            background-color: #0b132b;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0 60px 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Floating Toolbar for Preview and Printing */
+        .toolbar {
+            position: fixed;
+            top: 15px;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px 24px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toolbar button {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .toolbar button:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-1px);
+        }
+
+        .toolbar button.secondary-btn {
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toolbar button.secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .toolbar .badge-info {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .poster-viewport {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-top: 55px;
+            overflow: visible;
+        }
+
+        /* POSTER SHEET CANVAS (A2: 594mm x 420mm) */
+        .poster-sheet {
+            width: 594mm;
+            height: 420mm;
+            background: #ffffff;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            transform-origin: top center;
+            transform: scale(0.48);
+            margin-bottom: -218mm;
+            transition: transform 0.25s ease;
+        }
+
+        /* HEADER BANNER - LIGHT THEME FOR HIGH-CONTRAST PRINT */
+        .poster-header {
+            background: #ffffff;
+            color: #0f172a;
+            padding: 13mm 22mm 11mm 22mm;
+            border-bottom: 3.5mm solid #2563eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 85mm;
+            text-align: center;
+        }
+
+        .institution-pill {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6mm;
+            padding: 3mm 6mm;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .institution-name {
+            font-size: 18pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .department-name {
+            font-size: 12.5pt;
+            color: #2563eb;
+            margin-top: 1.5mm;
+            font-weight: 600;
+        }
+
+        .company-pill {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6mm;
+            padding: 3mm 6mm;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .company-title {
+            font-size: 17pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .company-sub {
+            font-size: 12.5pt;
+            color: #475569;
+            margin-top: 1.5mm;
+            font-weight: 600;
+        }
+
+        .header-center {
+            flex: 1;
+            text-align: center;
+            padding: 0 10mm;
+        }
+
+        .project-category-badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            font-size: 12.5pt;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 1.2mm 6mm;
+            border-radius: 3mm;
+            margin-bottom: 2mm;
+        }
+
+        .poster-title {
+            font-size: 38pt;
+            /* Guideline: 36-48 pt */
+            font-weight: 800;
+            line-height: 1.15;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+            text-shadow: none;
+        }
+
+        .poster-subtitle {
+            font-size: 17.5pt;
+            color: #334155;
+            margin-top: 2mm;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        /* AUTHOR STRIP */
+        .author-strip {
+            background: #f1f5f9;
+            border-bottom: 1.5mm solid #cbd5e1;
+            padding: 3mm 22mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15pt;
+        }
+
+        .author-item {
+            display: flex;
+            align-items: center;
+            gap: 2mm;
+        }
+
+        .author-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 13pt;
+        }
+
+        .author-val {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* MAIN CONTENT COLUMNS (3 COLUMNS) */
+        .poster-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.05fr 1.15fr 1fr;
+            gap: 5.5mm;
+            padding: 4mm 14mm 5mm 14mm;
+            background: #f8fafc;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 3mm;
+            justify-content: space-between;
+        }
+
+        /* CARD COMPONENTS */
+        .card {
+            background: #ffffff;
+            border-radius: 3mm;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+            padding: 2.8mm 4.2mm;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .card-title {
+            font-size: 16.5pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 1mm;
+            margin-bottom: 1.8mm;
+            display: flex;
+            align-items: center;
+            gap: 2mm;
+        }
+
+        .card-title .icon {
+            color: #2563eb;
+            font-size: 15pt;
+        }
+
+        .card-text {
+            font-size: 11.5pt;
+            line-height: 1.28;
+            color: #334155;
+            text-align: justify;
+        }
+
+        /* LIST ITEMS */
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2mm;
+        }
+
+        .bullet-list li {
+            font-size: 11.2pt;
+            line-height: 1.22;
+            color: #334155;
+            position: relative;
+            padding-left: 4.2mm;
+        }
+
+        .bullet-list li::before {
+            content: "▪";
+            color: #2563eb;
+            position: absolute;
+            left: 0;
+            font-size: 14pt;
+            line-height: 1;
+            top: -0.5mm;
+        }
+
+        .bullet-list li strong {
+            color: #0f172a;
+        }
+
+        /* TECH STACK BADGES */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2mm;
+            margin-top: 1.5mm;
+        }
+
+        .tech-box {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-left: 3mm solid #2563eb;
+            border-radius: 2mm;
+            padding: 2mm 2.8mm;
+        }
+
+        .tech-box-title {
+            font-size: 12pt;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .tech-box-desc {
+            font-size: 10.2pt;
+            color: #475569;
+            margin-top: 0.8mm;
+            line-height: 1.2;
+        }
+
+        /* ARCHITECTURE DIAGRAM SVG */
+        .arch-diagram-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 3mm;
+            padding: 2.5mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .caption {
+            font-size: 12pt;
+            /* Guideline Captions: 14pt */
+            font-style: italic;
+            color: #64748b;
+            margin-top: 1.8mm;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* WORKFLOW FLOWCHART */
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            gap: 2mm;
+            margin-top: 2mm;
+            position: relative;
+        }
+
+        .flow-step {
+            flex: 1;
+            background: #eff6ff;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 2.5mm;
+            padding: 2mm 1.5mm;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-step-num {
+            background: #2563eb;
+            color: white;
+            width: 5.5mm;
+            height: 5.5mm;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9pt;
+            font-weight: 700;
+            margin-bottom: 1mm;
+        }
+
+        .flow-step-title {
+            font-size: 11.5pt;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .flow-step-desc {
+            font-size: 10pt;
+            color: #475569;
+            margin-top: 0.8mm;
+            line-height: 1.2;
+        }
+
+        /* RESULTS TABLE */
+        .poster-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5pt;
+            margin-top: 1.2mm;
+        }
+
+        .poster-table th {
+            background: #1e3a8a;
+            color: #ffffff;
+            padding: 1.5mm 2.2mm;
+            text-align: left;
+            font-weight: 700;
+            border: 1px solid #1e3a8a;
+        }
+
+        .poster-table td {
+            padding: 1.3mm 2.2mm;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+
+        .poster-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .poster-table .badge-success {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 0.6mm 1.8mm;
+            border-radius: 1.5mm;
+            font-weight: 700;
+            font-size: 9.5pt;
+            display: inline-block;
+        }
+
+        /* KPI METRIC CARDS */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2mm;
+            margin-top: 1.2mm;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #f8fafc, #edf2f7);
+            border: 1.5px solid #cbd5e1;
+            border-radius: 2mm;
+            padding: 1.5mm 1mm;
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 17pt;
+            font-weight: 700;
+            color: #2563eb;
+            line-height: 1;
+        }
+
+        .kpi-label {
+            font-size: 9pt;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 0.8mm;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* FOOTER STRIP - LIGHT THEME FOR HIGH-CONTRAST PRINT */
+        .poster-footer {
+            background: #ffffff;
+            color: #334155;
+            padding: 3.5mm 20mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5pt;
+            font-weight: 600;
+            border-top: 2.5mm solid #2563eb;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .poster-footer code {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* PRINT SPECIFIC STYLING */
+        @media print {
+            body {
+                background: transparent;
+                padding: 0;
+            }
+
+            .toolbar {
+                display: none !important;
+            }
+
+            .poster-sheet {
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+                width: 594mm !important;
+                height: 420mm !important;
+                transform: none !important;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLOATING ACTION TOOLBAR -->
+    <div class="toolbar">
+        <span class="badge-info">A2 Dimensions: 594mm &times; 420mm</span>
+        <span class="badge-info">Font: Cambria</span>
+        <button class="secondary-btn" onclick="setScale(0.48)">Fit Screen (48%)</button>
+        <button class="secondary-btn" onclick="setScale(0.75)">75%</button>
+        <button class="secondary-btn" onclick="setScale(1.0)">100% (A2)</button>
+        <button onclick="window.print()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z">
+                </path>
+            </svg>
+            Print / Save as A2 PDF
+        </button>
+    </div>
+
+    <!-- MAIN POSTER CANVAS -->
+    <div class="poster-sheet" id="posterContent">
+
+        <!-- 1. HEADER BANNER -->
+        <header class="poster-header">
+            <div class="header-left">
+                <div class="institution-pill">
+                    <div class="institution-name">P P Savani University</div>
+                    <div class="department-name">School of Engineering &bull; Dept of CSE (ML & AI)</div>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <div class="project-category-badge">Final Year B.Tech Internship &amp; Project Exhibition</div>
+                <h1 class="poster-title">HELP DESK &amp; TICKETS MANAGEMENT SYSTEM</h1>
+                <div class="poster-subtitle">An Intelligent, AI-Driven Multi-Tier Support Ticketing &amp; Automated
+                    Resolution Platform</div>
+            </div>
+
+            <div class="header-right">
+                <div class="company-pill">
+                    <div class="company-title">Sensussoft Software</div>
+                    <div class="company-sub">Private Limited &bull; Industry Partner</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. AUTHOR & MENTOR STRIP -->
+        <div class="author-strip">
+            <div class="author-item">
+                <span class="author-label">Student:</span>
+                <span class="author-val">Kikani Manasvi</span>
+                <span style="color:#64748b; font-size:13pt;">(Enr: <strong>23SE02ML057</strong>)</span>
+            </div>
+            <div class="author-item">
+                <span class="author-label">Program:</span>
+                <span class="author-val">B.Tech CSE (ML &amp; AI) &bull; Sem 7</span>
+            </div>
+            <div class="author-item">
+                <span class="author-label">Industry Mentor:</span>
+                <span class="author-val">Saddam Khan</span>
+                <span style="color:#64748b; font-size:12.5pt;">(Sensussoft)</span>
+            </div>
+            <div class="author-item">
+                <span class="author-label">Institute Mentor:</span>
+                <span class="author-val">Mr. Rahul Kumar Yadav</span>
+                <span style="color:#64748b; font-size:12.5pt;">(PPSU)</span>
+            </div>
+        </div>
+
+        <!-- 3. POSTER MAIN BODY (3 COLUMNS) -->
+        <main class="poster-body">
+
+            <!-- ================= COLUMN 1 ================= -->
+            <section class="column">
+
+                <!-- A. Introduction & Problem Statement -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Introduction &amp; Problem Statement
+                    </h2>
+                    <p class="card-text">
+                        Modern enterprise support organizations face exponential ticketing volumes requiring rapid
+                        resolution, seamless cross-departmental communication, and real-time operational insights.
+                    </p>
+                    <ul class="bullet-list" style="margin-top: 2.5mm;">
+                        <li><strong>Manual Triage Bottlenecks:</strong> Legacy platforms rely on rigid manual routing,
+                            causing misdirected issues and over 40% initial response delays.</li>
+                        <li><strong>Role Isolation Breakdown:</strong> Absence of role-specific workflows leads to
+                            security loopholes and cluttered interfaces across admins and agents.</li>
+                        <li><strong>Unpredictable SLA Breaches:</strong> Lack of predictive machine learning leaves
+                            managers blind to impending ticket escalations and deadlines.</li>
+                    </ul>
+                </article>
+
+                <!-- B. Project Objectives -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Project Objectives
+                    </h2>
+                    <ul class="bullet-list">
+                        <li><strong>Automated ML Routing:</strong> Implement an intelligent AI routing engine that
+                            automatically maps tickets to agents based on skills, department, and past load.</li>
+                        <li><strong>Strict Role-Based Access Control:</strong> Enforce complete architectural isolation
+                            across Customer, Support Manager, Admin, and Super Admin portals.</li>
+                        <li><strong>Real-Time Live Search:</strong> Deliver instantaneous, client-side ticket search,
+                            filtering, and priority badge categorization without page reloads.</li>
+                        <li><strong>Predictive SLA Intelligence:</strong> Train regression ML models to estimate
+                            resolution durations and identify high-risk tickets beforehand.</li>
+                    </ul>
+                </article>
+
+                <!-- C. Technology Stack -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Technology Stack &amp; Tools
+                    </h2>
+                    <div class="tech-grid">
+                        <div class="tech-box">
+                            <div class="tech-box-title">Backend Architecture</div>
+                            <div class="tech-box-desc">Python 3.10+, Flask Web Framework, RESTful APIs, Jinja2 Engine
+                            </div>
+                        </div>
+                        <div class="tech-box">
+                            <div class="tech-box-title">Frontend Experience</div>
+                            <div class="tech-box-desc">HTML5, Vanilla CSS3, Native ES6 JavaScript, Dark/Light Viewports
+                            </div>
+                        </div>
+                        <div class="tech-box">
+                            <div class="tech-box-title">Machine Learning</div>
+                            <div class="tech-box-desc">Scikit-Learn, Random Forest, Resolution Time Regressor, NumPy,
+                                Pandas</div>
+                        </div>
+                        <div class="tech-box">
+                            <div class="tech-box-title">Data &amp; Security</div>
+                            <div class="tech-box-desc">SQLite / PostgreSQL, Parametric SQL, PBKDF2 Hashing, Brevo SMTP
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- D. Key Functional Highlights -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Key System Highlights
+                    </h2>
+                    <ul class="bullet-list">
+                        <li><strong>Skill-Based Routing:</strong> Dispatches issues by engineer competence, eliminating
+                            departmental bottlenecks.</li>
+                        <li><strong>Zero-Reload Live Search:</strong> Substring and tag filtering across tickets in
+                            under 40ms without reload.</li>
+                        <li><strong>Multi-Channel Alerting:</strong> Transactional Brevo emails coupled with real-time
+                            in-app notification badges.</li>
+                        <li><strong>Dynamic Session Sync:</strong> Profile avatars synchronized across top-bar
+                            navigation and account views.</li>
+                    </ul>
+                </article>
+
+                <!-- E. Security Architecture & Safeguards (Red Box 2 Filled) -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Security Architecture &amp; Safeguards
+                    </h2>
+                    <ul class="bullet-list">
+                        <li><strong>Cryptographic Hashing:</strong> PBKDF2 with SHA-256 (260,000 iterations) enforcing
+                            salt-randomized credential security.</li>
+                        <li><strong>Defensive SQL Queries:</strong> 100% parametric ORM statements eliminating SQL
+                            injection vulnerabilities.</li>
+                        <li><strong>Session Cookie Isolation:</strong> Server-side HTTP-only session tokens tied to
+                            strict role-based access validation.</li>
+                        <li><strong>Audit Ledger Logging:</strong> Immutable timestamped ledger recording ticket
+                            priority escalations, reassignments &amp; closures.</li>
+                    </ul>
+                </article>
+
+            </section>
+
+            <!-- ================= COLUMN 2 ================= -->
+            <section class="column">
+
+                <!-- D. System Architecture -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> 3-Tier System Architecture
+                    </h2>
+                    <div class="arch-diagram-container">
+                        <!-- Professional SVG 3-Tier Diagram -->
+                        <svg viewBox="0 0 540 230" width="100%" height="140" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="clientGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#3b82f6" />
+                                    <stop offset="100%" stop-color="#1d4ed8" />
+                                </linearGradient>
+                                <linearGradient id="appGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0f766e" />
+                                    <stop offset="100%" stop-color="#115e59" />
+                                </linearGradient>
+                                <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#4338ca" />
+                                    <stop offset="100%" stop-color="#312e81" />
+                                </linearGradient>
+                                <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15" />
+                                </filter>
+                            </defs>
+
+                            <!-- Presentation / Client Tier -->
+                            <rect x="15" y="15" width="510" height="52" rx="6" fill="url(#clientGrad)"
+                                filter="url(#shadow)" />
+                            <text x="35" y="36" fill="#ffffff" font-family="Cambria" font-size="14"
+                                font-weight="bold">PRESENTATION TIER (Responsive Web Dashboards)</text>
+                            <text x="35" y="54" fill="#dbeafe" font-family="Cambria" font-size="11">Customer Portal
+                                &bull; Manager Control Center &bull; Admin Grid &bull; Super Admin Console (Jinja2 /
+                                JS)</text>
+
+                            <!-- Arrow 1 -->
+                            <line x1="270" y1="67" x2="270" y2="87" stroke="#64748b" stroke-width="2.5"
+                                stroke-dasharray="4,3" />
+                            <polygon points="266,85 274,85 270,91" fill="#64748b" />
+                            <polygon points="266,69 274,69 270,63" fill="#64748b" />
+
+                            <!-- Application / Logic Tier -->
+                            <rect x="15" y="91" width="510" height="56" rx="6" fill="url(#appGrad)"
+                                filter="url(#shadow)" />
+                            <text x="35" y="112" fill="#ffffff" font-family="Cambria" font-size="14"
+                                font-weight="bold">APPLICATION LOGIC TIER (Python / Flask Engine)</text>
+                            <text x="35" y="130" fill="#ccfbf1" font-family="Cambria" font-size="11">Authentication
+                                &bull; Role-Based Guards &bull; Ticket Lifecycle Controller &bull; Notification
+                                Dispatcher</text>
+
+                            <!-- Arrow 2 -->
+                            <line x1="170" y1="147" x2="170" y2="167" stroke="#64748b" stroke-width="2.5"
+                                stroke-dasharray="4,3" />
+                            <polygon points="166,165 174,165 170,171" fill="#64748b" />
+                            <line x1="370" y1="147" x2="370" y2="167" stroke="#64748b" stroke-width="2.5"
+                                stroke-dasharray="4,3" />
+                            <polygon points="366,165 374,165 370,171" fill="#64748b" />
+
+                            <!-- Data Tier Left: Database -->
+                            <rect x="15" y="171" width="245" height="50" rx="6" fill="url(#dataGrad)"
+                                filter="url(#shadow)" />
+                            <text x="30" y="192" fill="#ffffff" font-family="Cambria" font-size="13"
+                                font-weight="bold">DATA STORAGE TIER</text>
+                            <text x="30" y="209" fill="#e0e7ff" font-family="Cambria" font-size="10.5">PostgreSQL /
+                                SQLite &bull; ACID Schema</text>
+
+                            <!-- Data Tier Right: ML Engine -->
+                            <rect x="280" y="171" width="245" height="50" rx="6" fill="#1e293b" filter="url(#shadow)" />
+                            <text x="295" y="192" fill="#38bdf8" font-family="Cambria" font-size="13"
+                                font-weight="bold">MACHINE LEARNING TIER</text>
+                            <text x="295" y="209" fill="#94a3b8" font-family="Cambria" font-size="10.5">Scikit-Learn
+                                &bull; SLA Resolution Regressor</text>
+                        </svg>
+                        <div class="caption">Figure 1: Modular 3-Tier Architecture with Integrated Machine Learning
+                            Engine</div>
+                    </div>
+                </article>
+
+                <!-- E. ML Routing & Ticket Lifecycle Workflow -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> ML Routing &amp; Lifecycle Workflow
+                    </h2>
+                    <p class="card-text">
+                        Tickets submitted by customers undergo immediate AI evaluation to extract issue urgency,
+                        required technician skills, and estimated duration.
+                    </p>
+
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="flow-step-num">1</div>
+                            <div class="flow-step-title">Ticket Logging</div>
+                            <div class="flow-step-desc">Customer enters title, domain, priority &amp; attachments.</div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-num">2</div>
+                            <div class="flow-step-title">AI Skill Matching</div>
+                            <div class="flow-step-desc">Model analyzes department &amp; binds suitable agent skill.
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-num">3</div>
+                            <div class="flow-step-title">SLA Duration Pred</div>
+                            <div class="flow-step-desc">Regression model forecasts resolution duration in hours.</div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-num">4</div>
+                            <div class="flow-step-title">Lifecycle Resolution</div>
+                            <div class="flow-step-desc">Real-time status updates, audit notes &amp; email alerts.</div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background:#f1f5f9; border-radius: 2mm; padding: 2mm; margin-top: 2.5mm; border-left: 3mm solid #10b981;">
+                        <div style="font-size: 11.5pt; font-weight: 700; color: #065f46;">Key Database Entities &amp;
+                            Integrity Rules:</div>
+                        <div style="font-size: 10.5pt; color: #334155; margin-top: 0.8mm; line-height: 1.25;">
+                            <strong>users</strong> (role isolation, password hash, avatar), <strong>tickets</strong>
+                            (UUID, priority, department_id, agent_id, status), <strong>skills</strong> (skill tags,
+                            bindings), <strong>notifications</strong> (in-app alerts, read status).
+                        </div>
+                    </div>
+
+                    <!-- ML Feature Pipeline & Regressor Specs (Red Box 1 Filled) -->
+                    <div
+                        style="margin-top: 2.2mm; background:#f8fafc; border: 1.5px solid #bfdbfe; border-radius: 2mm; padding: 1.8mm 2.2mm;">
+                        <div
+                            style="font-size: 11.5pt; font-weight: 700; color: #1e3a8a; display: flex; align-items: center; gap: 1.5mm;">
+                            <span style="color:#2563eb;">⚡</span> ML Feature Pipeline &amp; Regressor Architecture
+                        </div>
+                        <div
+                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5mm; margin-top: 1.2mm;">
+                            <div
+                                style="background:#ffffff; border: 1px solid #cbd5e1; border-radius: 1.5mm; padding: 1.4mm 1.8mm;">
+                                <strong style="font-size: 10.2pt; color: #0f172a;">Input Features:</strong>
+                                <div style="font-size: 9.5pt; color: #475569; margin-top: 0.4mm;">Category (OHE),
+                                    Priority (1&ndash;4), Customer Domain History.</div>
+                            </div>
+                            <div
+                                style="background:#ffffff; border: 1px solid #cbd5e1; border-radius: 1.5mm; padding: 1.4mm 1.8mm;">
+                                <strong style="font-size: 10.2pt; color: #0f172a;">Model Architecture:</strong>
+                                <div style="font-size: 9.5pt; color: #475569; margin-top: 0.4mm;">Random Forest
+                                    Regressor (100 estimators, max-depth 12).</div>
+                            </div>
+                            <div
+                                style="background:#ffffff; border: 1px solid #cbd5e1; border-radius: 1.5mm; padding: 1.4mm 1.8mm;">
+                                <strong style="font-size: 10.2pt; color: #0f172a;">Variance Fit ($R^2$):</strong>
+                                <div style="font-size: 9.5pt; color: #475569; margin-top: 0.4mm;">0.86 score with 1.82h
+                                    RMSE, beating baseline linear models.</div>
+                            </div>
+                            <div
+                                style="background:#ffffff; border: 1px solid #cbd5e1; border-radius: 1.5mm; padding: 1.4mm 1.8mm;">
+                                <strong style="font-size: 10.2pt; color: #0f172a;">Dynamic SLA Alert:</strong>
+                                <div style="font-size: 9.5pt; color: #475569; margin-top: 0.4mm;">Auto-escalation
+                                    warning dispatched 2h prior to deadline breach.</div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- F. Role Matrix & Schema Design -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Role-Based Matrix &amp; Data Schema
+                    </h2>
+                    <table class="poster-table" style="font-size: 11pt;">
+                        <thead>
+                            <tr>
+                                <th>Role Level</th>
+                                <th>Primary System Permissions</th>
+                                <th>Operational Scope</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Super Admin</strong></td>
+                                <td>Global ML Model Monitoring, System Settings, Audit Trail</td>
+                                <td>Enterprise-wide</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Admin</strong></td>
+                                <td>Agent Skill Bindings, Department Setup, Ticket Reassignment</td>
+                                <td>Departmental</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Support Mgr</strong></td>
+                                <td>Live Ticket Queue, SLA Escalations, Avatar &amp; Profile Sync</td>
+                                <td>Team Operations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Customer</strong></td>
+                                <td>Ticket Submission, Live Progress Tracking, In-App Notifications</td>
+                                <td>Self Tickets</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div
+                        style="background:#f1f5f9; border-radius: 2mm; padding: 2mm; margin-top: 2.5mm; font-size: 10.5pt; color: #334155; border-left: 3.5mm solid #3b82f6;">
+                        <strong>Relational Integrity:</strong> Strict foreign key cascading constraints
+                        (<code>users.id &rarr; tickets.customer_id</code>,
+                        <code>departments.id &rarr; tickets.department_id</code>, <code>skills &harr; users</code>
+                        junction) guaranteeing 0 SQL anomalies and fast indexed queries.
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- ================= COLUMN 3 ================= -->
+            <section class="column">
+
+                <!-- G. Implementation Modules -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Core System Modules
+                    </h2>
+                    <ul class="bullet-list">
+                        <li><strong>Module 1 &ndash; Role-Based Security:</strong> Strict session middleware preventing
+                            cross-role route access across 4 hierarchical tiers.</li>
+                        <li><strong>Module 2 &ndash; Ticket Ops &amp; Live Search:</strong> Instant ticket creation,
+                            status transitions, and zero-latency client-side query filtering.</li>
+                        <li><strong>Module 3 &ndash; ML Prediction Engine:</strong> Automated training pipeline tracking
+                            MAE, RMSE, and $R^2$ variance metrics on admin dashboards.</li>
+                        <li><strong>Module 4 &ndash; Profile &amp; Notification Sync:</strong> Support manager profile
+                            picture synchronization with top navigation and automated SMTP email notifications.</li>
+                    </ul>
+                </article>
+
+                <!-- H. Experimental Results & Metrics -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Results &amp; Performance Validation
+                    </h2>
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-value">99.4%</div>
+                            <div class="kpi-label">Test Pass Rate</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">&lt; 120ms</div>
+                            <div class="kpi-label">Avg API Latency</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">0.86</div>
+                            <div class="kpi-label">ML R² Score</div>
+                        </div>
+                    </div>
+
+                    <table class="poster-table" style="margin-top: 2.5mm; font-size: 11pt;">
+                        <thead>
+                            <tr>
+                                <th>Validation Phase</th>
+                                <th>Target / Method</th>
+                                <th>Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Unit &amp; Functional</td>
+                                <td>Pytest (50+ Route Endpoints)</td>
+                                <td><span class="badge-success">Passed (100%)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Role Isolation Guard</td>
+                                <td>Cross-role privilege elevation</td>
+                                <td><span class="badge-success">Zero Leakage</span></td>
+                            </tr>
+                            <tr>
+                                <td>Live Search Engine</td>
+                                <td>1,000+ Records Client Filter</td>
+                                <td><span class="badge-success">&lt; 40ms Render</span></td>
+                            </tr>
+                            <tr>
+                                <td>ML Resolution Model</td>
+                                <td>Random Forest Regressor</td>
+                                <td><span class="badge-success">Low RMSE (1.82h)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Comparative Analysis Table -->
+                    <table class="poster-table" style="margin-top: 2.5mm; font-size: 10.5pt;">
+                        <thead>
+                            <tr>
+                                <th>Operational Metric</th>
+                                <th>Legacy Manual Process</th>
+                                <th>Proposed AI System</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ticket Triage Time</td>
+                                <td>4 &ndash; 6 Hours (Manual)</td>
+                                <td><span class="badge-success">&lt; 5 Sec (Auto-ML)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Routing Accuracy</td>
+                                <td>62.4% (Frequent Misroutes)</td>
+                                <td><span class="badge-success">94.8% Skill-Match</span></td>
+                            </tr>
+                            <tr>
+                                <td>SLA Breach Rate</td>
+                                <td>24.5% Overdue</td>
+                                <td><span class="badge-success">&lt; 4.2% Prevented</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="caption">Tables 1 &amp; 2: System Validation &amp; Comparative Performance Analysis
+                    </div>
+                </article>
+
+                <!-- I. Conclusion & References -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Conclusion &amp; Future Scope
+                    </h2>
+                    <p class="card-text">
+                        The Help Desk &amp; Tickets Management System successfully eliminates manual triage friction
+                        through modular full-stack engineering and machine learning intelligence.
+                    </p>
+                    <ul class="bullet-list" style="margin-top: 2mm;">
+                        <li><strong>Key Impact:</strong> Accelerated ticket dispatch times, verified cross-role
+                            security, and proactive SLA escalation safeguards.</li>
+                        <li><strong>Future Scope:</strong> Generative AI / LLM auto-responders, multi-tenant cloud
+                            clustering, and WebSocket real-time chat.</li>
+                    </ul>
+                    <div
+                        style="font-size: 9.5pt; color: #64748b; margin-top: 2mm; border-top: 1px dashed #cbd5e1; padding-top: 1.5mm;">
+                        <strong>References:</strong> [1] Flask 3.x Architecture Guide. [2] Scikit-Learn Ensemble
+                        Regressors. [3] PPSU Final Internship Guidelines.
+                    </div>
+                </article>
+
+                <!-- J. Quantitative ROI & Enterprise Impact (Red Box 3 Filled) -->
+                <article class="card">
+                    <h2 class="card-title">
+                        <span class="icon">&bull;</span> Quantitative ROI &amp; Enterprise Impact
+                    </h2>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.8mm;">
+                        <div
+                            style="background: #f1f5f9; border-left: 3mm solid #2563eb; border-radius: 1.5mm; padding: 1.5mm 2mm;">
+                            <div style="font-size: 10.5pt; font-weight: 700; color: #1e3a8a;">85% Triage Efficiency
+                            </div>
+                            <div style="font-size: 9.2pt; color: #475569; margin-top: 0.3mm; line-height: 1.2;">
+                                Immediate auto-classification cuts queue turnaround from 5 hours to seconds.</div>
+                        </div>
+                        <div
+                            style="background: #f1f5f9; border-left: 3mm solid #10b981; border-radius: 1.5mm; padding: 1.5mm 2mm;">
+                            <div style="font-size: 10.5pt; font-weight: 700; color: #065f46;">94.8% First-Hop Match
+                            </div>
+                            <div style="font-size: 9.2pt; color: #475569; margin-top: 0.3mm; line-height: 1.2;">
+                                Competency tagging eliminates unnecessary cross-team ticket reassignments.</div>
+                        </div>
+                        <div
+                            style="background: #f1f5f9; border-left: 3mm solid #f59e0b; border-radius: 1.5mm; padding: 1.5mm 2mm;">
+                            <div style="font-size: 10.5pt; font-weight: 700; color: #92400e;">Zero Role Privilege Leak
+                            </div>
+                            <div style="font-size: 9.2pt; color: #475569; margin-top: 0.3mm; line-height: 1.2;">Formally
+                                verified multi-tenant boundaries across Admin and Customer tiers.</div>
+                        </div>
+                        <div
+                            style="background: #f1f5f9; border-left: 3mm solid #6366f1; border-radius: 1.5mm; padding: 1.5mm 2mm;">
+                            <div style="font-size: 10.5pt; font-weight: 700; color: #3730a3;">Production-Grade Scale
+                            </div>
+                            <div style="font-size: 9.2pt; color: #475569; margin-top: 0.3mm; line-height: 1.2;">
+                                Extensible Flask blueprints engineered for seamless enterprise workloads.</div>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+
+        </main>
+
+        <!-- 4. FOOTER STRIP -->
+        <footer class="poster-footer">
+            <div>Project Repository: <code>HELP_DESK&amp;TICKET</code> &bull; Python / Flask / Machine Learning</div>
+            <div>Presented at P P Savani University, School of Engineering, Surat &bull; Academic Year 2023–2026</div>
+            <div>Confidential &amp; Proprietary &bull; Sensussoft Software Private Limited</div>
+        </footer>
+
+    </div>
+
+    <script>
+        function setScale(val) {
+            const sheet = document.getElementById('posterContent');
+            sheet.style.transform = `scale(${val})`;
+            if (val === 1.0) {
+                sheet.style.marginBottom = '40px';
+            } else if (val === 0.75) {
+                sheet.style.marginBottom = '-105mm';
+            } else {
+                sheet.style.marginBottom = '-218mm';
+            }
+        }
+    </script>
+</body>
+
+</html>

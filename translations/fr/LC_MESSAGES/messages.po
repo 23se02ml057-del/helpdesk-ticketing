@@ -1,0 +1,3268 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Help Desk 1.0\n"
+"Report-Msgid-To: \n"
+"POT-Creation-Date: 2026-09-02 09:00+0000\n"
+"PO-Revision-Date: 2026-09-02 09:00+0000\n"
+"Last-Translator: Help Desk Team\n"
+"Language: fr\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "language_en"
+msgstr "English"
+
+msgid "language_zh"
+msgstr "中文"
+
+msgid "language_de"
+msgstr "Deutsch"
+
+msgid "language_fr"
+msgstr "Français"
+
+msgid "language_tr"
+msgstr "Türkçe"
+
+msgid "language_gu"
+msgstr "ગુજરાતી"
+
+msgid "language_name"
+msgstr "Langue"
+
+msgid "main_menu"
+msgstr "MENU PRINCIPAL"
+
+msgid "dashboard"
+msgstr "Tableau de bord"
+
+msgid "users"
+msgstr "Utilisateurs"
+
+msgid "customers"
+msgstr "Clients"
+
+msgid "agents"
+msgstr "Agents"
+
+msgid "departments"
+msgstr "Départements"
+
+msgid "tickets"
+msgstr "Tickets"
+
+msgid "skills"
+msgstr "Compétences"
+
+msgid "notifications"
+msgstr "Notifications"
+
+msgid "reports"
+msgstr "Rapports"
+
+msgid "settings"
+msgstr "Paramètres"
+
+msgid "profile"
+msgstr "Profil"
+
+msgid "logout"
+msgstr "Déconnexion"
+
+msgid "ticket_assignment"
+msgstr "Attribution de tickets"
+
+msgid "categories"
+msgstr "Catégories"
+
+msgid "types_of_issues"
+msgstr "Types de problèmes"
+
+msgid "priorities"
+msgstr "Priorités"
+
+msgid "sla_rules"
+msgstr "Règles SLA"
+
+msgid "escalation"
+msgstr "Escalade"
+
+msgid "escalations"
+msgstr "Escalades"
+
+msgid "ml_model"
+msgstr "Modèle ML"
+
+msgid "ml_predictions"
+msgstr "Prédictions ML"
+
+msgid "change_password"
+msgstr "Changer le mot de passe"
+
+msgid "roles"
+msgstr "Rôles"
+
+msgid "help_desk"
+msgstr "HELPDESK"
+
+msgid "management_system"
+msgstr "Système de gestion"
+
+msgid "helpdesk"
+msgstr "Helpdesk"
+
+msgid "admin_panel"
+msgstr "Panneau d'administration"
+
+msgid "customer_portal"
+msgstr "Portail client"
+
+msgid "support_agent"
+msgstr "Agent de support"
+
+msgid "support_manager"
+msgstr "Responsable du support"
+
+msgid "super_admin"
+msgstr "Super Admin"
+
+msgid "add"
+msgstr "Ajouter"
+
+msgid "edit"
+msgstr "Modifier"
+
+msgid "delete"
+msgstr "Supprimer"
+
+msgid "save"
+msgstr "Enregistrer"
+
+msgid "cancel"
+msgstr "Annuler"
+
+msgid "update"
+msgstr "Mettre à jour"
+
+msgid "submit"
+msgstr "Soumettre"
+
+msgid "search"
+msgstr "Rechercher"
+
+msgid "filter"
+msgstr "Filtrer"
+
+msgid "clear"
+msgstr "Effacer"
+
+msgid "view"
+msgstr "Voir"
+
+msgid "close"
+msgstr "Fermer"
+
+msgid "back"
+msgstr "Retour"
+
+msgid "next"
+msgstr "Suivant"
+
+msgid "previous"
+msgstr "Précédent"
+
+msgid "download"
+msgstr "Télécharger"
+
+msgid "upload"
+msgstr "Téléverser"
+
+msgid "assign"
+msgstr "Attribuer"
+
+msgid "reply"
+msgstr "Répondre"
+
+msgid "approve"
+msgstr "Approuver"
+
+msgid "reject"
+msgstr "Rejeter"
+
+msgid "reset"
+msgstr "Réinitialiser"
+
+msgid "create"
+msgstr "Créer"
+
+msgid "send"
+msgstr "Envoyer"
+
+msgid "resend"
+msgstr "Renvoyer"
+
+msgid "refresh"
+msgstr "Actualiser"
+
+msgid "export"
+msgstr "Exporter"
+
+msgid "import"
+msgstr "Importer"
+
+msgid "actions"
+msgstr "Actions"
+
+msgid "confirm"
+msgstr "Confirmer"
+
+msgid "select"
+msgstr "Sélectionner"
+
+msgid "status_open"
+msgstr "Ouvert"
+
+msgid "status_pending"
+msgstr "En attente"
+
+msgid "status_closed"
+msgstr "Fermé"
+
+msgid "status_new"
+msgstr "New"
+
+msgid "status_in_progress"
+msgstr "In Progress"
+
+msgid "status_on_hold"
+msgstr "On Hold"
+
+msgid "status_resolved"
+msgstr "Resolved"
+
+msgid "priority_low"
+msgstr "Bas"
+
+msgid "priority_medium"
+msgstr "Moyen"
+
+msgid "priority_high"
+msgstr "Haut"
+
+msgid "priority_critical"
+msgstr "Critique"
+
+msgid "status_active"
+msgstr "Actif"
+
+msgid "status_inactive"
+msgstr "Inactif"
+
+msgid "status_read"
+msgstr "Read"
+
+msgid "status_unread"
+msgstr "Unread"
+
+msgid "name"
+msgstr "Nom"
+
+msgid "email"
+msgstr "E-mail"
+
+msgid "password"
+msgstr "Mot de passe"
+
+msgid "confirm_password"
+msgstr "Confirm Password"
+
+msgid "full_name"
+msgstr "Nom complet"
+
+msgid "phone"
+msgstr "Téléphone"
+
+msgid "role"
+msgstr "Rôle"
+
+msgid "department"
+msgstr "Département"
+
+msgid "status"
+msgstr "Statut"
+
+msgid "created_at"
+msgstr "Created At"
+
+msgid "updated_at"
+msgstr "Updated At"
+
+msgid "date"
+msgstr "Date"
+
+msgid "description"
+msgstr "Description"
+
+msgid "title"
+msgstr "Titre"
+
+msgid "message"
+msgstr "Message"
+
+msgid "type"
+msgstr "Type"
+
+msgid "category"
+msgstr "Catégorie"
+
+msgid "priority"
+msgstr "Priorité"
+
+msgid "requester"
+msgstr "Requester"
+
+msgid "assigned_to"
+msgstr "Assigned To"
+
+msgid "login"
+msgstr "Connexion"
+
+msgid "login_title"
+msgstr "Connectez-vous à votre compte"
+
+msgid "remember_me"
+msgstr "Se souvenir de moi"
+
+msgid "forgot_password"
+msgstr "Mot de passe oublié?"
+
+msgid "dont_have_account"
+msgstr "Vous n'avez pas de compte?"
+
+msgid "register"
+msgstr "Inscription"
+
+msgid "sign_in"
+msgstr "Se connecter"
+
+msgid "signing_in"
+msgstr "Connexion en cours..."
+
+msgid "enter_email"
+msgstr "Entrez votre e-mail"
+
+msgid "enter_password"
+msgstr "Entrez votre mot de passe"
+
+msgid "register_title"
+msgstr "Créer un compte"
+
+msgid "create_account"
+msgstr "Créer un compte"
+
+msgid "already_have_account"
+msgstr "Vous avez déjà un compte?"
+
+msgid "creating_account"
+msgstr "Création de compte..."
+
+msgid "forgot_password_title"
+msgstr "Mot de passe oublié"
+
+msgid "forgot_password_description"
+msgstr "Entrez votre e-mail enregistré et nous vous enverrons un lien pour réinitialiser votre mot de passe."
+
+msgid "send_reset_link"
+msgstr "Envoyer le lien de réinitialisation"
+
+msgid "back_to_login"
+msgstr "Retour à la connexion"
+
+msgid "reset_password_title"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "new_password"
+msgstr "Nouveau mot de passe"
+
+msgid "reset_password"
+msgstr "Reset Password"
+
+msgid "verify_email_title"
+msgstr "Vérifiez votre e-mail"
+
+msgid "verification_email_sent"
+msgstr "E-mail de vérification envoyé"
+
+msgid "resend_verification_email"
+msgstr "Renvoyer l'e-mail de vérification"
+
+msgid "please_verify_email"
+msgstr "Veuillez vérifier votre e-mail avant de vous connecter"
+
+msgid "verification_required"
+msgstr "Vérification de l'e-mail requise"
+
+msgid "verification_success"
+msgstr "E-mail vérifié avec succès"
+
+msgid "verification_expired"
+msgstr "Le lien de vérification a expiré"
+
+msgid "verification_invalid"
+msgstr "Lien de vérification invalide"
+
+msgid "verification_already_used"
+msgstr "E-mail déjà vérifié"
+
+msgid "change_password_title"
+msgstr "Changer le mot de passe"
+
+msgid "current_password"
+msgstr "Mot de passe actuel"
+
+msgid "save_changes"
+msgstr "Enregistrer les modifications"
+
+msgid "total_users"
+msgstr "Total des utilisateurs"
+
+msgid "total_customers"
+msgstr "Total des clients"
+
+msgid "total_tickets"
+msgstr "Total des tickets"
+
+msgid "open_tickets"
+msgstr "Tickets ouverts"
+
+msgid "pending_tickets"
+msgstr "Tickets en attente"
+
+msgid "closed_tickets"
+msgstr "Tickets fermés"
+
+msgid "high_priority"
+msgstr "Haute priorité"
+
+msgid "assigned_tickets"
+msgstr "Tickets assignés"
+
+msgid "resolved_tickets"
+msgstr "Tickets résolus"
+
+msgid "total_agents"
+msgstr "Total des agents"
+
+msgid "total_departments"
+msgstr "Total des départements"
+
+msgid "recent_tickets"
+msgstr "Tickets récents"
+
+msgid "recent_notifications"
+msgstr "Notifications récentes"
+
+msgid "ticket"
+msgstr "Ticket"
+
+msgid "ticket_number"
+msgstr "Numéro de ticket"
+
+msgid "ticket_title"
+msgstr "Titre du ticket"
+
+msgid "ticket_description"
+msgstr "Description"
+
+msgid "issue_type"
+msgstr "Type de problème"
+
+msgid "submit_ticket"
+msgstr "Soumettre le ticket"
+
+msgid "create_new_ticket"
+msgstr "Créer un nouveau ticket"
+
+msgid "my_tickets"
+msgstr "Mes tickets"
+
+msgid "all_tickets"
+msgstr "Tous les tickets"
+
+msgid "ticket_details"
+msgstr "Détails du ticket"
+
+msgid "comments"
+msgstr "Commentaires"
+
+msgid "attachments"
+msgstr "Pièces jointes"
+
+msgid "send_reply"
+msgstr "Envoyer la réponse"
+
+msgid "close_ticket"
+msgstr "Fermer le ticket"
+
+msgid "reopen_ticket"
+msgstr "Rouvrir le ticket"
+
+msgid "assign_ticket"
+msgstr "Assigner le ticket"
+
+msgid "ticket_history"
+msgstr "Historique du ticket"
+
+msgid "add_comment"
+msgstr "Ajouter un commentaire"
+
+msgid "internal_note"
+msgstr "Note interne"
+
+msgid "customer_reply"
+msgstr "Réponse du client"
+
+msgid "agent_reply"
+msgstr "Réponse de l'agent"
+
+msgid "no_comments"
+msgstr "Aucun commentaire"
+
+msgid "no_attachments"
+msgstr "Aucune pièce jointe"
+
+msgid "user_management"
+msgstr "Gestion des utilisateurs"
+
+msgid "add_user"
+msgstr "Ajouter un utilisateur"
+
+msgid "edit_user"
+msgstr "Modifier l'utilisateur"
+
+msgid "delete_user"
+msgstr "Supprimer l'utilisateur"
+
+msgid "user_details"
+msgstr "Détails de l'utilisateur"
+
+msgid "search_users"
+msgstr "Rechercher des utilisateurs..."
+
+msgid "no_users_found"
+msgstr "Aucun utilisateur trouvé"
+
+msgid "customer_management"
+msgstr "Gestion des clients"
+
+msgid "add_customer"
+msgstr "Ajouter un client"
+
+msgid "edit_customer"
+msgstr "Modifier le client"
+
+msgid "delete_customer"
+msgstr "Supprimer le client"
+
+msgid "customer_details"
+msgstr "Détails du client"
+
+msgid "search_customers"
+msgstr "Rechercher des clients..."
+
+msgid "no_customers_found"
+msgstr "Aucun client trouvé"
+
+msgid "agent_management"
+msgstr "Gestion des agents"
+
+msgid "add_agent"
+msgstr "Ajouter un agent"
+
+msgid "edit_agent"
+msgstr "Modifier l'agent"
+
+msgid "delete_agent"
+msgstr "Supprimer l'agent"
+
+msgid "agent_details"
+msgstr "Détails de l'agent"
+
+msgid "search_agents"
+msgstr "Rechercher des agents..."
+
+msgid "no_agents_found"
+msgstr "Aucun agent trouvé"
+
+msgid "department_management"
+msgstr "Gestion des départements"
+
+msgid "add_department"
+msgstr "Ajouter un département"
+
+msgid "edit_department"
+msgstr "Modifier le département"
+
+msgid "delete_department"
+msgstr "Supprimer le département"
+
+msgid "search_departments"
+msgstr "Rechercher des départements..."
+
+msgid "no_departments_found"
+msgstr "Aucun département trouvé"
+
+msgid "skill_management"
+msgstr "Gestion des compétences"
+
+msgid "add_skill"
+msgstr "Ajouter une compétence"
+
+msgid "edit_skill"
+msgstr "Modifier la compétence"
+
+msgid "delete_skill"
+msgstr "Supprimer la compétence"
+
+msgid "search_skills"
+msgstr "Rechercher des compétences..."
+
+msgid "no_skills_found"
+msgstr "Aucune compétence trouvée"
+
+msgid "category_management"
+msgstr "Gestion des catégories"
+
+msgid "add_category"
+msgstr "Ajouter une catégorie"
+
+msgid "edit_category"
+msgstr "Modifier la catégorie"
+
+msgid "delete_category"
+msgstr "Supprimer la catégorie"
+
+msgid "issue_type_management"
+msgstr "Gestion des types de problèmes"
+
+msgid "add_issue_type"
+msgstr "Ajouter un type de problème"
+
+msgid "edit_issue_type"
+msgstr "Modifier le type de problème"
+
+msgid "delete_issue_type"
+msgstr "Supprimer le type de problème"
+
+msgid "priority_management"
+msgstr "Gestion des priorités"
+
+msgid "add_priority"
+msgstr "Ajouter une priorité"
+
+msgid "edit_priority"
+msgstr "Modifier la priorité"
+
+msgid "delete_priority"
+msgstr "Supprimer la priorité"
+
+msgid "sla_management"
+msgstr "Gestion des règles SLA"
+
+msgid "add_sla_rule"
+msgstr "Ajouter une règle SLA"
+
+msgid "edit_sla_rule"
+msgstr "Modifier la règle SLA"
+
+msgid "delete_sla_rule"
+msgstr "Supprimer la règle SLA"
+
+msgid "response_time"
+msgstr "Temps de réponse"
+
+msgid "resolution_time"
+msgstr "Temps de résolution"
+
+msgid "escalation_management"
+msgstr "Gestion des escalades"
+
+msgid "add_escalation"
+msgstr "Ajouter une règle d'escalade"
+
+msgid "edit_escalation"
+msgstr "Modifier la règle d'escalade"
+
+msgid "delete_escalation"
+msgstr "Supprimer la règle d'escalade"
+
+msgid "notification_management"
+msgstr "Notifications"
+
+msgid "mark_as_read"
+msgstr "Marquer comme lu"
+
+msgid "mark_all_read"
+msgstr "Tout marquer comme lu"
+
+msgid "delete_all_notifications"
+msgstr "Tout supprimer"
+
+msgid "no_notifications"
+msgstr "Aucune notification"
+
+msgid "search_notifications"
+msgstr "Rechercher des notifications..."
+
+msgid "report_tickets"
+msgstr "Rapport des tickets"
+
+msgid "report_users"
+msgstr "Rapport des utilisateurs"
+
+msgid "report_notifications"
+msgstr "Rapport des notifications"
+
+msgid "report_sla"
+msgstr "Rapport SLA"
+
+msgid "report_escalation"
+msgstr "Rapport d'escalade"
+
+msgid "user_report"
+msgstr "Rapport utilisateur"
+
+msgid "ticket_report"
+msgstr "Rapport des tickets"
+
+msgid "sla_report"
+msgstr "Rapport SLA"
+
+msgid "escalation_report"
+msgstr "Rapport d'escalade"
+
+msgid "notification_report"
+msgstr "Rapport des notifications"
+
+msgid "agent_performance_report"
+msgstr "Rapport de performance agent"
+
+msgid "generate_report"
+msgstr "Générer le rapport"
+
+msgid "export_csv"
+msgstr "Exporter CSV"
+
+msgid "my_profile"
+msgstr "Mon profil"
+
+msgid "edit_profile"
+msgstr "Modifier le profil"
+
+msgid "change_photo"
+msgstr "Changer la photo"
+
+msgid "account_settings"
+msgstr "Paramètres du compte"
+
+msgid "system_settings"
+msgstr "Paramètres système"
+
+msgid "general_settings"
+msgstr "Paramètres généraux"
+
+msgid "email_settings"
+msgstr "Paramètres de messagerie"
+
+msgid "company_info"
+msgstr "Informations sur l'entreprise"
+
+msgid "ml_model_management"
+msgstr "Gestion du modèle ML"
+
+msgid "model_status"
+msgstr "Statut du modèle"
+
+msgid "model_version"
+msgstr "Version du modèle"
+
+msgid "model_accuracy"
+msgstr "Précision du modèle"
+
+msgid "training_data"
+msgstr "Données d'entraînement"
+
+msgid "last_trained"
+msgstr "Dernier entraînement"
+
+msgid "retrain_model"
+msgstr "Réentraîner le modèle"
+
+msgid "model_metrics"
+msgstr "Métriques du modèle"
+
+msgid "mae"
+msgstr "MAE"
+
+msgid "rmse"
+msgstr "RMSE"
+
+msgid "r_squared"
+msgstr "R²"
+
+msgid "prediction_history"
+msgstr "Historique des prédictions"
+
+msgid "predicted_resolution_time"
+msgstr "Temps de résolution prédit"
+
+msgid "confidence_interval"
+msgstr "Intervalle de confiance"
+
+msgid "team_management"
+msgstr "Gestion d'équipe"
+
+msgid "team_members"
+msgstr "Membres de l'équipe"
+
+msgid "contact_us"
+msgstr "Contactez-nous"
+
+msgid "contact_form"
+msgstr "Formulaire de contact"
+
+msgid "subject"
+msgstr "Sujet"
+
+msgid "showing"
+msgstr "Affichage"
+
+msgid "of"
+msgstr "sur"
+
+msgid "results"
+msgstr "Résultats"
+
+msgid "first"
+msgstr "Premier"
+
+msgid "last"
+msgstr "Dernier"
+
+msgid "no_records_found"
+msgstr "Aucun enregistrement trouvé"
+
+msgid "no_data_available"
+msgstr "Aucune donnée disponible"
+
+msgid "searching"
+msgstr "Recherche..."
+
+msgid "user_created"
+msgstr "User created successfully."
+
+msgid "user_updated"
+msgstr "User updated successfully."
+
+msgid "user_deleted"
+msgstr "User deleted successfully."
+
+msgid "customer_created"
+msgstr "Customer created successfully."
+
+msgid "customer_updated"
+msgstr "Customer updated successfully."
+
+msgid "customer_deleted"
+msgstr "Customer deleted successfully."
+
+msgid "agent_created"
+msgstr "Agent created successfully."
+
+msgid "agent_updated"
+msgstr "Agent updated successfully."
+
+msgid "agent_deleted"
+msgstr "Agent deleted successfully."
+
+msgid "department_created"
+msgstr "Department created successfully."
+
+msgid "department_updated"
+msgstr "Department updated successfully."
+
+msgid "department_deleted"
+msgstr "Department deleted successfully."
+
+msgid "ticket_created"
+msgstr "Ticket created successfully."
+
+msgid "ticket_updated"
+msgstr "Ticket updated successfully."
+
+msgid "ticket_deleted"
+msgstr "Ticket deleted successfully."
+
+msgid "ticket_closed"
+msgstr "Ticket closed successfully."
+
+msgid "ticket_reopened"
+msgstr "Ticket reopened successfully."
+
+msgid "ticket_assigned"
+msgstr "Ticket assigned successfully."
+
+msgid "comment_added"
+msgstr "Comment added successfully."
+
+msgid "skill_created"
+msgstr "Skill created successfully."
+
+msgid "skill_updated"
+msgstr "Skill updated successfully."
+
+msgid "skill_deleted"
+msgstr "Skill deleted successfully."
+
+msgid "category_created"
+msgstr "Category created successfully."
+
+msgid "category_updated"
+msgstr "Category updated successfully."
+
+msgid "category_deleted"
+msgstr "Category deleted successfully."
+
+msgid "settings_saved"
+msgstr "Settings saved successfully."
+
+msgid "password_changed"
+msgstr "Password changed successfully."
+
+msgid "profile_updated"
+msgstr "Profile updated successfully."
+
+msgid "registration_success"
+msgstr "Registration successful! A verification email has been sent to your address."
+
+msgid "reset_email_sent"
+msgstr "Password reset email sent. Please check your inbox."
+
+msgid "password_reset_success"
+msgstr "Password has been reset successfully."
+
+msgid "notifications_deleted"
+msgstr "All notifications deleted."
+
+msgid "model_retrained"
+msgstr "Model retrained successfully."
+
+msgid "error_occurred"
+msgstr "An error occurred. Please try again."
+
+msgid "invalid_credentials"
+msgstr "Invalid email or password."
+
+msgid "invalid_email"
+msgstr "Please enter a valid email address."
+
+msgid "email_required"
+msgstr "Email is required."
+
+msgid "password_required"
+msgstr "Password is required."
+
+msgid "passwords_do_not_match"
+msgstr "Passwords do not match."
+
+msgid "email_exists"
+msgstr "Email already exists."
+
+msgid "account_not_found"
+msgstr "Account not found."
+
+msgid "account_inactive"
+msgstr "Your account is inactive. Please contact support."
+
+msgid "access_denied"
+msgstr "Access denied. You do not have permission to perform this action."
+
+msgid "database_error"
+msgstr "A database error occurred. Please try again later."
+
+msgid "login_failed"
+msgstr "Login failed. Please try again."
+
+msgid "registration_failed"
+msgstr "Registration failed. Please try again."
+
+msgid "delete_failed"
+msgstr "Failed to delete. Please try again."
+
+msgid "update_failed"
+msgstr "Failed to update. Please try again."
+
+msgid "something_went_wrong"
+msgstr "Something went wrong."
+
+msgid "delete_confirmation"
+msgstr "Are you sure you want to delete this item?"
+
+msgid "delete_user_confirmation"
+msgstr "Are you sure you want to delete this user?"
+
+msgid "delete_customer_confirmation"
+msgstr "Are you sure you want to delete this customer?"
+
+msgid "delete_agent_confirmation"
+msgstr "Are you sure you want to delete this agent?"
+
+msgid "delete_department_confirmation"
+msgstr "Are you sure you want to delete this department?"
+
+msgid "delete_ticket_confirmation"
+msgstr "Are you sure you want to delete this ticket?"
+
+msgid "delete_skill_confirmation"
+msgstr "Are you sure you want to delete this skill?"
+
+msgid "delete_notification_confirmation"
+msgstr "Are you sure you want to delete this notification? This action cannot be undone."
+
+msgid "close_ticket_confirmation"
+msgstr "Are you sure you want to close this ticket?"
+
+msgid "reopen_ticket_confirmation"
+msgstr "Are you sure you want to reopen this ticket?"
+
+msgid "field_required"
+msgstr "This field is required."
+
+msgid "invalid_email_format"
+msgstr "Please enter a valid email address."
+
+msgid "password_min_length"
+msgstr "Password must be at least 8 characters long."
+
+msgid "password_requirements"
+msgstr "Password must be at least 8 characters with uppercase, lowercase, and number."
+
+msgid "password_must_be_different"
+msgstr "New password must be different from current password."
+
+msgid "fill_all_fields"
+msgstr "Please fill all required fields."
+
+msgid "page_not_found"
+msgstr "404 - Page Not Found"
+
+msgid "page_not_found_message"
+msgstr "The page you are looking for does not exist."
+
+msgid "access_denied_title"
+msgstr "403 - Access Denied"
+
+msgid "internal_server_error"
+msgstr "500 - Internal Server Error"
+
+msgid "internal_server_error_message"
+msgstr "Something went wrong on our end. Please try again later."
+
+msgid "go_back"
+msgstr "Go Back"
+
+msgid "go_home"
+msgstr "Go to Dashboard"
+
+msgid "tickets_chart"
+msgstr "Tickets"
+
+msgid "created"
+msgstr "Created"
+
+msgid "resolved"
+msgstr "Resolved"
+
+msgid "weekly_trend"
+msgstr "Weekly Trend"
+
+msgid "department_distribution"
+msgstr "Department Distribution"
+
+msgid "no_status_data"
+msgstr "No status data available."
+
+msgid "no_priority_data"
+msgstr "No priority data available."
+
+msgid "monday"
+msgstr "Monday"
+
+msgid "tuesday"
+msgstr "Tuesday"
+
+msgid "wednesday"
+msgstr "Wednesday"
+
+msgid "thursday"
+msgstr "Thursday"
+
+msgid "friday"
+msgstr "Friday"
+
+msgid "saturday"
+msgstr "Saturday"
+
+msgid "sunday"
+msgstr "Sunday"
+
+msgid "mon"
+msgstr "Mon"
+
+msgid "tue"
+msgstr "Tue"
+
+msgid "wed"
+msgstr "Wed"
+
+msgid "thu"
+msgstr "Thu"
+
+msgid "fri"
+msgstr "Fri"
+
+msgid "sat"
+msgstr "Sat"
+
+msgid "sun"
+msgstr "Sun"
+
+msgid "total"
+msgstr "Total"
+
+msgid "awaiting"
+msgstr "Awaiting"
+
+msgid "not_available"
+msgstr "N/A"
+
+msgid "all"
+msgstr "All"
+
+msgid "none"
+msgstr "None"
+
+msgid "yes"
+msgstr "Yes"
+
+msgid "no"
+msgstr "No"
+
+msgid "active"
+msgstr "Active"
+
+msgid "inactive"
+msgstr "Inactive"
+
+msgid "loading"
+msgstr "Loading..."
+
+msgid "success"
+msgstr "Success"
+
+msgid "error"
+msgstr "Error"
+
+msgid "warning"
+msgstr "Warning"
+
+msgid "info"
+msgstr "Info"
+
+msgid "toggle_menu"
+msgstr "Toggle menu"
+
+msgid "search_placeholder"
+msgstr "Search..."
+
+msgid "select_option"
+msgstr "Select an option"
+
+msgid "no_matching_records"
+msgstr "No matching records found."
+
+msgid "error_loading_results"
+msgstr "Error loading results."
+
+msgid "please_enter_reply"
+msgstr "Please enter a reply message."
+
+msgid "reply_sent"
+msgstr "Reply sent successfully!"
+
+msgid "error_sending_reply"
+msgstr "Error sending reply. Please try again."
+
+msgid "deleting"
+msgstr "Deleting..."
+
+msgid "clear_chat_history"
+msgstr "Clear all chat history?"
+
+msgid "chat_history_cleared"
+msgstr "Chat history cleared. How can I help you today?"
+
+msgid "network_error"
+msgstr "Network error. Please try again."
+
+msgid "ai_assistant"
+msgstr "AI Assistant"
+
+msgid "you"
+msgstr "You"
+
+msgid "ai_service_active"
+msgstr "AI Service Active"
+
+msgid "cannot_connect_ai"
+msgstr "Cannot connect to AI service"
+
+msgid "test_email_smtp"
+msgstr "Test email functionality requires valid SMTP credentials."
+
+msgid "retrain_confirmation"
+msgstr "Are you sure you want to retrain the model? This may take some time."
+
+msgid "retraining"
+msgstr "Retraining..."
+
+msgid "model_retraining"
+msgstr "Model is being retrained. Please wait."
+
+msgid "hours"
+msgstr "h"
+
+msgid "minutes"
+msgstr "m"
+
+msgid "versions"
+msgstr "v"
+
+msgid "prediction"
+msgstr "Prediction"
+
+msgid "actual"
+msgstr "Actual"
+
+msgid "difference"
+msgstr "Difference"
+
+msgid "no_predictions_found"
+msgstr "No predictions found"
+
+msgid "ticket_id"
+msgstr "Ticket ID"
+
+msgid "predicted_hours"
+msgstr "Predicted Hours"
+
+msgid "actual_hours"
+msgstr "Actual Hours"
+
+msgid "prediction_date"
+msgstr "Prediction Date"
+
+msgid "model_info"
+msgstr "Model Information"
+
+msgid "training_samples"
+msgstr "Training Samples"
+
+msgid "no_training_data"
+msgstr "No training data available"
+
+msgid "model_not_trained"
+msgstr "Model not yet trained"
+
+msgid "ready"
+msgstr "Ready"
+
+msgid "not_ready"
+msgstr "Not Ready"
+
+msgid "risk_level"
+msgstr "Risk Level"
+
+msgid "risk_high"
+msgstr "High Risk"
+
+msgid "risk_medium"
+msgstr "Medium Risk"
+
+msgid "risk_low"
+msgstr "Low Risk"
+
+msgid "sla_breach"
+msgstr "SLA Breach"
+
+msgid "sla_ok"
+msgstr "SLA OK"
+
+msgid "escalated"
+msgstr "Escalated"
+
+msgid "not_escalated"
+msgstr "Not Escalated"
+
+msgid "response_due"
+msgstr "Response Due"
+
+msgid "resolution_due"
+msgstr "Resolution Due"
+
+msgid "breach_time"
+msgstr "Breach Time"
+
+msgid "time_remaining"
+msgstr "Time Remaining"
+
+msgid "overdue"
+msgstr "Overdue"
+
+msgid "due_soon"
+msgstr "Due Soon"
+
+msgid "on_track"
+msgstr "On Track"
+
+msgid "performance"
+msgstr "Performance"
+
+msgid "analytics"
+msgstr "Analytics"
+
+msgid "overview"
+msgstr "Overview"
+
+msgid "details"
+msgstr "Details"
+
+msgid "activity"
+msgstr "Activity"
+
+msgid "activities"
+msgstr "Activities"
+
+msgid "log"
+msgstr "Log"
+
+msgid "logs"
+msgstr "Logs"
+
+msgid "configuration"
+msgstr "Configuration"
+
+msgid "configurations"
+msgstr "Configurations"
+
+msgid "permission"
+msgstr "Permission"
+
+msgid "permissions"
+msgstr "Permissions"
+
+msgid "group"
+msgstr "Group"
+
+msgid "groups"
+msgstr "Groups"
+
+msgid "module"
+msgstr "Module"
+
+msgid "modules"
+msgstr "Modules"
+
+msgid "feature"
+msgstr "Feature"
+
+msgid "features"
+msgstr "Features"
+
+msgid "option"
+msgstr "Option"
+
+msgid "options"
+msgstr "Options"
+
+msgid "value"
+msgstr "Value"
+
+msgid "values"
+msgstr "Values"
+
+msgid "default"
+msgstr "Default"
+
+msgid "defaults"
+msgstr "Defaults"
+
+msgid "custom"
+msgstr "Custom"
+
+msgid "standard"
+msgstr "Standard"
+
+msgid "advanced"
+msgstr "Advanced"
+
+msgid "basic"
+msgstr "Basic"
+
+msgid "general"
+msgstr "General"
+
+msgid "specific"
+msgstr "Specific"
+
+msgid "other"
+msgstr "Other"
+
+msgid "others"
+msgstr "Others"
+
+msgid "more"
+msgstr "More"
+
+msgid "less"
+msgstr "Less"
+
+msgid "show"
+msgstr "Show"
+
+msgid "hide"
+msgstr "Hide"
+
+msgid "expand"
+msgstr "Expand"
+
+msgid "collapse"
+msgstr "Collapse"
+
+msgid "open"
+msgstr "Ouvert"
+
+msgid "pending"
+msgstr "En attente"
+
+msgid "processing"
+msgstr "Processing"
+
+msgid "completed"
+msgstr "Completed"
+
+msgid "failed"
+msgstr "Failed"
+
+msgid "cancelled"
+msgstr "Cancelled"
+
+msgid "scheduled"
+msgstr "Scheduled"
+
+msgid "unscheduled"
+msgstr "Unscheduled"
+
+msgid "enabled"
+msgstr "Enabled"
+
+msgid "disabled"
+msgstr "Disabled"
+
+msgid "visible"
+msgstr "Visible"
+
+msgid "hidden"
+msgstr "Hidden"
+
+msgid "public"
+msgstr "Public"
+
+msgid "private"
+msgstr "Private"
+
+msgid "internal"
+msgstr "Internal"
+
+msgid "external"
+msgstr "External"
+
+msgid "required"
+msgstr "Required"
+
+msgid "optional"
+msgstr "Optional"
+
+msgid "mandatory"
+msgstr "Mandatory"
+
+msgid "recommended"
+msgstr "Recommended"
+
+msgid "normal"
+msgstr "Normal"
+
+msgid "urgent"
+msgstr "Urgent"
+
+msgid "emergency"
+msgstr "Emergency"
+
+msgid "low"
+msgstr "Bas"
+
+msgid "medium"
+msgstr "Moyen"
+
+msgid "high"
+msgstr "Haut"
+
+msgid "critical"
+msgstr "Critique"
+
+msgid "major"
+msgstr "Major"
+
+msgid "minor"
+msgstr "Minor"
+
+msgid "trivial"
+msgstr "Trivial"
+
+msgid "blocker"
+msgstr "Blocker"
+
+msgid "security"
+msgstr "Security"
+
+msgid "bug"
+msgstr "Bug"
+
+msgid "feature_request"
+msgstr "Feature Request"
+
+msgid "improvement"
+msgstr "Improvement"
+
+msgid "task"
+msgstr "Task"
+
+msgid "question"
+msgstr "Question"
+
+msgid "incident"
+msgstr "Incident"
+
+msgid "problem"
+msgstr "Problem"
+
+msgid "change_request"
+msgstr "Change Request"
+
+msgid "service_request"
+msgstr "Service Request"
+
+msgid "access_request"
+msgstr "Access Request"
+
+msgid "information"
+msgstr "Information"
+
+msgid "feedback"
+msgstr "Feedback"
+
+msgid "complaint"
+msgstr "Complaint"
+
+msgid "suggestion"
+msgstr "Suggestion"
+
+msgid "inquiry"
+msgstr "Inquiry"
+
+msgid "request"
+msgstr "Request"
+
+msgid "order"
+msgstr "Order"
+
+msgid "invoice"
+msgstr "Invoice"
+
+msgid "payment"
+msgstr "Payment"
+
+msgid "refund"
+msgstr "Refund"
+
+msgid "subscription"
+msgstr "Subscription"
+
+msgid "account"
+msgstr "Account"
+
+msgid "billing"
+msgstr "Billing"
+
+msgid "shipping"
+msgstr "Shipping"
+
+msgid "delivery"
+msgstr "Delivery"
+
+msgid "return"
+msgstr "Return"
+
+msgid "exchange"
+msgstr "Exchange"
+
+msgid "warranty"
+msgstr "Warranty"
+
+msgid "guarantee"
+msgstr "Guarantee"
+
+msgid "contract"
+msgstr "Contract"
+
+msgid "agreement"
+msgstr "Agreement"
+
+msgid "terms"
+msgstr "Terms"
+
+msgid "conditions"
+msgstr "Conditions"
+
+msgid "policy"
+msgstr "Policy"
+
+msgid "privacy"
+msgstr "Privacy"
+
+msgid "legal"
+msgstr "Legal"
+
+msgid "compliance"
+msgstr "Compliance"
+
+msgid "regulation"
+msgstr "Regulation"
+
+msgid "guideline"
+msgstr "Guideline"
+
+msgid "procedure"
+msgstr "Procedure"
+
+msgid "process"
+msgstr "Process"
+
+msgid "workflow"
+msgstr "Workflow"
+
+msgid "template"
+msgstr "Template"
+
+msgid "format"
+msgstr "Format"
+
+msgid "file"
+msgstr "File"
+
+msgid "document"
+msgstr "Document"
+
+msgid "image"
+msgstr "Image"
+
+msgid "video"
+msgstr "Video"
+
+msgid "audio"
+msgstr "Audio"
+
+msgid "link"
+msgstr "Link"
+
+msgid "url"
+msgstr "URL"
+
+msgid "address"
+msgstr "Address"
+
+msgid "location"
+msgstr "Location"
+
+msgid "region"
+msgstr "Region"
+
+msgid "country"
+msgstr "Country"
+
+msgid "city"
+msgstr "City"
+
+msgid "state"
+msgstr "State"
+
+msgid "zip_code"
+msgstr "ZIP Code"
+
+msgid "postal_code"
+msgstr "Postal Code"
+
+msgid "currency"
+msgstr "Currency"
+
+msgid "amount"
+msgstr "Amount"
+
+msgid "quantity"
+msgstr "Quantity"
+
+msgid "price"
+msgstr "Price"
+
+msgid "cost"
+msgstr "Cost"
+
+msgid "rate"
+msgstr "Rate"
+
+msgid "percentage"
+msgstr "Percentage"
+
+msgid "ratio"
+msgstr "Ratio"
+
+msgid "score"
+msgstr "Score"
+
+msgid "rating"
+msgstr "Rating"
+
+msgid "rank"
+msgstr "Rank"
+
+msgid "level"
+msgstr "Level"
+
+msgid "grade"
+msgstr "Grade"
+
+msgid "tier"
+msgstr "Tier"
+
+msgid "class"
+msgstr "Class"
+
+msgid "version"
+msgstr "Version"
+
+msgid "release"
+msgstr "Release"
+
+msgid "build"
+msgstr "Build"
+
+msgid "revision"
+msgstr "Revision"
+
+msgid "patch"
+msgstr "Patch"
+
+msgid "upgrade"
+msgstr "Upgrade"
+
+msgid "migration"
+msgstr "Migration"
+
+msgid "backup"
+msgstr "Backup"
+
+msgid "restore"
+msgstr "Restore"
+
+msgid "recovery"
+msgstr "Recovery"
+
+msgid "maintenance"
+msgstr "Maintenance"
+
+msgid "support"
+msgstr "Support"
+
+msgid "help"
+msgstr "Help"
+
+msgid "documentation"
+msgstr "Documentation"
+
+msgid "guide"
+msgstr "Guide"
+
+msgid "tutorial"
+msgstr "Tutorial"
+
+msgid "faq"
+msgstr "FAQ"
+
+msgid "knowledge_base"
+msgstr "Knowledge Base"
+
+msgid "announcement"
+msgstr "Announcement"
+
+msgid "news"
+msgstr "News"
+
+msgid "event"
+msgstr "Event"
+
+msgid "calendar"
+msgstr "Calendar"
+
+msgid "schedule"
+msgstr "Schedule"
+
+msgid "appointment"
+msgstr "Appointment"
+
+msgid "meeting"
+msgstr "Meeting"
+
+msgid "reminder"
+msgstr "Reminder"
+
+msgid "alert"
+msgstr "Alert"
+
+msgid "notice"
+msgstr "Notice"
+
+msgid "notification"
+msgstr "Notification"
+
+msgid "newsletter"
+msgstr "Newsletter"
+
+msgid "digest"
+msgstr "Digest"
+
+msgid "summary"
+msgstr "Summary"
+
+msgid "report"
+msgstr "Report"
+
+msgid "analysis"
+msgstr "Analysis"
+
+msgid "insight"
+msgstr "Insight"
+
+msgid "metric"
+msgstr "Metric"
+
+msgid "indicator"
+msgstr "Indicator"
+
+msgid "benchmark"
+msgstr "Benchmark"
+
+msgid "target"
+msgstr "Target"
+
+msgid "goal"
+msgstr "Goal"
+
+msgid "objective"
+msgstr "Objective"
+
+msgid "strategy"
+msgstr "Strategy"
+
+msgid "plan"
+msgstr "Plan"
+
+msgid "roadmap"
+msgstr "Roadmap"
+
+msgid "timeline"
+msgstr "Timeline"
+
+msgid "milestone"
+msgstr "Milestone"
+
+msgid "deadline"
+msgstr "Deadline"
+
+msgid "due_date"
+msgstr "Due Date"
+
+msgid "start_date"
+msgstr "Start Date"
+
+msgid "end_date"
+msgstr "End Date"
+
+msgid "duration"
+msgstr "Duration"
+
+msgid "period"
+msgstr "Period"
+
+msgid "frequency"
+msgstr "Frequency"
+
+msgid "interval"
+msgstr "Interval"
+
+msgid "recurrence"
+msgstr "Recurrence"
+
+msgid "pattern"
+msgstr "Pattern"
+
+msgid "rule"
+msgstr "Rule"
+
+msgid "condition"
+msgstr "Condition"
+
+msgid "exception"
+msgstr "Exception"
+
+msgid "issue"
+msgstr "Issue"
+
+msgid "defect"
+msgstr "Defect"
+
+msgid "outage"
+msgstr "Outage"
+
+msgid "downtime"
+msgstr "Downtime"
+
+msgid "uptime"
+msgstr "Uptime"
+
+msgid "availability"
+msgstr "Availability"
+
+msgid "reliability"
+msgstr "Reliability"
+
+msgid "stability"
+msgstr "Stability"
+
+msgid "efficiency"
+msgstr "Efficiency"
+
+msgid "productivity"
+msgstr "Productivity"
+
+msgid "quality"
+msgstr "Quality"
+
+msgid "satisfaction"
+msgstr "Satisfaction"
+
+msgid "experience"
+msgstr "Experience"
+
+msgid "engagement"
+msgstr "Engagement"
+
+msgid "retention"
+msgstr "Retention"
+
+msgid "churn"
+msgstr "Churn"
+
+msgid "growth"
+msgstr "Growth"
+
+msgid "revenue"
+msgstr "Revenue"
+
+msgid "profit"
+msgstr "Profit"
+
+msgid "margin"
+msgstr "Margin"
+
+msgid "roi"
+msgstr "ROI"
+
+msgid "kpi"
+msgstr "KPI"
+
+msgid "sla"
+msgstr "SLA"
+
+msgid "sla_target"
+msgstr "SLA Target"
+
+msgid "sla_compliance"
+msgstr "SLA Compliance"
+
+msgid "first_response"
+msgstr "First Response"
+
+msgid "resolution"
+msgstr "Resolution"
+
+msgid "response"
+msgstr "Response"
+
+msgid "feedback"
+msgstr "Feedback"
+
+msgid "satisfaction_score"
+msgstr "Satisfaction Score"
+
+msgid "csat"
+msgstr "CSAT"
+
+msgid "nps"
+msgstr "NPS"
+
+msgid "ces"
+msgstr "CES"
+
+msgid "ticket_volume"
+msgstr "Ticket Volume"
+
+msgid "ticket_backlog"
+msgstr "Ticket Backlog"
+
+msgid "ticket_age"
+msgstr "Ticket Age"
+
+msgid "reopen_rate"
+msgstr "Reopen Rate"
+
+msgid "escalation_rate"
+msgstr "Escalation Rate"
+
+msgid "breach_rate"
+msgstr "Breach Rate"
+
+msgid "compliance_rate"
+msgstr "Compliance Rate"
+
+msgid "agent_utilization"
+msgstr "Agent Utilization"
+
+msgid "agent_productivity"
+msgstr "Agent Productivity"
+
+msgid "agent_performance"
+msgstr "Agent Performance"
+
+msgid "agent_satisfaction"
+msgstr "Agent Satisfaction"
+
+msgid "customer_satisfaction"
+msgstr "Customer Satisfaction"
+
+msgid "customer_effort"
+msgstr "Customer Effort"
+
+msgid "customer_retention"
+msgstr "Customer Retention"
+
+msgid "customer_lifetime_value"
+msgstr "Customer Lifetime Value"
+
+msgid "customer_acquisition_cost"
+msgstr "Customer Acquisition Cost"
+
+msgid "cost_per_ticket"
+msgstr "Cost Per Ticket"
+
+msgid "cost_per_resolution"
+msgstr "Cost Per Resolution"
+
+msgid "average_handle_time"
+msgstr "Average Handle Time"
+
+msgid "average_resolution_time"
+msgstr "Average Resolution Time"
+
+msgid "average_response_time"
+msgstr "Average Response Time"
+
+msgid "average_first_response_time"
+msgstr "Average First Response Time"
+
+msgid "average_wait_time"
+msgstr "Average Wait Time"
+
+msgid "average_abandonment_rate"
+msgstr "Average Abandonment Rate"
+
+msgid "service_level"
+msgstr "Service Level"
+
+msgid "service_level_agreement"
+msgstr "Service Level Agreement"
+
+msgid "operational_level_agreement"
+msgstr "Operational Level Agreement"
+
+msgid "underpinning_contract"
+msgstr "Underpinning Contract"
+
+msgid "service_catalog"
+msgstr "Service Catalog"
+
+msgid "service_portfolio"
+msgstr "Service Portfolio"
+
+msgid "service_pipeline"
+msgstr "Service Pipeline"
+
+msgid "service_improvement_plan"
+msgstr "Service Improvement Plan"
+
+msgid "continual_service_improvement"
+msgstr "Continual Service Improvement"
+
+msgid "service_design"
+msgstr "Service Design"
+
+msgid "service_transition"
+msgstr "Service Transition"
+
+msgid "service_operation"
+msgstr "Service Operation"
+
+msgid "service_strategy"
+msgstr "Service Strategy"
+
+msgid "service_management"
+msgstr "Service Management"
+
+msgid "it_service_management"
+msgstr "IT Service Management"
+
+msgid "itil"
+msgstr "ITIL"
+
+msgid "cobit"
+msgstr "COBIT"
+
+msgid "iso"
+msgstr "ISO"
+
+msgid "iso_20000"
+msgstr "ISO 20000"
+
+msgid "iso_27001"
+msgstr "ISO 27001"
+
+msgid "iso_9001"
+msgstr "ISO 9001"
+
+msgid "pci_dss"
+msgstr "PCI DSS"
+
+msgid "hipaa"
+msgstr "HIPAA"
+
+msgid "gdpr"
+msgstr "GDPR"
+
+msgid "ccpa"
+msgstr "CCPA"
+
+msgid "sox"
+msgstr "SOX"
+
+msgid "basel"
+msgstr "Basel"
+
+msgid "dodd_frank"
+msgstr "Dodd-Frank"
+
+msgid "mifid"
+msgstr "MiFID"
+
+msgid "emir"
+msgstr "EMIR"
+
+msgid "sftr"
+msgstr "SFTR"
+
+msgid "cftc"
+msgstr "CFTC"
+
+msgid "sec"
+msgstr "SEC"
+
+msgid "finra"
+msgstr "FINRA"
+
+msgid "fca"
+msgstr "FCA"
+
+msgid "pra"
+msgstr "PRA"
+
+msgid "ecb"
+msgstr "ECB"
+
+msgid "esma"
+msgstr "ESMA"
+
+msgid "iosco"
+msgstr "IOSCO"
+
+msgid "fsb"
+msgstr "FSB"
+
+msgid "bis"
+msgstr "BIS"
+
+msgid "imf"
+msgstr "IMF"
+
+msgid "world_bank"
+msgstr "World Bank"
+
+msgid "oecd"
+msgstr "OECD"
+
+msgid "wto"
+msgstr "WTO"
+
+msgid "unctad"
+msgstr "UNCTAD"
+
+msgid "unido"
+msgstr "UNIDO"
+
+msgid "ilo"
+msgstr "ILO"
+
+msgid "who"
+msgstr "WHO"
+
+msgid "unicef"
+msgstr "UNICEF"
+
+msgid "unesco"
+msgstr "UNESCO"
+
+msgid "fao"
+msgstr "FAO"
+
+msgid "iaea"
+msgstr "IAEA"
+
+msgid "icao"
+msgstr "ICAO"
+
+msgid "imo"
+msgstr "IMO"
+
+msgid "itu"
+msgstr "ITU"
+
+msgid "upu"
+msgstr "UPU"
+
+msgid "wmo"
+msgstr "WMO"
+
+msgid "wipo"
+msgstr "WIPO"
+
+msgid "ifad"
+msgstr "IFAD"
+
+msgid "unfpa"
+msgstr "UNFPA"
+
+msgid "unhcr"
+msgstr "UNHCR"
+
+msgid "unops"
+msgstr "UNOPS"
+
+msgid "unrwa"
+msgstr "UNRWA"
+
+msgid "unwomen"
+msgstr "UN Women"
+
+msgid "world_food_programme"
+msgstr "World Food Programme"
+
+msgid "un_habitat"
+msgstr "UN-Habitat"
+
+msgid "unodc"
+msgstr "UNODC"
+
+msgid "unfccc"
+msgstr "UNFCCC"
+
+msgid "cbd"
+msgstr "CBD"
+
+msgid "unccd"
+msgstr "UNCCD"
+
+msgid "basel_convention"
+msgstr "Basel Convention"
+
+msgid "rotterdam_convention"
+msgstr "Rotterdam Convention"
+
+msgid "stockholm_convention"
+msgstr "Stockholm Convention"
+
+msgid "minamata_convention"
+msgstr "Minamata Convention"
+
+msgid "montreal_protocol"
+msgstr "Montreal Protocol"
+
+msgid "kyoto_protocol"
+msgstr "Kyoto Protocol"
+
+msgid "paris_agreement"
+msgstr "Paris Agreement"
+
+msgid "european_green_deal"
+msgstr "European Green Deal"
+
+msgid "european_deal"
+msgstr "European Deal"
+
+msgid "digital_europe"
+msgstr "Digital Europe"
+
+msgid "horizon_europe"
+msgstr "Horizon Europe"
+
+msgid "erasmus"
+msgstr "Erasmus+"
+
+msgid "european_structural_funds"
+msgstr "European Structural Funds"
+
+msgid "cohesion_fund"
+msgstr "Cohesion Fund"
+
+msgid "european_regional_development_fund"
+msgstr "European Regional Development Fund"
+
+msgid "european_social_fund"
+msgstr "European Social Fund"
+
+msgid "european_agricultural_fund"
+msgstr "European Agricultural Fund"
+
+msgid "european_maritime_fund"
+msgstr "European Maritime Fund"
+
+msgid "european_fisheries_fund"
+msgstr "European Fisheries Fund"
+
+msgid "european_globalisation_fund"
+msgstr "European Globalisation Fund"
+
+msgid "european_adjustment_fund"
+msgstr "European Adjustment Fund"
+
+msgid "european_union"
+msgstr "European Union"
+
+msgid "european_commission"
+msgstr "European Commission"
+
+msgid "european_parliament"
+msgstr "European Parliament"
+
+msgid "european_council"
+msgstr "European Council"
+
+msgid "council_of_the_european_union"
+msgstr "Council of the European Union"
+
+msgid "european_court_of_justice"
+msgstr "European Court of Justice"
+
+msgid "european_court_of_auditors"
+msgstr "European Court of Auditors"
+
+msgid "european_central_bank"
+msgstr "European Central Bank"
+
+msgid "european_investment_bank"
+msgstr "European Investment Bank"
+
+msgid "european_ombudsman"
+msgstr "European Ombudsman"
+
+msgid "european_data_protection_supervisor"
+msgstr "European Data Protection Supervisor"
+
+msgid "european_data_protection_board"
+msgstr "European Data Protection Board"
+
+msgid "european_external_action_service"
+msgstr "European External Action Service"
+
+msgid "european_border_and_coast_guard"
+msgstr "European Border and Coast Guard"
+
+msgid "europol"
+msgstr "Europol"
+
+msgid "eurojust"
+msgstr "Eurojust"
+
+msgid "european_anti_fraud_office"
+msgstr "European Anti-Fraud Office"
+
+msgid "european_public_prosecutors_office"
+msgstr "European Public Prosecutors Office"
+
+msgid "european_union_agency"
+msgstr "European Union Agency"
+
+msgid "eu_agency"
+msgstr "EU Agency"
+
+msgid "eu_body"
+msgstr "EU Body"
+
+msgid "eu_institution"
+msgstr "EU Institution"
+
+msgid "eu_office"
+msgstr "EU Office"
+
+msgid "eu_service"
+msgstr "EU Service"
+
+msgid "eu_directorate"
+msgstr "EU Directorate"
+
+msgid "eu_department"
+msgstr "EU Department"
+
+msgid "eu_division"
+msgstr "EU Division"
+
+msgid "eu_unit"
+msgstr "EU Unit"
+
+msgid "eu_section"
+msgstr "EU Section"
+
+msgid "eu_team"
+msgstr "EU Team"
+
+msgid "eu_group"
+msgstr "EU Group"
+
+msgid "eu_committee"
+msgstr "EU Committee"
+
+msgid "eu_council"
+msgstr "EU Council"
+
+msgid "eu_board"
+msgstr "EU Board"
+
+msgid "eu_panel"
+msgstr "EU Panel"
+
+msgid "eu_working_group"
+msgstr "EU Working Group"
+
+msgid "eu_task_force"
+msgstr "EU Task Force"
+
+msgid "eu_project_group"
+msgstr "EU Project Group"
+
+msgid "eu_steering_committee"
+msgstr "EU Steering Committee"
+
+msgid "eu_advisory_group"
+msgstr "EU Advisory Group"
+
+msgid "eu_expert_group"
+msgstr "EU Expert Group"
+
+msgid "eu_reference_group"
+msgstr "EU Reference Group"
+
+msgid "eu_coordination_group"
+msgstr "EU Coordination Group"
+
+msgid "eu_liaison_group"
+msgstr "EU Liaison Group"
+
+msgid "eu_contact_group"
+msgstr "EU Contact Group"
+
+msgid "eu_information_group"
+msgstr "EU Information Group"
+
+msgid "eu_network"
+msgstr "EU Network"
+
+msgid "eu_platform"
+msgstr "EU Platform"
+
+msgid "eu_forum"
+msgstr "EU Forum"
+
+msgid "eu_community"
+msgstr "EU Community"
+
+msgid "eu_association"
+msgstr "EU Association"
+
+msgid "eu_federation"
+msgstr "EU Federation"
+
+msgid "eu_alliance"
+msgstr "EU Alliance"
+
+msgid "eu_coalition"
+msgstr "EU Coalition"
+
+msgid "eu_partnership"
+msgstr "EU Partnership"
+
+msgid "eu_collaboration"
+msgstr "EU Collaboration"
+
+msgid "eu_cooperation"
+msgstr "EU Cooperation"
+
+msgid "eu_coordination"
+msgstr "EU Coordination"
+
+msgid "eu_integration"
+msgstr "EU Integration"
+
+msgid "eu_harmonisation"
+msgstr "EU Harmonisation"
+
+msgid "eu_standardisation"
+msgstr "EU Standardisation"
+
+msgid "eu_certification"
+msgstr "EU Certification"
+
+msgid "eu_accreditation"
+msgstr "EU Accreditation"
+
+msgid "eu_recognition"
+msgstr "EU Recognition"
+
+msgid "eu_validation"
+msgstr "EU Validation"
+
+msgid "eu_verification"
+msgstr "EU Verification"
+
+msgid "eu_audit"
+msgstr "EU Audit"
+
+msgid "eu_inspection"
+msgstr "EU Inspection"
+
+msgid "eu_assessment"
+msgstr "EU Assessment"
+
+msgid "eu_evaluation"
+msgstr "EU Evaluation"
+
+msgid "eu_review"
+msgstr "EU Review"
+
+msgid "eu_analysis"
+msgstr "EU Analysis"
+
+msgid "eu_study"
+msgstr "EU Study"
+
+msgid "eu_research"
+msgstr "EU Research"
+
+msgid "eu_survey"
+msgstr "EU Survey"
+
+msgid "eu_investigation"
+msgstr "EU Investigation"
+
+msgid "eu_inquiry"
+msgstr "EU Inquiry"
+
+msgid "eu_examination"
+msgstr "EU Examination"
+
+msgid "eu_testing"
+msgstr "EU Testing"
+
+msgid "eu_trial"
+msgstr "EU Trial"
+
+msgid "eu_pilot"
+msgstr "EU Pilot"
+
+msgid "eu_prototype"
+msgstr "EU Prototype"
+
+msgid "eu_demonstration"
+msgstr "EU Demonstration"
+
+msgid "eu_implementation"
+msgstr "EU Implementation"
+
+msgid "eu_deployment"
+msgstr "EU Deployment"
+
+msgid "eu_rollout"
+msgstr "EU Rollout"
+
+msgid "eu_launch"
+msgstr "EU Launch"
+
+msgid "eu_release"
+msgstr "EU Release"
+
+msgid "eu_go_live"
+msgstr "EU Go-Live"
+
+msgid "eu_production"
+msgstr "EU Production"
+
+msgid "eu_operation"
+msgstr "EU Operation"
+
+msgid "eu_maintenance"
+msgstr "EU Maintenance"
+
+msgid "eu_support"
+msgstr "EU Support"
+
+msgid "eu_service_desk"
+msgstr "EU Service Desk"
+
+msgid "eu_help_desk"
+msgstr "EU Help Desk"
+
+msgid "eu_incident_management"
+msgstr "EU Incident Management"
+
+msgid "eu_problem_management"
+msgstr "EU Problem Management"
+
+msgid "eu_change_management"
+msgstr "EU Change Management"
+
+msgid "eu_release_management"
+msgstr "EU Release Management"
+
+msgid "eu_configuration_management"
+msgstr "EU Configuration Management"
+
+msgid "eu_asset_management"
+msgstr "EU Asset Management"
+
+msgid "eu_service_level_management"
+msgstr "EU Service Level Management"
+
+msgid "eu_capacity_management"
+msgstr "EU Capacity Management"
+
+msgid "eu_availability_management"
+msgstr "EU Availability Management"
+
+msgid "eu_continuity_management"
+msgstr "EU Continuity Management"
+
+msgid "eu_security_management"
+msgstr "EU Security Management"
+
+msgid "eu_supplier_management"
+msgstr "EU Supplier Management"
+
+msgid "eu_risk_management"
+msgstr "EU Risk Management"
+
+msgid "eu_financial_management"
+msgstr "EU Financial Management"
+
+msgid "eu_knowledge_management"
+msgstr "EU Knowledge Management"
+
+msgid "eu_capacity_planning"
+msgstr "EU Capacity Planning"
+
+msgid "eu_performance_management"
+msgstr "EU Performance Management"
+
+msgid "eu_quality_management"
+msgstr "EU Quality Management"
+
+msgid "eu_compliance_management"
+msgstr "EU Compliance Management"
+
+msgid "eu_vendor_management"
+msgstr "eu_vendor_management"
+
+# Dashboard Additional Keys
+msgid "welcome_to_help_desk"
+msgstr "Bienvenue dans le système de gestion du Help Desk"
+
+msgid "ticket_analytics"
+msgstr "Analytique des tickets"
+
+msgid "tickets_by_category"
+msgstr "Tickets par catégorie"
+
+msgid "top_agents"
+msgstr "Meilleurs agents"
+
+msgid "agent"
+msgstr "Agent"
+
+msgid "solved"
+msgstr "Résolu"
+
+msgid "admin"
+msgstr "Administrateur"
+
+msgid "on_hold_tickets"
+msgstr "Tickets en attente"
+
+msgid "ml_high_risk"
+msgstr "ML Risque élevé"
+
+msgid "priority_distribution"
+msgstr "Distribution des priorités"
+
+msgid "no_tickets_found"
+msgstr "Aucun ticket trouvé."
+
+msgid "escalated_tickets_warning"
+msgstr "ticket(s) actuellement escaladé(s) et nécessitant une attention."
+
+msgid "ticket_status_distribution"
+msgstr "Distribution du statut des tickets"
+
+msgid "agent_workload"
+msgstr "Charge de travail des agents"
+
+msgid "unassigned_tickets"
+msgstr "Non assigné"
+
+msgid "no_agent_workload_data"
+msgstr "Aucune donnée de charge de travail des agents."
+
+msgid "view_all"
+msgstr "Voir tout"
+
+msgid "sla_breach_alerts"
+msgstr "Alertes de violation de SLA"
+
+msgid "ml_resolution_insights"
+msgstr "Perspectives de résolution ML"
+
+msgid "model_management"
+msgstr "Gestion du modèle"
+
+msgid "ml_estimate"
+msgstr "Estimation ML"
+
+msgid "support_agent"
+msgstr "Agent de support"
+
+msgid "recent_assigned_tickets"
+msgstr "Tickets assignés récemment"
+
+msgid "tickets_displayed"
+msgstr "tickets affichés"
+
+msgid "view_all_my_tickets"
+msgstr "Voir tous mes tickets"
+
+msgid "search_by_ticket_or_title"
+msgstr "Rechercher par numéro de ticket ou titre..."
+
+msgid "all_statuses"
+msgstr "Tous les statuts"
+
+msgid "all_priorities"
+msgstr "Toutes les priorités"
+
+msgid "no_tickets_match_filters"
+msgstr "Aucun ticket ne correspond à votre recherche ou à vos filtres actuels."
+
+msgid "no_tickets_assigned_yet"
+msgstr "Aucun ticket ne vous a encore été assigné."
+
+msgid "customer"
+msgstr "Client"
+
+msgid "my_dashboard"
+msgstr "Mon tableau de bord"
+
+msgid "quick_actions"
+msgstr "Actions rapides"
+
+msgid "submit_new_ticket"
+msgstr "Soumettre un nouveau ticket"
+
+msgid "view_all_tickets"
+msgstr "Voir tous les tickets"
+
+msgid "no_tickets_yet"
+msgstr "Pas encore de tickets."
+
+# Additional JS i18n keys
+msgid "email_and_password_required"
+msgstr "Veuillez saisir l'e-mail et le mot de passe"
+
+msgid "signing_in"
+msgstr "Connexion en cours..."
+
+msgid "login_error"
+msgstr "Une erreur s'est produite lors de la connexion"
+
+msgid "registration_no_email"
+msgstr "Inscription réussie, mais nous n'avons pas pu envoyer l'e-mail de vérification. Veuillez essayer de renvoyer l'e-mail de vérification après vous être connecté."
+
+msgid "error_prefix"
+msgstr "Erreur :"
+
+msgid "model_colon"
+msgstr "Modèle :"
+
+msgid "ai_service_error"
+msgstr "Erreur du service AI"
+
+msgid "no_matching_tickets"
+msgstr "Aucun ticket correspondant trouvé."
+
+msgid "no_matching_customers"
+msgstr "Aucun client correspondant trouvé."
+
+msgid "no_matching_agents"
+msgstr "Aucun agent correspondant trouvé."
+
+msgid "no_matching_skills"
+msgstr "Aucune compétence correspondante trouvée."
+
+msgid "no_matching_issue_types"
+msgstr "Aucun type de problème correspondant trouvé."
+
+msgid "no_matching_notifications"
+msgstr "Aucune notification correspondante trouvée."
+
+msgid "no_matching_predictions"
+msgstr "Aucune prédiction ML correspondante trouvée."
+
+msgid "no_matching_records"
+msgstr "Aucun enregistrement correspondant trouvé."
+
+# Chatbot
+msgid "chatbot_greeting"
+msgstr "Bonjour ! Comment puis-je vous aider aujourd'hui ?"msgid "join_help_desk"
+msgstr "Rejoindre le système d'assistance"
+
+msgid "first_name"
+msgstr "Prénom"
+
+msgid "last_name"
+msgstr "Nom"
+
+msgid "department_id"
+msgstr "ID du département"
+
+msgid "enter_first_name"
+msgstr "Entrez votre prénom"
+
+msgid "enter_last_name"
+msgstr "Entrez votre nom"
+
+msgid "enter_mobile"
+msgstr "Entrez votre numéro de mobile"
+
+msgid "create_password"
+msgstr "Créer un mot de passe"
+
+msgid "department_id_optional"
+msgstr "Entrez l'ID du département (optionnel)"
+
+msgid "all_fields_required"
+msgstr "Veuillez remplir tous les champs obligatoires"
+
+msgid "email_already_registered"
+msgstr "Cet e-mail est déjà enregistré mais non vérifié. Veuillez vérifier votre e-mail ou demander un nouveau lien de vérification."
+
+msgid "registration_error"
+msgstr "Une erreur s'est produite lors de l'inscription"
+
+msgid "access_denied"
+msgstr "[fr] Access Denied"
+
+msgid "agent_cannot_be_deleted_because_they_are_linked_with_other_records_please_reassign_their_tickets_first"
+msgstr "[fr] Agent cannot be deleted because they are linked with other records. Please reassign their tickets first."
+
+msgid "agent_deleted_successfully"
+msgstr "[fr] Agent deleted successfully"
+
+msgid "agent_not_found"
+msgstr "[fr] Agent not found"
+
+msgid "agent_updated_successfully"
+msgstr "[fr] Agent updated successfully"
+
+msgid "ai_summary_generated_successfully"
+msgstr "[fr] AI Summary generated successfully!"
+
+msgid "all_fields_are_required"
+msgstr "[fr] All fields are required"
+
+msgid "all_notifications_marked_as_read"
+msgstr "[fr] All notifications marked as read"
+
+msgid "all_required_fields_must_be_filled"
+msgstr "[fr] All required fields must be filled"
+
+msgid "an_error_occurred_please_try_again"
+msgstr "[fr] An error occurred. Please try again."
+
+msgid "another_issue_type_with_this_name_already_exists"
+msgstr "[fr] Another Issue Type with this name already exists"
+
+msgid "another_skill_with_this_name_already_exists"
+msgstr "[fr] Another skill with this name already exists"
+
+msgid "attachment_uploaded_successfully"
+msgstr "[fr] Attachment uploaded successfully"
+
+msgid "category_deleted_successfully_related_skills_have_been_unlinked_and_agent_assignments_removed"
+msgstr "[fr] Category deleted successfully. Related skills have been unlinked and agent assignments removed."
+
+msgid "comment_added_successfully"
+msgstr "[fr] Comment added successfully"
+
+msgid "comment_cannot_be_empty"
+msgstr "[fr] Comment cannot be empty"
+
+msgid "comment_text_is_required"
+msgstr "[fr] Comment text is required"
+
+msgid "current_password_is_incorrect"
+msgstr "[fr] Current password is incorrect"
+
+msgid "customer_added_successfully"
+msgstr "[fr] Customer added successfully"
+
+msgid "customer_cannot_be_deleted_because_they_are_linked_with_other_records_please_remove_all_associated_tickets_first"
+msgstr "[fr] Customer cannot be deleted because they are linked with other records. Please remove all associated tickets first."
+
+msgid "customer_deleted_successfully"
+msgstr "[fr] Customer deleted successfully"
+
+msgid "customer_not_found"
+msgstr "[fr] Customer not found"
+
+msgid "customer_updated_successfully"
+msgstr "[fr] Customer updated successfully"
+
+msgid "department_added_successfully"
+msgstr "[fr] Department Added Successfully!"
+
+msgid "department_already_exists"
+msgstr "[fr] Department Already Exists!"
+
+msgid "department_cannot_be_deleted_because_users_are_assigned_to_it"
+msgstr "[fr] Department cannot be deleted because users are assigned to it."
+
+msgid "department_deleted_successfully"
+msgstr "[fr] Department deleted successfully."
+
+msgid "duplicate_comment_detected"
+msgstr "[fr] Duplicate comment detected"
+
+msgid "email_is_required"
+msgstr "[fr] Email is required"
+
+msgid "error_adding_issue_type"
+msgstr "[fr] Error adding Issue Type"
+
+msgid "error_adding_skill"
+msgstr "[fr] Error adding skill"
+
+msgid "error_deleting_category"
+msgstr "[fr] Error deleting category"
+
+msgid "error_deleting_skill"
+msgstr "[fr] Error deleting skill"
+
+msgid "error_deleting_ticket_please_try_again"
+msgstr "[fr] Error deleting ticket. Please try again."
+
+msgid "error_updating_issue_type"
+msgstr "[fr] Error updating Issue Type"
+
+msgid "error_updating_skill"
+msgstr "[fr] Error updating skill"
+
+msgid "escalation_added_successfully"
+msgstr "[fr] Escalation Added Successfully"
+
+msgid "escalation_updated_successfully"
+msgstr "[fr] Escalation Updated Successfully"
+
+msgid "failed_to_delete_notification"
+msgstr "[fr] Failed to delete notification"
+
+msgid "failed_to_delete_notifications"
+msgstr "[fr] Failed to delete notifications"
+
+msgid "first_name_last_name_email_and_password_are_required"
+msgstr "[fr] First name, last name, email, and password are required"
+
+msgid "invalid_port_or_items_per_page_value"
+msgstr "[fr] Invalid port or items per page value"
+
+msgid "issue_type_added_successfully"
+msgstr "[fr] Issue Type added successfully"
+
+msgid "issue_type_already_exists"
+msgstr "[fr] Issue Type already exists"
+
+msgid "issue_type_deleted_successfully"
+msgstr "[fr] Issue Type deleted successfully"
+
+msgid "issue_type_is_in_use_and_has_been_deactivated_instead_of_deleted"
+msgstr "[fr] Issue Type is in use and has been deactivated instead of deleted"
+
+msgid "issue_type_name_and_category_are_required"
+msgstr "[fr] Issue Type Name and Category are required"
+
+msgid "issue_type_updated_successfully"
+msgstr "[fr] Issue Type updated successfully"
+
+msgid "logged_out_successfully"
+msgstr "[fr] Logged out successfully"
+
+msgid "new_password_must_be_different_from_current_password"
+msgstr "[fr] New password must be different from current password"
+
+msgid "new_passwords_do_not_match"
+msgstr "[fr] New passwords do not match"
+
+msgid "no_file_selected"
+msgstr "[fr] No file selected"
+
+msgid "notification_added_successfully"
+msgstr "[fr] Notification Added Successfully"
+
+msgid "notification_deleted"
+msgstr "[fr] Notification deleted"
+
+msgid "notification_deleted_successfully"
+msgstr "[fr] Notification Deleted Successfully"
+
+msgid "notification_marked_as_read"
+msgstr "[fr] Notification marked as read"
+
+msgid "notification_updated_successfully"
+msgstr "[fr] Notification Updated Successfully"
+
+msgid "password_changed_successfully_please_login_with_your_new_password"
+msgstr "[fr] Password changed successfully. Please login with your new password."
+
+msgid "password_reset_failed_please_try_again"
+msgstr "[fr] Password reset failed. Please try again."
+
+msgid "passwords_do_not_match"
+msgstr "[fr] Passwords do not match"
+
+msgid "please_log_in_to_access_the_ai_assistant"
+msgstr "[fr] Please log in to access the AI assistant."
+
+msgid "please_login_first"
+msgstr "[fr] Please login first"
+
+msgid "please_select_an_agent"
+msgstr "[fr] Please select an agent"
+
+msgid "please_select_category"
+msgstr "[fr] Please select category"
+
+msgid "please_select_priority"
+msgstr "[fr] Please select priority"
+
+msgid "please_select_status"
+msgstr "[fr] Please select status"
+
+msgid "priority_is_required"
+msgstr "[fr] Priority is required"
+
+msgid "priority_not_found"
+msgstr "[fr] Priority Not Found"
+
+msgid "priority_not_found_1"
+msgstr "[fr] Priority not found"
+
+msgid "role_added_successfully"
+msgstr "[fr] Role Added Successfully"
+
+msgid "role_deleted_successfully"
+msgstr "[fr] Role Deleted Successfully"
+
+msgid "role_updated_successfully"
+msgstr "[fr] Role Updated Successfully"
+
+msgid "settings_saved_successfully"
+msgstr "[fr] Settings saved successfully!"
+
+msgid "settings_updated_successfully"
+msgstr "[fr] Settings updated successfully!"
+
+msgid "skill_added_successfully"
+msgstr "[fr] Skill added successfully"
+
+msgid "skill_already_exists"
+msgstr "[fr] Skill already exists"
+
+msgid "skill_deleted_successfully"
+msgstr "[fr] Skill deleted successfully"
+
+msgid "skill_name_and_category_are_required"
+msgstr "[fr] Skill Name and Category are required"
+
+msgid "skill_not_found"
+msgstr "[fr] Skill not found"
+
+msgid "skill_updated_successfully"
+msgstr "[fr] Skill updated successfully"
+
+msgid "sla_rule_added_successfully"
+msgstr "[fr] SLA Rule Added Successfully"
+
+msgid "sla_rule_updated_successfully"
+msgstr "[fr] SLA Rule Updated Successfully"
+
+msgid "status_added_successfully"
+msgstr "[fr] Status Added Successfully"
+
+msgid "status_already_exists"
+msgstr "[fr] Status already exists"
+
+msgid "status_is_required"
+msgstr "[fr] Status is required"
+
+msgid "status_updated_successfully"
+msgstr "[fr] Status Updated Successfully"
+
+msgid "thank_you_your_message_has_been_sent_a_support_ticket_has_been_created_and_our_team_will_respond_shortly"
+msgstr "[fr] Thank you! Your message has been sent. A support ticket has been created and our team will respond shortly."
+
+msgid "this_email_address_is_already_registered"
+msgstr "[fr] This email address is already registered."
+
+msgid "ticket_assigned_successfully"
+msgstr "[fr] Ticket Assigned Successfully!"
+
+msgid "ticket_assigned_successfully_1"
+msgstr "[fr] Ticket assigned successfully"
+
+msgid "ticket_closed_successfully"
+msgstr "[fr] Ticket closed successfully"
+
+msgid "ticket_created_successfully"
+msgstr "[fr] Ticket Created Successfully!"
+
+msgid "ticket_deleted_successfully"
+msgstr "[fr] Ticket Deleted Successfully!"
+
+msgid "ticket_escalated_successfully"
+msgstr "[fr] Ticket escalated successfully"
+
+msgid "ticket_has_no_content_to_summarize"
+msgstr "[fr] Ticket has no content to summarize"
+
+msgid "ticket_marked_as_resolved"
+msgstr "[fr] Ticket marked as Resolved"
+
+msgid "ticket_not_found"
+msgstr "[fr] Ticket not found"
+
+msgid "ticket_not_found_or_not_assigned_to_you"
+msgstr "[fr] Ticket not found or not assigned to you"
+
+msgid "ticket_priority_updated_successfully"
+msgstr "[fr] Ticket priority updated successfully"
+
+msgid "ticket_reassigned_successfully"
+msgstr "[fr] Ticket reassigned successfully"
+
+msgid "ticket_reopened_successfully"
+msgstr "[fr] Ticket reopened successfully"
+
+msgid "ticket_status_updated_successfully"
+msgstr "[fr] Ticket status updated successfully"
+
+msgid "ticket_submitted_successfully"
+msgstr "[fr] Ticket submitted successfully!"
+
+msgid "ticket_updated_successfully"
+msgstr "[fr] Ticket Updated Successfully!"
+
+msgid "title_is_required"
+msgstr "[fr] Title is required"
+
+msgid "title_is_required_1"
+msgstr "[fr] Title is required."
+
+msgid "user_added_successfully"
+msgstr "[fr] User Added Successfully!"
+
+msgid "user_cannot_be_deleted_because_this_user_is_linked_with_other_records_please_remove_all_associated_tickets_comments_and_attachments_first"
+msgstr "[fr] User cannot be deleted because this user is linked with other records. Please remove all associated tickets, comments, and attachments first."
+
+msgid "user_deleted_successfully"
+msgstr "[fr] User deleted successfully."
+
+msgid "user_not_found"
+msgstr "[fr] User not found"
+
+msgid "user_updated_successfully"
+msgstr "[fr] User Updated Successfully"
+
+msgid "your_email_has_been_verified_successfully_please_login_to_continue"
+msgstr "[fr] Your email has been verified successfully. Please login to continue."

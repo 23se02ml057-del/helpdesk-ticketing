@@ -1,0 +1,215 @@
+{% extends "layout_customer.html" %}
+
+{% block title %}
+{{ _('My Tickets') }}
+{% endblock %}
+
+{% block page_title %}
+{{ _('My Tickets') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body">
+                    <div class="row align-items-center g-3">
+                        <div class="col-12 col-md-6">
+                            <h5 class="fw-bold mb-0">{{ _('My Tickets') }}</h5>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="row g-2">
+                                <div class="col-12 col-md-4">
+                                    <form method="GET" data-customer-ticket-search>
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="{{ _('Search Tickets') }}" value="{{ search }}">
+                                    </form>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <select name="status" class="form-select" id="statusFilter">
+                                        <option value="">{{ _('All Statuses') }}</option>
+                                        {% for status in status_list %}
+                                        <option value="{{ status }}" {% if status==status_filter %}selected{% endif %}>
+                                            {{ status }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <div class="table-scroll">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-dark sticky-top">
+                                <tr>
+                                    <th class="ps-4 py-3">{{ _('Sr No') }}</th>
+                                    <th class="py-3">{{ _('Ticket No') }}</th>
+                                    <th class="py-3">{{ _('Title') }}</th>
+                                    <th class="py-3">{{ _('Category') }}</th>
+                                    <th class="py-3">{{ _('Issue Type') }}</th>
+                                    <th class="py-3">{{ _('Status') }}</th>
+                                    <th class="py-3">{{ _('Created') }}</th>
+                                    <th class="text-center py-3 pe-4">{{ _('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets %}
+                                <tr data-ticket-id="{{ ticket.ticket_id }}">
+                                    <td class="ps-4 text-muted">{{ loop.index }}</td>
+                                    <td class="fw-semibold">{{ ticket.ticket_number }}</td>
+                                    <td>{{ translate_value(ticket.title) }}</td>
+                                    <td>{{ translate_category(ticket.category_name) or 'N/A' }}</td>
+                                    <td>
+                                        {% if ticket.issue_name %}
+                                        <span class="badge bg-info">{{ ticket.issue_name }}</span>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if ticket.status_name == 'Open' %}
+                                        <span class="badge bg-danger">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'In Progress' %}
+                                        <span class="badge bg-primary">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'Pending' %}
+                                        <span class="badge bg-warning text-dark">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'On Hold' %}
+                                        <span class="badge bg-secondary">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'Resolved' %}
+                                        <span class="badge bg-success">{{ ticket.status_name }}</span>
+                                        {% elif ticket.status_name == 'Closed' %}
+                                        <span class="badge bg-dark">{{ ticket.status_name }}</span>
+                                        {% else %}
+                                        <span class="badge bg-info">{{ ticket.status_name }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ url_for('customer.ticket_detail', ticket_id=ticket.ticket_id) }}"
+                                            class="btn btn-sm btn-primary">
+                                            <i class="fa-solid fa-eye"></i> {{ _('View') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr id="no-customer-tickets-row">
+                                    <td colspan="8" class="text-center py-5 text-muted bg-white">
+                                        <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                        {{ _('No Tickets Found') }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if pagination.total_pages > 1 %}
+                <div class="card-footer bg-white border-0">
+                    <nav aria-label="Ticket pagination">
+                        <ul class="pagination pagination-sm justify-content-center mb-0">
+                            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                                <a class="page-link" href="#" data-page="{{ pagination.prev_num }}" {% if not
+                                    pagination.has_prev %}tabindex="-1" aria-disabled="true" {% endif %}>
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% for p in range(1, pagination.total_pages + 1) %}
+                            {% if p == pagination.page or p == 1 or p == pagination.total_pages or (p >= pagination.page
+                            - 2 and p <= pagination.page + 2) %} <li
+                                class="page-item {% if p == pagination.page %}active{% endif %}">
+                                <a class="page-link" href="#" data-page="{{ p }}">
+                                    {{ p }}
+                                </a>
+                                </li>
+                                {% elif p == pagination.page - 3 or p == pagination.page + 3 %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                                    <a class="page-link" href="#" data-page="{{ pagination.next_num }}" {% if not
+                                        pagination.has_next %}tabindex="-1" aria-disabled="true" {% endif %}>
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.TICKET_DETAIL_URL = "{{ url_for('customer.ticket_detail', ticket_id=0) }}";
+</script>
+<script src="{{ url_for('static', filename='js/customer-ticket-search.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle pagination clicks via AJAX
+        document.querySelectorAll('.pagination .page-link[data-page]').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (this.closest('.page-item.disabled')) return;
+                var page = parseInt(this.getAttribute('data-page'));
+                if (page) {
+                    // Trigger search with the new page
+                    var form = document.querySelector('form[data-customer-ticket-search]');
+                    if (form) {
+                        var input = form.querySelector('input[name="search"]');
+                        var statusFilter = document.getElementById('statusFilter');
+                        var q = input ? input.value.trim() : '';
+                        var url = '/api/customer-tickets/search';
+                        var params = [];
+                        if (q) params.push('q=' + encodeURIComponent(q));
+                        if (statusFilter && statusFilter.value) params.push('status=' + encodeURIComponent(statusFilter.value));
+                        params.push('page=' + encodeURIComponent(page));
+                        if (params.length) url += '?' + params.join('&');
+
+                        var wasFocused = document.activeElement === input;
+                        var cursorPos = wasFocused && input.selectionStart !== null ? input.selectionStart : -1;
+
+                        fetch(url)
+                            .then(function (res) { if (!res.ok) throw new Error('Network response was not ok'); return res.json(); })
+                            .then(function (data) {
+                                var tbody = document.querySelector('.card-body tbody');
+                                if (tbody) {
+                                    // Reuse renderTickets from customer-ticket-search.js
+                                    if (window.renderCustomerTickets) {
+                                        tbody.innerHTML = window.renderCustomerTickets(data.rows || []);
+                                    }
+                                }
+                                // Update URL
+                                var newParams = ['q=' + encodeURIComponent(q),
+                                statusFilter && statusFilter.value ? 'status=' + encodeURIComponent(statusFilter.value) : '',
+                                'page=' + page].filter(Boolean).join('&');
+                                window.history.replaceState({}, '', window.location.pathname + (newParams ? '?' + newParams : ''));
+                                if (wasFocused) {
+                                    input.focus();
+                                    if (cursorPos >= 0) input.setSelectionRange(cursorPos, cursorPos);
+                                }
+                            })
+                            .catch(function () {
+                                var tbody = document.querySelector('.card-body tbody');
+                                if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Not Results Found</td></tr>';
+                            });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

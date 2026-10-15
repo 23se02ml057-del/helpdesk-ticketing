@@ -1,0 +1,78 @@
+{% extends "layout_customer.html" %}
+
+{% block title %}
+{{ _('Contact Us') }}
+{% endblock %}
+
+{% block page_title %}
+{{ _('Contact Us') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fa-solid fa-headset me-2"></i>{{ _('Contact Us') }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Please fill out the form below to get in touch with our team. We'll get back
+                        to you as soon as possible.</p>
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ _('First Name') }} *</label>
+                                <input type="text" name="first_name" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ _('Last Name') }} *</label>
+                                <input type="text" name="last_name" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ _('Email') }} {{ _('Add') }}ress *</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ _('Mobile') }}</label>
+                                <input type="tel" name="mobile" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ _('Subject') }} *</label>
+                                <input type="text" name="subject" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ _('Category') }}</label>
+                                <select name="category" class="form-select">
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ _('Priority') }}</label>
+                                <select name="priority" class="form-select">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>{{ _('Medium') }}</option>
+                                    <option value="High">{{ _('High') }}</option>
+                                    <option value="Critical">{{ _('Critical') }}</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ _('Description') }} *</label>
+                                <textarea name="description" class="form-control" rows="5" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100 py-2">
+                                    <i class="fa-solid fa-paper-plane me-2"></i>{{ _('Submit') }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}AI Chatbot - Help Desk{% endblock %}
+
+{% block page_title %}AI Chatbot{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-robot me-2"></i>{{ _('Ai Chatbot') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="chatbot-messages-full" class="chatbot-messages-full">
+                        <div class="chatbot-message chatbot-message-ai">
+                            <div class="chatbot-avatar">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="chatbot-bubble">
+                                {{ _('Chatbot Greeting') }}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chatbot-loading-full" class="chatbot-loading-full" style="display: none;">
+                        <div class="chatbot-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="chatbot-bubble chatbot-typing">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                        </div>
+                    </div>
+                    <form id="chatbot-form-full" class="chatbot-form-full mt-3">
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="chatbot-input-full"
+                                class="form-control"
+                                placeholder="{{ _('Type') }} your message..."
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fa-solid fa-paper-plane"></i> {{ _('Send') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messagesContainer = document.getElementById('chatbot-messages-full');
+    const loadingIndicator = document.getElementById('chatbot-loading-full');
+    const chatForm = document.getElementById('chatbot-form-full');
+    const chatInput = document.getElementById('chatbot-input-full');
+    let isWaitingForResponse = false;
+
+    function addMessage(role, text, isError) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chatbot-message ' + (role === 'user' ? 'chatbot-message-user' : 'chatbot-message-ai');
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chatbot-avatar';
+        avatar.innerHTML = role === 'user' ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-robot"></i>';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chatbot-bubble';
+        if (isError) bubble.classList.add('chatbot-error');
+        bubble.textContent = text;
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(bubble);
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showLoading() {
+        isWaitingForResponse = true;
+        loadingIndicator.style.display = 'flex';
+        chatInput.disabled = true;
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function hideLoading() {
+        isWaitingForResponse = false;
+        loadingIndicator.style.display = 'none';
+        chatInput.disabled = false;
+        chatInput.focus();
+    }
+
+    function loadChatHistory() {
+        fetch('/api/chatbot/history')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.history.length > 0) {
+                    messagesContainer.innerHTML = '';
+                    data.history.forEach(msg => {
+                        addMessage(msg.role, msg.message, false);
+                    });
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading chat history:', error);
+            });
+    }
+
+    loadChatHistory();
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = chatInput.value.trim();
+        if (!message || isWaitingForResponse) return;
+
+        addMessage('user', message);
+        chatInput.value = '';
+        showLoading();
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        if (csrfToken) {
+            headers['X-CSRFToken'] = csrfToken;
+        }
+
+        fetch('/api/chatbot/send', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            hideLoading();
+            if (data.success) {
+                addMessage('ai', data.response);
+            } else {
+                const errorMsg = data.response || data.error || 'Something went wrong. Please try again.';
+                addMessage('ai', errorMsg, true);
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            addMessage('ai', 'Network error or service unavailable. Please try again.', true);
+        });
+    });
+});
+</script>
+{% endblock %}

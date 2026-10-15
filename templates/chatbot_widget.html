@@ -1,0 +1,63 @@
+<!-- AI Chatbot Widget -->
+<div id="chatbot-widget" class="chatbot-widget">
+    <!-- Chatbot Toggle Button -->
+    <button id="chatbot-toggle" class="chatbot-toggle" title="Chat with AI Assistant">
+        <i class="fa-solid fa-comments"></i>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div id="chatbot-window" class="chatbot-window">
+        <div class="chatbot-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-robot"></i>
+                <span>{{ _('Ai Assistant') }}</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button id="chatbot-clear" class="chatbot-btn" title="Clear chat">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+                <button id="chatbot-close" class="chatbot-btn" title="Close chat">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="chatbot-messages" class="chatbot-messages">
+            <!-- Welcome message -->
+            <div class="chatbot-message chatbot-message-ai">
+                <div class="chatbot-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="chatbot-bubble">
+                    {{ _('Chatbot Greeting') }}
+                </div>
+            </div>
+        </div>
+
+        <div id="chatbot-loading" class="chatbot-loading d-none">
+            <div class="chatbot-avatar">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="chatbot-bubble chatbot-typing">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+        </div>
+
+        <div class="chatbot-input-area">
+            <form id="chatbot-form" class="chatbot-form">
+                <input
+                    type="text"
+                    id="chatbot-input"
+                    class="chatbot-input"
+                    placeholder="Type your message..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="chatbot-send-btn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

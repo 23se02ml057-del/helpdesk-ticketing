@@ -1,0 +1,621 @@
+{% extends layout_template %}
+
+{% block title %}
+{{ _('Types Of Issues') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <!-- Page Header -->
+    <div class="row bg-light rounded align-items-center justify-content-between mx-0 p-4 mb-4 shadow-sm">
+        <div class="col-auto">
+            <h3 class="mb-0 fw-bold text-dark">
+                <i class="fa-solid fa-list-check text-primary me-2"></i>{{ _('Types Of Issues') }}
+            </h3>
+            <p class="text-muted mb-0 mt-1">{{ _('Manage Issue Types Subtitle') }}</p>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#addIssueTypeModal">
+                <i class="fa-solid fa-plus me-2"></i>{{ _('Add Issue Type') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 56px; height: 56px;">
+                        <i class="fa-solid fa-list-check fs-4"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="mb-0 text-muted small fw-bold text-uppercase">{{ _('Total Issue Types') }}</p>
+                        <h4 class="mb-0 fw-bold text-dark">{{ total_issue_types or 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 56px; height: 56px;">
+                        <i class="fa-solid fa-check-circle fs-4"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="mb-0 text-muted small fw-bold text-uppercase">{{ _('Active Issue Types') }}</p>
+                        <h4 class="mb-0 fw-bold text-dark">{{ active_issue_types or 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 56px; height: 56px;">
+                        <i class="fa-solid fa-ban fs-4"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="mb-0 text-muted small fw-bold text-uppercase">{{ _('Inactive Issue Types') }}</p>
+                        <h4 class="mb-0 fw-bold text-dark">{{ inactive_issue_types or 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-4">
+            <form method="GET" data-issue-type-search class="m-0">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">{{ _('Search Issue Types')
+                            }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i
+                                    class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="search"
+                                placeholder="Search..." value="{{ search }}" autocomplete="off">
+                            <button class="btn btn-outline-secondary search-clear {% if not search %}d-none{% endif %}"
+                                type="button"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">{{ _('Category') }}</label>
+                        <select name="category_name" class="form-select" id="categoryFilter">
+                            <option value="">{{ _('All Categories') }}</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}" {% if category_filter==cat.category_name
+                                %}selected{% endif %}>{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">{{ _('Status') }}</label>
+                        <select name="status" class="form-select" id="statusFilter">
+                            <option value="">{{ _('All Statuses') }}</option>
+                            <option value="Active" {% if status_filter=='Active' %}selected{% endif %}>{{ _('Active') }}
+                            </option>
+                            <option value="Inactive" {% if status_filter=='Inactive' %}selected{% endif %}>{{
+                                _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4 content-card">
+        <div class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold text-dark">{{ _('Issue Types List') }}</h5>
+            <span class="badge bg-light text-dark border fw-medium px-3 py-2 result-count" id="issueTypesCount">
+                {{ _('Showing') }} <span id="visibleCount">{{ issue_types|length }}</span> {{ _('Of') }} {{
+                total_issue_types or 0 }} {{ _('Issue types') }}
+            </span>
+        </div>
+        <div class="card-body p-0 mt-3 d-flex flex-column h-100 table-wrapper">
+            <div class="table-responsive flex-grow-1" id="issueTypesTableWrap">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4">#</th>
+                            <th>{{ _('Issue Type Name') }}</th>
+                            <th>{{ _('Category') }}</th>
+                            <th>{{ _('Department') }}</th>
+                            <th>{{ _('Description') }}</th>
+                            <th style="width: 120px;">{{ _('Status') }}</th>
+                            <th class="text-center pe-4" style="width: 120px;">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="issueTypesTableBody" class="border-top-0">
+                        {% for issue_type in issue_types %}
+                        <tr data-issue-type-id="{{ issue_type.issue_type_id }}">
+                            <td class="ps-4">{{ loop.index }}</td>
+                            <td class="fw-medium text-dark">{{ issue_type.issue_name }}</td>
+                            <td><span class="badge bg-primary bg-opacity-75 text-white">{{ issue_type.category_name
+                                    }}</span></td>
+                            <td class="text-muted">{{ issue_type.department_name or '-' }}</td>
+                            <td class="text-muted">{{ issue_type.description or '-' }}</td>
+                            <td>
+                                {% if issue_type.status == 'Active' %}
+                                <span class="badge rounded-pill bg-success toggle" role="button"
+                                    data-issue-type-id="{{ issue_type.issue_type_id }}" data-status="Active">
+                                    <i class="fa-solid fa-circle fa-xs me-1"></i> {{ _('Active') }}
+                                </span>
+                                {% else %}
+                                <span class="badge rounded-pill bg-danger toggle" role="button"
+                                    data-issue-type-id="{{ issue_type.issue_type_id }}" data-status="Inactive">
+                                    <i class="fa-solid fa-circle fa-xs me-1"></i> {{ _('Inactive') }}
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#forcedEditIssueModal" data-id="{{ issue_type.issue_type_id }}"
+                                        data-name="{{ issue_type.issue_name }}"
+                                        data-category="{{ issue_type.category_name }}"
+                                        data-description="{{ issue_type.description or '' }}"
+                                        data-status="{{ issue_type.status }}" onclick="prepareEditModal(this)">
+                                        <i class="fa-solid fa-pen lh-1"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#forcedDeleteIssueModal"
+                                        data-id="{{ issue_type.issue_type_id }}" data-name="{{ issue_type.issue_name }}"
+                                        data-status="{{ issue_type.status }}" onclick="prepareDeleteModal(this)">
+                                        <i class="fa-solid fa-trash lh-1"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="text-muted mb-2"><i class="fa-solid fa-folder-open fa-3x"></i></div>
+                                <h5 class="text-dark">{{ _('No Issue Types Found') }}</h5>
+                                <p class="text-muted small">{{ _('Try Changing Search') }}</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination %}
+            <div class="px-4 py-3 border-top bg-light mt-auto">
+                <nav aria-label="Issue Types pagination">
+                    <ul class="pagination pagination-sm justify-content-end mb-0">
+                        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                            <a class="page-link"
+                                href="?page={{ pagination.prev_num }}&search={{ search|urlencode }}&category_name={{ category_filter|urlencode }}&status={{ status_filter|urlencode }}"><i
+                                    class="fa fa-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link pagination-page-indicator" data-page="{{ pagination.page }}"
+                                data-total-pages="{{ pagination.total_pages }}">Page {{ pagination.page }} of {{
+                                pagination.total_pages }}</span>
+                        </li>
+                        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                            <a class="page-link"
+                                href="?page={{ pagination.next_num }}&search={{ search|urlencode }}&category_name={{ category_filter|urlencode }}&status={{ status_filter|urlencode }}"><i
+                                    class="fa fa-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Issue Type Modal -->
+<div class="modal fade" id="addIssueTypeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-plus me-2"></i>{{ _('Add Issue Type') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('issue_types.add_issue_type') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Issue Type Name') }} <span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="issue_name" class="form-control" required
+                            placeholder="{{ _('Enter issue type name') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Category') }} <span
+                                class="text-danger">*</span></label>
+                        <select name="category_name" class="form-select" required>
+                            <option value="">-- {{ _('Select Category') }} --</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3"
+                            placeholder="{{ _('Enter description') }}"></textarea>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-dark fw-bold">{{ _('Status') }} <span
+                                class="text-danger">*</span></label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-save me-1"></i> {{ _('Save')
+                        }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Issue Type Modal -->
+<div class="modal fade" id="forcedEditIssueModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-pen me-2"></i>{{ _('Edit Issue Type') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="forcedEditIssueForm" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Issue Type Name') }} <span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="issue_name" id="forcedEditIssueName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Category') }} <span
+                                class="text-danger">*</span></label>
+                        <select name="category_name" class="form-select" id="forcedEditIssueCategory" required>
+                            <option value="">-- {{ _('Select Category') }} --</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-bold">{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3"
+                            id="forcedEditIssueDescription"></textarea>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-dark fw-bold">{{ _('Status') }} <span
+                                class="text-danger">*</span></label>
+                        <select name="status" class="form-select" id="forcedEditIssueStatus" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> {{ _('Update')
+                        }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Issue Type Modal -->
+<div class="modal fade" id="forcedDeleteIssueModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-trash me-2"></i>{{ _('Delete Issue Type') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-3"></i>
+                <h5 class="text-dark">{{ _('Delete Confirmation') }}</h5>
+                <p class="mb-2"><strong id="forcedDeleteIssueTypeName" class="text-primary fs-5"></strong></p>
+                <p class="text-muted mb-0 small">{{ _('This Action Cannot Be Undone') }}</p>
+            </div>
+            <div class="modal-footer border-0 bg-light justify-content-center">
+                <form id="forcedDeleteIssueForm" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button type="button" class="btn btn-secondary px-4 me-2" data-bs-dismiss="modal">{{ _('Cancel')
+                        }}</button>
+                    <button type="submit" class="btn btn-danger px-4" id="submitDeleteFormBtn">
+                        <i class="fa-solid fa-trash me-1"></i> {{ _('Delete') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    // Set form action directly when the delete/edit button is clicked
+    function prepareEditModal(btn) {
+        var id = btn.getAttribute('data-id');
+        document.getElementById('forcedEditIssueName').value = btn.getAttribute('data-name') || '';
+        document.getElementById('forcedEditIssueCategory').value = btn.getAttribute('data-category') || '';
+        document.getElementById('forcedEditIssueDescription').value = btn.getAttribute('data-description') || '';
+        document.getElementById('forcedEditIssueStatus').value = btn.getAttribute('data-status') || 'Active';
+        document.getElementById('forcedEditIssueForm').action = '/issue-types/edit/' + id;
+    }
+
+    function prepareDeleteModal(btn) {
+        var id = btn.getAttribute('data-id');
+        document.getElementById('forcedDeleteIssueTypeName').textContent = btn.getAttribute('data-name') || '';
+        document.getElementById('forcedDeleteIssueForm').action = '/issue-types/delete/' + id;
+    }
+
+    (function () {
+        const DEBOUNCE_MS = 300;
+        const API_URL = '/api/issue-types/search';
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&')
+                .replace(/</g, '<')
+                .replace(/>/g, '>')
+                .replace(/"/g, '"');
+        }
+
+        function renderIssueTypes(rows) {
+            const tbody = document.getElementById('issueTypesTableBody');
+            const countEl = document.getElementById('visibleCount');
+
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5"><div class="text-muted mb-2"><i class="fa-solid fa-folder-open fa-3x"></i></div><h5 class="text-dark">No issue types found</h5><p class="text-muted small">Try changing your search or filter.</p></td></tr>';
+                if (countEl) countEl.textContent = '0';
+                return;
+            }
+
+            if (countEl) countEl.textContent = rows.length;
+
+            tbody.innerHTML = rows.map(function (it, index) {
+                var statusBadge = it.status === 'Active'
+                    ? '<span class="badge rounded-pill bg-success toggle" role="button" data-issue-type-id="' + it.issue_type_id + '" data-status="Active"><i class="fa-solid fa-circle fa-xs me-1"></i> Active</span>'
+                    : '<span class="badge rounded-pill bg-danger toggle" role="button" data-issue-type-id="' + it.issue_type_id + '" data-status="Inactive"><i class="fa-solid fa-circle fa-xs me-1"></i> Inactive</span>';
+
+                return '<tr data-issue-type-id="' + it.issue_type_id + '">' +
+                    '<td class="ps-4">' + (index + 1) + '</td>' +
+                    '<td class="fw-medium text-dark">' + escapeHtml(it.issue_name) + '</td>' +
+                    '<td><span class="badge bg-primary bg-opacity-75 text-white">' + escapeHtml(it.category_name) + '</span></td>' +
+                    '<td class="text-muted">' + escapeHtml(it.department_name || '-') + '</td>' +
+                    '<td class="text-muted">' + escapeHtml(it.description || '-') + '</td>' +
+                    '<td>' + statusBadge + '</td>' +
+                    '<td class="text-center pe-4">' +
+                    '<div class="btn-group">' +
+                    '<button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#forcedEditIssueModal" ' +
+                    'data-id="' + it.issue_type_id + '" ' +
+                    'data-name="' + escapeHtml(it.issue_name) + '" ' +
+                    'data-category="' + escapeHtml(it.category_name) + '" ' +
+                    'data-description="' + escapeHtml(it.description || '') + '" ' +
+                    'data-status="' + escapeHtml(it.status) + '" ' +
+                    'onclick="prepareEditModal(this)">' +
+                    '<i class="fa-solid fa-pen lh-1"></i></button>' +
+                    '<button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#forcedDeleteIssueModal" ' +
+                    'data-id="' + it.issue_type_id + '" ' +
+                    'data-name="' + escapeHtml(it.issue_name) + '" ' +
+                    'data-status="' + escapeHtml(it.status) + '" ' +
+                    'onclick="prepareDeleteModal(this)">' +
+                    '<i class="fa-solid fa-trash lh-1"></i></button>' +
+                    '</div>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        function updatePagination(data) {
+            const pageIndicator = document.querySelector('.pagination-page-indicator');
+            if (pageIndicator) {
+                pageIndicator.textContent = 'Page ' + data.page + ' of ' + data.total_pages;
+                pageIndicator.dataset.page = data.page;
+                pageIndicator.dataset.totalPages = data.total_pages;
+            }
+            const prevBtn = document.querySelector('.page-item:first-child');
+            const nextBtn = document.querySelector('.page-item:last-child');
+            if (prevBtn) {
+                prevBtn.classList.toggle('disabled', data.page <= 1);
+                var link = prevBtn.querySelector('a');
+                if (link) link.href = '?page=' + (data.page > 1 ? data.page - 1 : data.page);
+            }
+            if (nextBtn) {
+                nextBtn.classList.toggle('disabled', data.page >= data.total_pages);
+                var link = nextBtn.querySelector('a');
+                if (link) link.href = '?page=' + (data.page < data.total_pages ? data.page + 1 : data.page);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form[data-issue-type-search]');
+            if (!form) return;
+
+            const searchInput = form.querySelector('input[name="search"]');
+            const categorySelect = document.getElementById('categoryFilter');
+            const statusSelect = document.getElementById('statusFilter');
+            const clearBtn = form.querySelector('.search-clear');
+            let timer;
+            let abortController = null;
+
+            function doSearch(page) {
+                page = page || 1;
+                var q = searchInput ? searchInput.value.trim() : '';
+                var cat = categorySelect ? categorySelect.value : '';
+                var status = statusSelect ? statusSelect.value : '';
+                var url = API_URL;
+                var params = [];
+                if (q) params.push('q=' + encodeURIComponent(q));
+                if (cat) params.push('category_name=' + encodeURIComponent(cat));
+                if (status) params.push('status=' + encodeURIComponent(status));
+                params.push('page=' + page);
+                if (params.length) url += '?' + params.join('&');
+
+                if (abortController) {
+                    abortController.abort();
+                }
+                abortController = new AbortController();
+
+                // Show loading
+                const tbody = document.getElementById('issueTypesTableBody');
+                if (tbody) {
+                    tbody.style.opacity = '0.5';
+                }
+
+                fetch(url, { signal: abortController.signal })
+                    .then(function (res) {
+                        if (!res.ok) throw new Error('Network response was not ok');
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        renderIssueTypes(data.rows || []);
+                        updatePagination(data);
+                    })
+                    .catch(function (err) {
+                        if (err.name === 'AbortError') return;
+                        if (tbody) {
+                            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5"><div class="text-danger mb-2"><i class="fa-solid fa-triangle-exclamation fa-3x"></i></div><h5 class="text-dark">Error loading results</h5></td></tr>';
+                        }
+                    })
+                    .finally(function () {
+                        if (tbody) {
+                            tbody.style.opacity = '1';
+                        }
+                    });
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(function () { doSearch(1); }, DEBOUNCE_MS);
+                    if (clearBtn) {
+                        clearBtn.classList.toggle('d-none', this.value.length === 0);
+                    }
+                });
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function () {
+                    searchInput.value = '';
+                    clearTimeout(timer);
+                    doSearch(1);
+                    this.classList.add('d-none');
+                    searchInput.focus();
+                });
+            }
+
+            if (categorySelect) {
+                categorySelect.addEventListener('change', function () {
+                    doSearch(1);
+                });
+            }
+
+            if (statusSelect) {
+                statusSelect.addEventListener('change', function () {
+                    doSearch(1);
+                });
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearTimeout(timer);
+                doSearch(1);
+            });
+
+            // Pagination
+            document.addEventListener('click', function (e) {
+                const pageLink = e.target.closest('.page-link');
+                if (!pageLink) return;
+
+                const pageItem = pageLink.closest('.page-item');
+                if (pageItem && pageItem.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return;
+                }
+
+                if (pageLink.href && pageLink.href.includes('?page=')) {
+                    e.preventDefault();
+                    const urlParams = new URL(pageLink.href).searchParams;
+                    const newPage = parseInt(urlParams.get('page')) || 1;
+                    doSearch(newPage);
+                }
+            });
+
+            // Status toggle
+            document.addEventListener('click', function (e) {
+                const badge = e.target.closest('.toggle[data-status]');
+                if (!badge) return;
+                e.preventDefault();
+                e.stopPropagation();
+
+                const issueTypeId = badge.getAttribute('data-issue-type-id');
+                const currentStatus = badge.getAttribute('data-status');
+                const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                fetch('/api/toggle-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ issue_type_id: issueTypeId, status: newStatus })
+                })
+                    .then(function (res) {
+                        if (!res.ok) throw new Error('Failed to update status');
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        // Update badge
+                        if (data.status === 'Active') {
+                            badge.className = 'badge rounded-pill bg-success toggle';
+                            badge.setAttribute('data-status', 'Active');
+                            badge.innerHTML = '<i class="fa-solid fa-circle fa-xs me-1"></i> Active';
+                        } else {
+                            badge.className = 'badge rounded-pill bg-danger toggle';
+                            badge.setAttribute('data-status', 'Inactive');
+                            badge.innerHTML = '<i class="fa-solid fa-circle fa-xs me-1"></i> Inactive';
+                        }
+                    })
+                    .catch(function () {
+                        alert('Failed to update status. Please try again.');
+                    });
+            });
+
+            // Delete form submission
+            var deleteForm = document.getElementById('forcedDeleteIssueForm');
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function (e) {
+                    submitDeleteModal(e, this);
+                });
+            }
+
+            // Edit form submission
+            var editForm = document.getElementById('forcedEditIssueForm');
+            if (editForm) {
+                editForm.addEventListener('submit', function (e) {
+                    submitEditModal(e, this);
+                });
+            }
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+Types of Issue
+{% endblock %}
+
+
+
+{% block content %}
+<div class="row align-items-center mb-4 gy-3">
+    <div class="col-lg-6 col-md-6 col-12">
+        <h2 class="mb-0 text-center text-md-start">
+            Types of Issue
+        </h2>
+    </div>
+    <div class="col-lg-6 col-md-6 col-12">
+        <div class="d-flex justify-content-md-end justify-content-center flex-wrap gap-2">
+        
+            <button class="btn btn-success h-auto" data-bs-toggle="modal" data-bs-target="#addIssueTypeModal">
+                <i class="fa-solid fa-plus me-1"></i> Add Issue {{ _('Type') }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow border-0 rounded-4 mb-4" >
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin.admin_types_of_issue') }}" class="row g-3" data-ajax-search
+              data-search-url="{{ url_for('admin.api_types_of_issue_search') }}"
+              data-table-target="tbody"
+              data-page-type="issue-types">
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" placeholder="Search issue types..." value="{{ search }}">
+            </div>
+            <div class="col-md-4">
+                <select name="category_name" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.category_name }}" {% if category_filter == cat.category_name %}selected{% endif %}>
+                        {{ cat.category_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa-solid fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-scroll" style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Issue Type {{ _('Name') }}</th>
+                <th>{{ _('Category') }}</th>
+                <th>{{ _('Description') }}</th>
+                <th>{{ _('Status') }}</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issue_types %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ issue.issue_name }}</td>
+                <td>
+                    <span class="badge bg-info">{{ issue.category_name }}</span>
+                </td>
+                <td>{{ issue.description or '-' }}</td>
+                <td>
+                    {% if issue.status == 'Active' %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="btn btn-warning btn-sm h-auto" data-bs-toggle="modal" data-bs-target="#editIssueTypeModal{{ issue.issue_type_id }}">
+                        <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                    </button>
+                    <button class="btn btn-danger btn-sm h-auto" data-bs-toggle="modal" data-bs-target="#deleteIssueTypeModal{{ issue.issue_type_id }}">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Edit Issue Type Modal -->
+            <div class="modal fade" id="editIssueTypeModal{{ issue.issue_type_id }}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h5 class="modal-title">Edit Issue {{ _('Type') }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('issue_types.edit_issue_type', issue_type_id=issue.issue_type_id) }}" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Type {{ _('Name') }}</label>
+                                    <input type="text" name="issue_name" class="form-control" value="{{ issue.issue_name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Category') }}</label>
+                                    <select name="category_name" class="form-select" required>
+                                        {% for cat in categories %}
+                                        <option value="{{ cat.category_name }}" {% if issue.category_name == cat.category_name %}selected{% endif %}>
+                                            {{ cat.category_name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Description') }}</label>
+                                    <textarea name="description" class="form-control" rows="3">{{ issue.description or '' }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Status') }}</label>
+                                    <select name="status" class="form-select">
+                                        <option value="Active" {% if issue.status == 'Active' %}selected{% endif %}>Active</option>
+                                        <option value="Inactive" {% if issue.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-warning">{{ _('Update') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Issue Type Modal -->
+            <div class="modal fade" id="deleteIssueTypeModal{{ issue.issue_type_id }}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Confirm {{ _('Delete') }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete <strong>{{ issue.issue_name }}</strong>?</p>
+                            {% if issue.status == 'Active' %}
+                            <div class="alert alert-warning">
+                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                                This issue type may be linked to existing tickets. If so, it will be deactivated instead of deleted.
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="modal-footer">
+                            <form method="POST" action="{{ url_for('issue_types.delete_issue_type', issue_type_id=issue.issue_type_id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-danger">Yes, {{ _('Delete') }}</button>
+                            </form>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not issue_types %}
+<div class="alert alert-info mt-4">
+    <i class="fa-solid fa-info-circle me-2"></i>
+    No issue types found. Click "Add Issue Type" to create one.
+</div>
+{% endif %}
+
+<!-- Add Issue Type Modal -->
+<div class="modal fade" id="addIssueTypeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">{{ _('Add') }} Issue Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('issue_types.add_issue_type') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="mb-3">
+                        <label class="form-label">Issue Type {{ _('Name') }}</label>
+                        <input type="text" name="issue_name" class="form-control" required placeholder="e.g., Network is not working">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Category') }}</label>
+                        <select name="category_name" class="form-select" required>
+                            <option value="">Select Category</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Brief description of this issue type..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Status') }}</label>
+                        <select name="status" class="form-select">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">{{ _('Save') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

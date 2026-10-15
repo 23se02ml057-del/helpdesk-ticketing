@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="{{ session.get('locale', 'en') }}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{{ _('Create Account') }} - {{ _('Help Desk') }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .register-card {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+    }
+
+    .logo {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      font-size: 60px;
+      text-align: center;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .title {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      text-align: center;
+      color: #fff;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      text-align: center;
+      color: #d1d5db;
+      margin-bottom: 30px;
+    }
+
+    .form-label {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .form-control {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      height: 50px;
+      border-radius: 10px;
+    }
+
+    .btn-register {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      height: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-register:hover {
+      transform: scale(1.02);
+      transition: 0.3s;
+    }
+
+    .login-link {
+      font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Segoe UI', sans-serif;
+      text-align: center;
+      margin-top: 20px;
+      color: #d1d5db;
+    }
+
+    .login-link a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media(max-width:576px) {
+      .register-card {
+        padding: 20px;
+        border-radius: 15px;
+      }
+
+      .logo {
+        font-size: 45px;
+      }
+
+      .btn-register {
+        height: 45px;
+        font-size: 16px;
+      }
+
+      .form-control {
+        height: 45px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="register-card" style="position:relative;">
+
+    <div style="position:absolute; top:15px; right:15px;">
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center gap-1" type="button"
+          id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+          style="font-size:0.75rem; padding:2px 8px; border-radius:6px; opacity:0.9;">
+          <i class="fa-solid fa-globe"></i>
+          <span id="currentLanguageLabel">
+            {% if session.get('locale', 'en') == 'en' %}{{ _('Language En') }}
+            {% elif session.get('locale', 'en') == 'zh' %}{{ _('Language Zh') }}
+            {% elif session.get('locale', 'en') == 'de' %}{{ _('Language De') }}
+            {% elif session.get('locale', 'en') == 'fr' %}{{ _('Language Fr') }}
+            {% elif session.get('locale', 'en') == 'tr' %}{{ _('Language Tr') }}
+            {% elif session.get('locale', 'en') == 'gu' %}{{ _('Language Gu') }}
+            {% else %}{{ _('Language En') }}{% endif %}
+          </span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="languageDropdown"
+          style="min-width:150px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:#1e293b;">
+          <li class="dropdown-header" style="font-size:0.75rem; color:#d1d5db;">{{ _('Language Name') }}</li>
+          <li><a
+              class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'en' %}active{% endif %}"
+              href="{{ url_for('set_language', locale='en') }}" style="font-size:0.8rem; color:#fff;"><span>🇬🇧</span>
+              {{ _('Language En') }}</a></li>
+          <li><a
+              class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'zh' %}active{% endif %}"
+              href="{{ url_for('set_language', locale='zh') }}" style="font-size:0.8rem; color:#fff;"><span>🇨🇳</span>
+              {{ _('Language Zh') }}</a></li>
+          <li><a
+              class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'de' %}active{% endif %}"
+              href="{{ url_for('set_language', locale='de') }}" style="font-size:0.8rem; color:#fff;"><span>🇩🇪</span>
+              {{ _('Language De') }}</a></li>
+          <li><a
+              class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'fr' %}active{% endif %}"
+              href="{{ url_for('set_language', locale='fr') }}" style="font-size:0.8rem; color:#fff;"><span>🇫🇷</span>
+              {{ _('Language Fr') }}</a></li>
+          <li><a
+              class="dropdown-item d-flex align-items-center gap-2 {% if session.get('locale', 'en') == 'tr' %}active{% endif %}"
+              href="{{ url_for('set_language', locale='tr') }}" style="font-size:0.8rem; color:#fff;"><span>🇹🇷</span>
+              {{ _('Language Tr') }}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="logo">
+      <img src="{{ url_for('static', filename='favicon.svg') }}" alt="Help Desk Logo"
+        style="width:50px; height:50px; border-radius:12px;">
+    </div>
+    <h2 class="title">{{ _('Create Account') }}</h2>
+    <p class="subtitle">{{ _('Join Help Desk') }}</p>
+
+    <form id="registerForm">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="first_name" class="form-label">{{ _('First Name') }}</label>
+          <input type="text" class="form-control" id="first_name" placeholder="{{ _('Enter First Name') }}" required>
+        </div>
+        <div class="col-md-6">
+          <label for="last_name" class="form-label">{{ _('Last Name') }}</label>
+          <input type="text" class="form-control" id="last_name" placeholder="{{ _('Enter Last Name') }}" required>
+        </div>
+        <div class="col-12">
+          <label for="email" class="form-label">{{ _('Email') }}</label>
+          <input type="email" class="form-control" id="email" placeholder="{{ _('Enter Email') }}" required>
+        </div>
+        <div class="col-12">
+          <label for="mobile" class="form-label">{{ _('Phone') }}</label>
+          <input type="text" class="form-control" id="mobile" placeholder="{{ _('Enter Mobile') }}" required>
+        </div>
+        <div class="col-md-6">
+          <label for="password" class="form-label">{{ _('Password') }}</label>
+          <input type="password" class="form-control" id="password" placeholder="{{ _('Create Password') }}" required>
+          <div id="passwordRules" style="font-size: 12px; margin-top: 8px; line-height: 1.6; display: none;">
+            <div style="color: #d1d5db; margin-bottom: 2px;">{{ _('Password Must Contain') }}</div>
+            <div id="rule-length" style="color: #60a5fa;">• {{ _('Req At Least 8') }}</div>
+            <div id="rule-upper" style="color: #60a5fa;">• {{ _('Req One Uppercase') }}</div>
+            <div id="rule-lower" style="color: #60a5fa;">• {{ _('Req One Lowercase') }}</div>
+            <div id="rule-number" style="color: #60a5fa;">• {{ _('Req One Number') }}</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="confirm_password" class="form-label">{{ _('Confirm Password') }}</label>
+          <input type="password" class="form-control" id="confirm_password" placeholder="{{ _('Confirm Password') }}"
+            required>
+        </div>
+        <div class="col-12" id="msg"></div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary btn-register w-100">
+            {{ _('Create Account') }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="login-link">
+      {{ _('Already Have Account') }} <a href="/login">{{ _('Login') }}</a>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+  <script src="/static/register.js"></script>
+</body>
+
+</html>

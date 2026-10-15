@@ -1,0 +1,107 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Edit Skill') }}
+{% endblock %}
+
+{% block page_title %}
+{{ _('Edit Skill') }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4 align-items-center">
+        <div class="col-12 col-md-6 mb-3 mb-md-0">
+            <h2 class="fw-bold">
+                <i class="fa-solid fa-brain"></i>
+                {{ _('Edit Skill') }}
+            </h2>
+            <p class="text-muted mb-0">{{ _('Update') }} skill details</p>
+        </div>
+        <div class="col-12 col-md-6 text-md-end">
+            <a href="{{ url_for('admin.admin_skills') }}" class="btn btn-secondary">
+                <i class="fa fa-arrow-left me-1"></i> {{ _('Back') }} to {{ _('Skills') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form action="{{ url_for('admin.admin_update_skill', id=skill.skill_id) }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">{{ _('Department') }}</label>
+                    <select class="form-select" id="editDepartment" name="department_id">
+                        <option value="">-- {{ _('Select Department') }} --</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.department_id }}"
+                                {% if skill.department_id == dept.department_id %}selected{% endif %}>
+                            {{ translate_department(dept.department_name) }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _('Category') }} <span class="text-danger">*</span></label>
+                    <select class="form-select" id="editCategory" name="category_name" required>
+                        <option value="">-- {{ _('Select Category') }} --</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.category_name }}"
+                                {% if skill.category == cat.category_name %}selected{% endif %}>
+                            {{ cat.category_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _('Skill Name') }} <span class="text-danger">*</span></label>
+                    <input type="text" name="skill_name" id="skillName" class="form-control" value="{{ skill.skill_name }}" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">{{ _('Status') }}</label>
+                    <select name="status" id="skillStatus" class="form-select">
+                        <option value="{{ _('Active') }}" {% if skill.status == 'Active' %}selected{% endif %}>{{ _('Active') }}</option>
+                        <option value="{{ _('Inactive') }}" {% if skill.status == 'Inactive' %}selected{% endif %}>{{ _('Inactive') }}</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-save me-1"></i> {{ _('Update Skill') }}
+                    </button>
+                    <a href="{{ url_for('admin.admin_skills') }}" class="btn btn-secondary">{{ _('Cancel') }}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var editDepartment = document.getElementById('editDepartment');
+    var editCategory = document.getElementById('editCategory');
+
+    function loadCategories(selectEl, departmentId) {
+        selectEl.innerHTML = '<option value="">-- Select Category --</option>';
+        if (!departmentId) return;
+        fetch('/api/categories?department_id=' + departmentId)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                data.forEach(function(cat) {
+                    var opt = document.createElement('option');
+                    opt.value = cat.category_name;
+                    opt.textContent = cat.category_name;
+                    selectEl.appendChild(opt);
+                });
+            });
+    }
+
+    if (editDepartment) {
+        editDepartment.addEventListener('change', function() {
+            loadCategories(editCategory, this.value);
+        });
+        if (editDepartment.value) {
+            loadCategories(editCategory, editDepartment.value);
+        }
+    }
+});
+</script>
+{% endblock %}

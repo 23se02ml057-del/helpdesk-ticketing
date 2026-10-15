@@ -1,0 +1,214 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Customers') }}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-lg-8">
+            <h3 class="fw-bold mb-1"><i class="fa-solid fa-users text-primary me-2"></i>{{ _('Customers') }}</h3>
+            <p class="text-muted mb-0">{{ _('View Manage Customers') }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" class="d-flex flex-column flex-sm-row gap-2" data-ajax-search
+                data-search-url="{{ url_for('admin.api_customers_search') }}" data-table-target="tbody"
+                data-page-type="customers">
+                <input type="text" name="search" class="form-control me-2" placeholder="{{ _('Search Customers') }}"
+                    value="{{ search }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-search me-1"></i> {{ _('Search') }}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4 py-3">{{ _('Name') }}</th>
+                            <th class="py-3">{{ _('Email') }}</th>
+                            <th class="py-3">{{ _('Mobile') }}</th>
+                            <th class="py-3">{{ _('Status') }}</th>
+                            <th class="py-3">{{ _('Tickets') }}</th>
+                            <th class="py-3">{{ _('Joined') }}</th>
+                            <th class="py-3">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-2"
+                                        style="width:35px; height:35px; font-size:14px;">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">{{ customer.first_name }} {{ customer.last_name }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.mobile or 'N/A' }}</td>
+                            <td>
+                                {% if customer.status == 'Active' %}
+                                <span class="badge bg-success">{{ customer.status }}</span>
+                                {% else %}
+                                <span class="badge bg-danger">{{ customer.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary rounded-pill px-3 py-2">{{ customer.total_tickets
+                                    }}</span>
+                            </td>
+                            <td>{{ customer.created_at.strftime('%Y-%m-%d') if customer.created_at else 'N/A' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary mb-1 btn-edit-customer" data-bs-toggle="modal"
+                                    data-bs-target="#editCustomerModal" data-id="{{ customer.user_id }}"
+                                    data-firstname="{{ customer.first_name }}" data-lastname="{{ customer.last_name }}"
+                                    data-email="{{ customer.email }}" data-mobile="{{ customer.mobile or '' }}"
+                                    data-departmentid="{{ customer.department_id or '' }}"
+                                    data-status="{{ customer.status }}">
+                                    <i class="fa fa-edit"></i> {{ _('Edit') }}
+                                </button>
+                                <form method="POST"
+                                    action="{{ url_for('admin.delete_customer', customer_id=customer.user_id) }}"
+                                    class="d-inline" onsubmit="return confirm(i18n.t('delete_customer_confirmation'))">
+                                    <button type="submit" class="btn btn-sm btn-danger mb-1">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                {{ _('No Customers Found') }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if pagination and pagination.total > pagination.per_page %}
+                <nav aria-label="Customers pagination" class="mt-3">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                            <a class="page-link"
+                                href="?page={{ pagination.prev_num }}&search={{ search|urlencode }}">&laquo;</a>
+                        </li>
+                        {% for p in range(1, pagination.total_pages + 1) %}
+                        {% if p == pagination.page %}
+                        <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ p }}&search={{ search|urlencode }}">{{
+                                p }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                            <a class="page-link"
+                                href="?page={{ pagination.next_num }}&search={{ search|urlencode }}">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Customer Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-user-edit me-2"></i>{{ _('Edit Customer') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editCustomerForm" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-dark fw-medium">{{ _('First Name') }} <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="first_name" id="editCustFirstName" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-dark fw-medium">{{ _('Last Name') }} <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="last_name" id="editCustLastName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">{{ _('Email') }} <span
+                                class="text-danger">*</span></label>
+                        <input type="email" name="email" id="editCustEmail" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">{{ _('Mobile') }}</label>
+                        <input type="text" name="mobile" id="editCustMobile" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">{{ _('Department') }}</label>
+                        <select name="department_id" id="editCustDepartment" class="form-select">
+                            <option value="">-- {{ _('Select Department') }} --</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">{{ _('Status') }} <span
+                                class="text-danger">*</span></label>
+                        <select name="status" id="editCustStatus" class="form-select" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>{{ _('Update
+                        Customer') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            var editModal = document.getElementById('editCustomerModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var id = button.getAttribute('data-id');
+
+                    document.getElementById('editCustFirstName').value = button.getAttribute('data-firstname') || '';
+                    document.getElementById('editCustLastName').value = button.getAttribute('data-lastname') || '';
+                    document.getElementById('editCustEmail').value = button.getAttribute('data-email') || '';
+                    document.getElementById('editCustMobile').value = button.getAttribute('data-mobile') || '';
+                    document.getElementById('editCustDepartment').value = button.getAttribute('data-departmentid') || '';
+                    document.getElementById('editCustStatus').value = button.getAttribute('data-status') || 'Active';
+
+                    var form = document.getElementById('editCustomerForm');
+                    if (form) {
+                        form.action = '/admin/customers/update/' + id;
+                    }
+                });
+            }
+        });
+    })();
+</script>
+{% endblock %}

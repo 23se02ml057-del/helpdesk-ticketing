@@ -1,0 +1,274 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Agent Performance Report
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold text-dark mb-0">
+      <i class="fa-solid fa-user-check text-success me-2"></i> Agent Performance Report
+    </h4>
+    <a href="/reports" class="btn btn-secondary h-auto">
+      <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-header bg-white">
+      <h6 class="mb-0 fw-bold">
+        <i class="fa-solid fa-filter text-primary me-2"></i> Report Filters
+      </h6>
+    </div>
+    <div class="card-body">
+      <form method="GET" action="/reports/agent-performance" class="row g-2">
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Date Range</label>
+          <select name="period" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="30" {% if request.args.get('period')=='30' %}selected{% endif %}>Last 1 Month</option>
+            <option value="7" {% if request.args.get('period')=='7' %}selected{% endif %}>Last 7 Days</option>
+            <option value="90" {% if request.args.get('period')=='90' %}selected{% endif %}>Last 3 Months</option>
+            <option value="365" {% if request.args.get('period')=='365' %}selected{% endif %}>Last 1 Year</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">User Status</label>
+          <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="Active" {% if request.args.get('status')=='Active' %}selected{% endif %}>Active</option>
+            <option value="Inactive" {% if request.args.get('status')=='Inactive' %}selected{% endif %}>Inactive
+            </option>
+            <option value="" {% if not request.args.get('status') %}selected{% endif %}>All</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Role</label>
+          <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="Support Agent" {% if request.args.get('role')=='Support Agent' %}selected{% endif %}>Support
+              Agent</option>
+            <option value="Support Manager" {% if request.args.get('role')=='Support Manager' %}selected{% endif %}>
+              Support Manager</option>
+            <option value="" {% if not request.args.get('role') %}selected{% endif %}>All Roles</option>
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary btn-sm w-100">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Apply Filters
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Overall Summary Cards -->
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-users text-primary fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Total Active Agents</p>
+          <div class="fw-bold fs-5">{{ agent_reports|length }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-ticket text-info fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Total Tickets</p>
+          <div class="fw-bold fs-5">{{ agent_reports|sum(attribute='total_tickets') }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-check-circle text-success fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Total Resolved</p>
+          <div class="fw-bold fs-5">{{ agent_reports|sum(attribute='resolved_tickets') }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-hourglass-half text-warning fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Total Pending</p>
+          <div class="fw-bold fs-5">{{ agent_reports|sum(attribute='pending_tickets') }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Row 2 -->
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-rotate-left text-danger fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Total Reopened</p>
+          <div class="fw-bold fs-5">{{ agent_reports|sum(attribute='reopened_tickets') }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-triangle-exclamation text-secondary fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Total Closed</p>
+          <div class="fw-bold fs-5">{{ agent_reports|sum(attribute='closed_tickets') }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-percentage text-primary fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Overall Resolution Rate</p>
+          <div class="fw-bold fs-5">
+            {% set total = agent_reports|sum(attribute='total_tickets') %}
+            {% set resolved = agent_reports|sum(attribute='resolved_tickets') %}
+            {{ ((resolved / total * 100) if total > 0 else 0)|round(1) }}%
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-2 text-center">
+          <i class="fa-solid fa-chart-line text-success fs-5"></i>
+          <p class="mb-1 fw-semibold small text-muted">Overall SLA Compliance</p>
+          <div class="fw-bold fs-5">
+            {% set total = agent_reports|sum(attribute='total_tickets') %}
+            {% set resolved = agent_reports|sum(attribute='resolved_tickets') %}
+            {{ ((resolved / total * 100) if total > 0 else 0)|round(1) }}%
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Performance Table -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white">
+      <h6 class="mb-0 fw-bold">Active Support Agents</h6>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-dark sticky-top">
+            <tr>
+              <th class="ps-3 py-2">Agent</th>
+              <th class="text-center py-2">Total Tickets</th>
+              <th class="text-center py-2">Resolved</th>
+              <th class="text-center py-2">Closed</th>
+              <th class="text-center py-2">Pending</th>
+              <th class="text-center py-2">In Progress</th>
+              <th class="text-center py-2">New</th>
+              <th class="text-center py-2">On Hold</th>
+              <th class="text-center py-2">Reopened</th>
+              <th class="text-center py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if agent_reports %}
+            {% for report in agent_reports %}
+            <tr>
+              <td class="ps-3">
+                <strong>{{ report.first_name }} {{ report.last_name }}</strong>
+              </td>
+              <td class="text-center">{{ report.total_tickets }}</td>
+              <td class="text-center">
+                <span class="badge bg-success">{{ report.resolved_tickets }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-secondary">{{ report.closed_tickets }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-warning text-dark">{{ report.pending_tickets }}</span>
+              </td>
+              <td class="text-center">{{ report.in_progress_tickets }}</td>
+              <td class="text-center">{{ report.new_tickets }}</td>
+              <td class="text-center">{{ report.on_hold_tickets }}</td>
+              <td class="text-center">
+                {% if report.reopened_tickets > 0 %}
+                <span class="badge bg-danger">{{ report.reopened_tickets }}</span>
+                {% else %}
+                <span class="badge bg-light text-dark">{{ report.reopened_tickets }}</span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                <a href="/reports/agent/{{ report.user_id }}" class="btn btn-sm btn-outline-primary"
+                  title="View Report">
+                  <i class="fa-solid fa-eye"></i>
+                </a>
+                <button onclick="regenerateReport({{ report.user_id }})" class="btn btn-sm btn-outline-warning"
+                  title="Regenerate">
+                  <i class="fa-solid fa-sync"></i>
+                </button>
+                <a href="/reports/export/agent/{{ report.user_id }}" class="btn btn-sm btn-outline-success"
+                  title="Export CSV">
+                  <i class="fa-solid fa-download"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="10" class="text-center py-4 text-muted">
+                <i class="fa-solid fa-circle-info d-block fs-3 mb-2 opacity-50"></i>
+                No agent reports available for the selected period.
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .1);
+    transition: .3s;
+    min-height: 120px;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .icon {
+    font-size: 28px;
+  }
+
+  .count {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 13px;
+    margin: 0;
+  }
+</style>
+
+<script>
+  function regenerateReport(agentId) {
+    if (confirm('Are you sure you want to regenerate this agent report?')) {
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/reports/regenerate/' + agentId;
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+</script>
+{% endblock %}

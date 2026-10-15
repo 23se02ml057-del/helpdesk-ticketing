@@ -1,0 +1,172 @@
+{% extends "layout_support_manager.html" %}
+
+{% block title %}
+Team
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-table th {
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        border-bottom-width: 2px;
+    }
+    .team-table td {
+        vertical-align: middle;
+    }
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.35em 0.7em;
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-md-7 col-lg-8">
+            <h3 class="fw-bold mb-1">{{ _('Team Management') }}</h3>
+            <p class="text-muted mb-0">{{ _('Manage Team Performance') }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input type="text" id="teamSearch" class="form-control"
+                               placeholder="{{ _('Search Agents') }}"
+                               value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select form-select-sm" id="statusFilter">
+                        <option value="all">All {{ _('Status') }}es</option>
+                        <option value="{{ _('Active') }}">{{ _('Active') }}</option>
+                        <option value="{{ _('Inactive') }}">{{ _('Inactive') }}</option>
+                        <option value="On Leave">{{ _('On Leave') }}</option>
+                    </select>
+                </div>
+                <div id="noResultsTeam" class="alert alert-warning mx-3 mt-2 d-none" style="display: none;">
+                    <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                    {{ _('No Agents Match Filters') }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 team-table">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4">{{ _('Agent') }}</th>
+                            <th>{{ _('Email') }}</th>
+                            <th>{{ _('Mobile') }}</th>
+                            <th>{{ _('Status') }}</th>
+                            <th>{{ _('Total Tickets') }}</th>
+                            <th>{{ _('Resolved') }}</th>
+                             <th>{{ _('Active') }}</th>
+                            <th>{{ _('Joined') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agent in agents %}
+                        <tr class="agent-row"
+                            data-status="{{ agent.status or '' }}"
+                            data-name="{{ agent.first_name }} {{ agent.last_name }}"
+                            data-email="{{ agent.email or '' }}">
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-2"
+                                         style="width:35px; height:35px; font-size:14px;">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">{{ agent.first_name }} {{ agent.last_name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ agent.email or 'N/A' }}</td>
+                            <td>{{ agent.mobile or 'N/A' }}</td>
+                            <td>
+                                {% if agent.status == 'Active' %}
+                                    <span class="badge bg-success">{{ agent.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ agent.status or 'N/A' }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary rounded-pill px-3 py-2">{{ agent.total_tickets }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success rounded-pill px-3 py-2">{{ agent.resolved_tickets }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">{{ agent.pending_tickets }}</span>
+                            </td>
+                            <td>{{ agent.created_at.strftime('%Y-%m-%d') if agent.created_at else 'N/A' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                {{ _('No Agents Found') }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var searchInput = document.getElementById('teamSearch');
+    var statusFilter = document.getElementById('statusFilter');
+    var agentRows = document.querySelectorAll('.agent-row');
+    var noResultsMsg = document.getElementById('noResultsTeam');
+
+    function filterAgents() {
+        var searchTerm = searchInput.value.toLowerCase();
+        var statusVal = statusFilter.value;
+        var visibleCount = 0;
+
+        agentRows.forEach(function(row) {
+            var name = (row.getAttribute('data-name') || '').toLowerCase();
+            var email = (row.getAttribute('data-email') || '').toLowerCase();
+            var status = row.getAttribute('data-status') || '';
+
+            var matchesSearch = searchTerm === '' ||
+                name.includes(searchTerm) ||
+                email.includes(searchTerm);
+
+            var matchesStatus = statusVal === 'all' || status === statusVal;
+
+            var isVisible = matchesSearch && matchesStatus;
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        if (noResultsMsg) {
+            noResultsMsg.style.display = (visibleCount === 0 && agentRows.length > 0) ? 'block' : 'none';
+        }
+    }
+
+    searchInput.addEventListener('input', filterAgents);
+    statusFilter.addEventListener('change', filterAgents);
+    filterAgents();
+});
+</script>
+{% endblock %}

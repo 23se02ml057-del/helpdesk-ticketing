@@ -1,0 +1,468 @@
+{% extends "layout_admin.html" %}
+
+{% block title %}
+{{ _('Skill Management') }}
+{% endblock %}
+
+{% block page_title %}{{ _('Skill Management') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .skill-search-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .skill-search-wrap .search-icon {
+        position: absolute;
+        left: 12px;
+        color: #9ca3af;
+    }
+
+    .skill-search-wrap input {
+        padding-left: 35px;
+    }
+
+    .search-clear {
+        position: absolute;
+        right: 8px;
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        display: none;
+    }
+
+    .search-clear.visible {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Flash Messages -->
+
+
+    <!-- Page Header -->
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-md-8">
+            <h3 class="fw-bold mb-1"><i class="fa-solid fa-brain text-primary me-2"></i>{{ _('Skill Management') }}</h3>
+            <p class="text-muted mb-0">Manage and organize support agent skills</p>
+        </div>
+        <div class="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+            <button data-bs-toggle="modal" data-bs-target="#addSkillModal" class="btn btn-primary">
+                <i class="fa-solid fa-plus me-1"></i> {{ _('Add Skill') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Total Skills</h6>
+                        <h2 class="fw-bold text-primary mb-0">{{ total_skills }}</h2>
+                    </div>
+                    <i class="fa-solid fa-brain fa-2x text-primary opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Active Skills</h6>
+                        <h2 class="fw-bold text-success mb-0">{{ active_skills }}</h2>
+                    </div>
+                    <i class="fa-solid fa-circle-check fa-2x text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <div class="row g-2 align-items-center">
+                <div class="col-12 col-md-5">
+                    <div class="skill-search-wrap">
+                        <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" id="skill-search-input" class="form-control" placeholder="Search skills..."
+                            value="{{ search }}" autocomplete="off">
+                        <button type="button" class="search-clear" id="skill-search-clear">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <select class="form-select" id="skill-status-filter">
+                        <option value="">Status: All</option>
+                        <option value="Active" {% if status_filter=='Active' %}selected{% endif %}>Active</option>
+                        <option value="Inactive" {% if status_filter=='Inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-3">
+                    <select class="form-select" id="skill-category-filter">
+                        <option value="">Category: All</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.category_name }}" {% if category_filter==cat.category_name %}selected{%
+                            endif %}>{{ cat.category_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-md-2">
+                    <select class="form-select" id="skill-department-filter">
+                        <option value="">Department: All</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.department_name }}" {% if department_filter==dept.department_id|string
+                            %}selected{% endif %}>{{ dept.department_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-semibold mb-0">Skills List</h5>
+        <span class="badge bg-light text-dark border" id="skill-result-count">
+            Showing {{ skills|length }} skill{{ 's' if skills|length != 1 else '' }}
+        </span>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm border-0 rounded-4" id="skillsTableWrap">
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0" id="skills-table">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4 py-3" style="width:50px;">#</th>
+                            <th class="py-3">Skill Name</th>
+                            <th class="py-3">Category</th>
+                            <th class="py-3">Department</th>
+                            <th class="py-3" style="width:110px; text-align:center;">Status</th>
+                            <th class="py-3" style="width:170px;">Created Date</th>
+                            <th class="py-3 pe-4" style="width:160px; text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="skills-tbody">
+                        {% for skill in skills %}
+                        <tr data-skill-name="{{ skill.skill_name }}" data-category="{{ skill.category or '' }}"
+                            data-department="{{ skill.department_name or '' }}" data-status="{{ skill.status }}"
+                            data-skill-id="{{ skill.skill_id }}">
+                            <td class="ps-4 text-muted">{{ loop.index }}</td>
+                            <td class="fw-medium text-dark"><i class="fa-solid fa-brain text-primary me-2"></i> {{
+                                translate_skill(skill.skill_name) if skill.skill_name else skill.skill_name }}</td>
+                            <td class="text-muted">{{ translate_category(skill.category_display or skill.category) if
+                                skill.category else '-' }}</td>
+                            <td class="text-muted">{{ translate_department(skill.department_name) if
+                                skill.department_name else '-' }}</td>
+                            <td class="text-center">
+                                {% if skill.status == 'Active' %}
+                                <span class="badge bg-success px-2 py-1"><i
+                                        class="fa-solid fa-circle d-none d-sm-inline opacity-50 small me-1"></i>Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary px-2 py-1"><i
+                                        class="fa-solid fa-circle d-none d-sm-inline opacity-50 small me-1"></i>Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted text-nowrap">
+                                {% if skill.created_at %}
+                                {{ skill.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                                {% else %}
+                                N/A
+                                {% endif %}
+                            </td>
+                            <td class="pe-4 text-center">
+                                {% if can_edit %}
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-warning rounded-end-0 btn-edit-skill"
+                                        data-bs-toggle="modal" data-bs-target="#editSkillModal"
+                                        data-id="{{ skill.skill_id }}" data-name="{{ skill.skill_name }}"
+                                        data-category="{{ skill.category or '' }}" data-status="{{ skill.status }}">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger rounded-start-0 btn-delete-skill"
+                                        data-bs-toggle="modal" data-bs-target="#deleteSkillModal"
+                                        data-id="{{ skill.skill_id }}" data-name="{{ skill.skill_name }}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        <tr class="no-skill-row" {% if skills %}style="display: none;" {% endif %}>
+                            <td colspan="7" class="text-center py-5 text-muted border-0">
+                                <i class="fa-solid fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                <div class="fw-semibold">No skills found</div>
+                                <small>Try changing your search or filter.</small>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-plus me-2"></i>Add Skill</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.admin_save_skill') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">Skill Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="skill_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">Category <span
+                                class="text-danger">*</span></label>
+                        <select name="category_name" class="form-select" required>
+                            <option value="">Select Category</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">Status <span class="text-danger">*</span></label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active" selected>Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save
+                        Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Skill Modal -->
+<div class="modal fade" id="editSkillModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fa-solid fa-pen me-2"></i>Edit Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">Skill Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="skill_name" id="editSkillName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">Category <span
+                                class="text-danger">*</span></label>
+                        <select name="category_name" id="editSkillCategory" class="form-select" required>
+                            <option value="">Select Category</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-medium">Status <span class="text-danger">*</span></label>
+                        <select name="status" id="editSkillStatus" class="form-select" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning"><i class="fa-solid fa-save me-1"></i>Save
+                        Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Skill Modal -->
+<div class="modal fade" id="deleteSkillModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-trash me-2"></i>Delete Skill</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete skill <strong id="deleteSkillName"></strong>?</p>
+                <p class="text-muted mb-0 small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="POST">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-1"></i>Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const DEBOUNCE_MS = 300;
+
+        function applySkillFilters() {
+            var searchInput = document.getElementById('skill-search-input');
+            var statusSelect = document.getElementById('skill-status-filter');
+            var categorySelect = document.getElementById('skill-category-filter');
+            var departmentSelect = document.getElementById('skill-department-filter');
+            var tbody = document.getElementById('skills-tbody');
+            var countBadge = document.getElementById('skill-result-count');
+            if (!tbody) return;
+
+            var searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            var statusFilter = statusSelect ? statusSelect.value.toLowerCase() : '';
+            var categoryFilter = categorySelect ? categorySelect.value.toLowerCase() : '';
+            var deptFilter = departmentSelect ? departmentSelect.value.toLowerCase() : '';
+
+            var rows = tbody.querySelectorAll('tr[data-skill-name]');
+            var visibleCount = 0;
+
+            rows.forEach(function (row) {
+                var skillName = (row.getAttribute('data-skill-name') || '').toLowerCase();
+                var category = (row.getAttribute('data-category') || '').toLowerCase();
+                var department = (row.getAttribute('data-department') || '').toLowerCase();
+                var status = (row.getAttribute('data-status') || '').toLowerCase();
+
+                var matchesSearch = !searchTerm ||
+                    skillName.indexOf(searchTerm) !== -1 ||
+                    category.indexOf(searchTerm) !== -1 ||
+                    department.indexOf(searchTerm) !== -1;
+                var matchesStatus = !statusFilter || status === statusFilter;
+                var matchesCategory = !categoryFilter || category === categoryFilter;
+                var matchesDept = !deptFilter || (deptFilter && department === deptFilter);
+
+                if (matchesSearch && matchesStatus && matchesCategory && matchesDept) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (countBadge) {
+                countBadge.textContent = 'Showing ' + visibleCount + ' skill' + (visibleCount !== 1 ? 's' : '');
+            }
+
+            var noSkillRow = tbody.querySelector('.no-skill-row');
+            if (noSkillRow) {
+                noSkillRow.style.display = visibleCount === 0 ? '' : 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var searchInput = document.getElementById('skill-search-input');
+            var clearBtn = document.getElementById('skill-search-clear');
+            var statusSelect = document.getElementById('skill-status-filter');
+            var categorySelect = document.getElementById('skill-category-filter');
+            var departmentSelect = document.getElementById('skill-department-filter');
+            var timer;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(applySkillFilters, DEBOUNCE_MS);
+
+                    if (clearBtn) {
+                        clearBtn.classList.toggle('visible', this.value.length > 0);
+                    }
+                });
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function () {
+                    searchInput.value = '';
+                    clearTimeout(timer);
+                    applySkillFilters();
+                    this.classList.remove('visible');
+                    searchInput.focus();
+                });
+            }
+
+            if (statusSelect) {
+                statusSelect.addEventListener('change', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(applySkillFilters, 50);
+                });
+            }
+
+            if (categorySelect) {
+                categorySelect.addEventListener('change', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(applySkillFilters, 50);
+                });
+            }
+
+            if (departmentSelect) {
+                departmentSelect.addEventListener('change', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(applySkillFilters, 50);
+                });
+            }
+
+            applySkillFilters();
+
+            var deleteModal = document.getElementById('deleteSkillModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var id = button.getAttribute('data-id');
+                    var name = button.getAttribute('data-name');
+                    document.getElementById('deleteSkillName').textContent = name || '';
+                    var form = document.getElementById('deleteForm');
+                    if (form) {
+                        form.action = '/admin/skills/delete/' + id;
+                    }
+                });
+            }
+
+            var editModal = document.getElementById('editSkillModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var id = button.getAttribute('data-id');
+                    var name = button.getAttribute('data-name');
+                    var category = button.getAttribute('data-category');
+                    var status = button.getAttribute('data-status');
+
+                    document.getElementById('editSkillName').value = name || '';
+                    document.getElementById('editSkillCategory').value = category || '';
+                    document.getElementById('editSkillStatus').value = status || 'Active';
+
+                    var form = document.getElementById('editForm');
+                    if (form) {
+                        form.action = '/admin/skills/update/' + id;
+                    }
+                });
+            }
+        });
+    })();
+</script>
+{% endblock %}

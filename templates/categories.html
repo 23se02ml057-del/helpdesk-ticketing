@@ -1,0 +1,577 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ _('Categories') }}{% endblock %}
+
+{% block page_title %}{{ _('Categories') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-clear {
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0 6px;
+        display: none;
+        font-size: 0.85rem;
+    }
+
+    .search-clear.visible {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .sa-search-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .sa-search-wrap input {
+        flex: 1;
+    }
+
+    .sa-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity .2s;
+    }
+
+    .sa-status-badge--active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .sa-status-badge--inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .sa-status-badge i {
+        font-size: 0.5rem;
+    }
+
+    .sa-table-loading {
+        opacity: .5;
+        pointer-events: none;
+    }
+
+    .sa-table-actions {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-md-8">
+            <h3 class="fw-bold mb-1">
+                <i class="fa-solid fa-folder-open text-primary me-2"></i>{{ _('Categories') }}
+            </h3>
+            <p class="text-muted mb-0">{{ _('Manage Categories Subtitle') }}</p>
+        </div>
+        <div class="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="fa-solid fa-plus me-1"></i>{{ _('Add Category') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-folder-open fa-2x text-primary mb-2"></i>
+                    <h6 class="text-muted mb-1">{{ _('Total Categories') }}</h6>
+                    <h2 class="fw-bold text-primary">{{ total_categories or 0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-check-circle fa-2x text-success mb-2"></i>
+                    <h6 class="text-muted mb-1">{{ _('Active Categories') }}</h6>
+                    <h2 class="fw-bold text-success">{{ active_categories or 0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-ban fa-2x text-warning mb-2"></i>
+                    <h6 class="text-muted mb-1">{{ _('Inactive Categories') }}</h6>
+                    <h2 class="fw-bold text-warning">{{ inactive_categories or 0 }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-2 align-items-end" data-category-search>
+                <div class="col-12 col-sm-7">
+                    <div class="sa-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                        <input type="text" class="form-control" name="search" placeholder="{{ _('Search Categories') }}"
+                            value="{{ search }}" autocomplete="off">
+                        <button type="button" class="search-clear" title="{{ _('Clear Search') }}">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-3">
+                    <select name="status" class="form-select" id="statusFilter">
+                        <option value="">{{ _('All Statuses') }}</option>
+                        <option value="Active" {% if status_filter=='Active' %}selected{% endif %}>{{ _('Active') }}
+                        </option>
+                        <option value="Inactive" {% if status_filter=='Inactive' %}selected{% endif %}>{{ _('Inactive')
+                            }}</option>
+                    </select>
+                </div>
+                <div class="col-12 col-sm-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa fa-search me-1"></i>{{ _('Search') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-semibold mb-0">{{ _('Categories List') }}</h5>
+        <span class="badge bg-light text-dark border" id="categoriesCount">
+            {{ _('Showing') }} <span id="visibleCount">{{ categories|length }}</span>
+            {{ _('Of') }} {{ total_categories or 0 }} {{ _('Categories') }}
+        </span>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="card shadow-sm border-0 rounded-4" id="categoriesTableWrap">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th class="ps-4 py-3" style="width:50px;">#</th>
+                            <th class="py-3">{{ _('Category Name') }}</th>
+                            <th class="py-3">{{ _('Department') }}</th>
+                            <th class="py-3">{{ _('Description') }}</th>
+                            <th class="py-3" style="width:110px;">{{ _('Status') }}</th>
+                            <th class="py-3" style="width:170px;">{{ _('Created Date') }}</th>
+                            <th class="py-3 pe-4" style="width:170px;">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody">
+                        {% for category in categories %}
+                        <tr data-category-name="{{ category.category_name }}">
+                            <td class="ps-4">{{ loop.index }}</td>
+                            <td>
+                                <i class="fa-solid fa-folder-open text-primary me-2"></i>
+                                {{ category.category_name }}
+                            </td>
+                            <td>
+                                {% if category.department_id %}
+                                {% set dept = departments|selectattr('department_id', 'equalto',
+                                category.department_id)|list %}
+                                {% if dept %}{{ dept[0].department_name }}{% else %}-{% endif %}
+                                {% else %}-{% endif %}
+                            </td>
+                            <td>{{ category.description or '-' }}</td>
+                            <td>
+                                {% if category.status == 'Active' %}
+                                <span class="sa-status-badge sa-status-badge--active toggle"
+                                    data-category-name="{{ category.category_name }}" data-status="Active">
+                                    <i class="fa-solid fa-circle"></i> {{ _('Active') }}
+                                </span>
+                                {% else %}
+                                <span class="sa-status-badge sa-status-badge--inactive toggle"
+                                    data-category-name="{{ category.category_name }}" data-status="Inactive">
+                                    <i class="fa-solid fa-circle"></i> {{ _('Inactive') }}
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if category.created_at %}
+                                {{ category.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                                {% else %}N/A{% endif %}
+                            </td>
+                            <td class="pe-4">
+                                <div class="sa-table-actions">
+                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                        data-bs-target="#editCategoryModal" data-name="{{ category.category_name }}"
+                                        data-department="{{ category.department_id or '' }}"
+                                        data-description="{{ category.description or '' }}"
+                                        data-status="{{ category.status }}">
+                                        <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#deleteCategoryModal" data-name="{{ category.category_name }}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>
+                                {{ _('No Categories Found') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination %}
+    <nav aria-label="Categories pagination" class="mt-3">
+        <ul class="pagination justify-content-center mb-0">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link"
+                    href="?page={{ pagination.prev_num }}&search={{ search|urlencode }}&status={{ status_filter|urlencode }}">
+                    <i class="fa fa-chevron-left"></i>
+                </a>
+            </li>
+            <li class="page-item active">
+                <span class="page-link">Page {{ pagination.page }} of {{ pagination.total_pages }}</span>
+            </li>
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link"
+                    href="?page={{ pagination.next_num }}&search={{ search|urlencode }}&status={{ status_filter|urlencode }}">
+                    <i class="fa fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addCategoryModalLabel">
+                    <i class="fa-solid fa-plus me-2"></i>{{ _('Add Category') }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('categories.add_category') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Category Name') }}</label>
+                        <input type="text" name="category_name" class="form-control" required
+                            placeholder="{{ _('Enter Category Name') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Department') }}</label>
+                        <select name="department_id" class="form-select">
+                            <option value="">{{ _('Select Department') }}</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3"
+                            placeholder="{{ _('Enter Description') }}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Status') }}</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-save me-1"></i>{{ _('Save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="editCategoryModalLabel">
+                    <i class="fa-solid fa-pen me-2"></i>{{ _('Edit Category') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editCategoryForm" method="POST" action="{{ url_for('categories.update_category') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="old_category" id="editOldCategory">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Category Name') }}</label>
+                        <input type="text" name="category_name" id="editCategoryName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Department') }}</label>
+                        <select name="department_id" class="form-select" id="editDepartmentId">
+                            <option value="">{{ _('Select Department') }}</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Description') }}</label>
+                        <textarea name="description" class="form-control" rows="3" id="editDescription"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ _('Status') }}</label>
+                        <select name="status" class="form-select" id="editStatus" required>
+                            <option value="Active">{{ _('Active') }}</option>
+                            <option value="Inactive">{{ _('Inactive') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa-solid fa-save me-1"></i>{{ _('Update') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Category Modal -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteCategoryModalLabel">
+                    <i class="fa-solid fa-trash me-2"></i>{{ _('Delete Category') }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ _('Delete Confirmation') }} <strong id="deleteCategoryName"></strong>?</p>
+                <p class="text-muted">{{ _('This Action Cannot Be Undone') }}</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteCategoryForm" method="POST" action="{{ url_for('categories.delete_category') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="category_name" id="deleteCategoryNameInput">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa-solid fa-trash me-1"></i>{{ _('Delete') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        const DEBOUNCE_MS = 300;
+        const API_URL = '/api/categories/search';
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr || dateStr === '-' || dateStr === 'N/A') return 'N/A';
+            try {
+                var d = new Date(dateStr);
+                if (isNaN(d.getTime())) return escapeHtml(dateStr);
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var hours = d.getHours(), minutes = d.getMinutes();
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12;
+                return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ', ' +
+                    String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ' ' + ampm;
+            } catch (e) { return escapeHtml(dateStr); }
+        }
+
+        function renderCategories(rows) {
+            var tbody = document.getElementById('categoriesTableBody');
+            var countEl = document.getElementById('visibleCount');
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted">' +
+                    '<i class="fa-regular fa-folder-open d-block fs-3 mb-2 opacity-50"></i>No categories found</td></tr>';
+                if (countEl) countEl.textContent = '0';
+                return;
+            }
+            if (countEl) countEl.textContent = rows.length;
+            tbody.innerHTML = rows.map(function (c, i) {
+                var badge = c.status === 'Active'
+                    ? '<span class="sa-status-badge sa-status-badge--active toggle" data-category-name="' + escapeHtml(c.category_name) + '" data-status="Active"><i class="fa-solid fa-circle"></i> Active</span>'
+                    : '<span class="sa-status-badge sa-status-badge--inactive toggle" data-category-name="' + escapeHtml(c.category_name) + '" data-status="Inactive"><i class="fa-solid fa-circle"></i> Inactive</span>';
+                return '<tr data-category-name="' + escapeHtml(c.category_name) + '">' +
+                    '<td class="ps-4">' + (i + 1) + '</td>' +
+                    '<td><i class="fa-solid fa-folder-open text-primary me-2"></i>' + escapeHtml(c.category_name) + '</td>' +
+                    '<td>-</td>' +
+                    '<td>' + escapeHtml(c.description || '-') + '</td>' +
+                    '<td>' + badge + '</td>' +
+                    '<td>' + formatDate(c.created_at) + '</td>' +
+                    '<td class="pe-4"><div class="sa-table-actions">' +
+                    '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCategoryModal" ' +
+                    'data-name="' + escapeHtml(c.category_name) + '" data-department="' + (c.department_id || '') + '" ' +
+                    'data-description="' + escapeHtml(c.description || '') + '" data-status="' + escapeHtml(c.status) + '">' +
+                    '<i class="fa-solid fa-pen"></i> Edit</button>' +
+                    '<button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" ' +
+                    'data-name="' + escapeHtml(c.category_name) + '">' +
+                    '<i class="fa-solid fa-trash"></i></button>' +
+                    '</div></td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.querySelector('form[data-category-search]');
+            if (!form) return;
+            var searchInput = form.querySelector('input[name="search"]');
+            var statusSelect = document.getElementById('statusFilter');
+            var clearBtn = form.querySelector('.search-clear');
+            var timer, abortCtrl = null;
+
+            function doSearch(page) {
+                page = page || 1;
+                var q = searchInput ? searchInput.value.trim() : '';
+                var status = statusSelect ? statusSelect.value : '';
+                var params = [];
+                if (q) params.push('q=' + encodeURIComponent(q));
+                if (status) params.push('status=' + encodeURIComponent(status));
+                params.push('page=' + page);
+                if (abortCtrl) abortCtrl.abort();
+                abortCtrl = new AbortController();
+                var wrap = document.getElementById('categoriesTableWrap');
+                if (wrap) wrap.classList.add('sa-table-loading');
+                fetch(API_URL + '?' + params.join('&'), { signal: abortCtrl.signal })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) { renderCategories(data.rows || []); })
+                    .catch(function (err) {
+                        if (err.name === 'AbortError') return;
+                        var tbody = document.getElementById('categoriesTableBody');
+                        if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Error loading results</td></tr>';
+                    })
+                    .finally(function () {
+                        if (wrap) wrap.classList.remove('sa-table-loading');
+                    });
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(timer);
+                    timer = setTimeout(function () { doSearch(1); }, DEBOUNCE_MS);
+                    if (clearBtn) clearBtn.classList.toggle('visible', this.value.length > 0);
+                });
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function () {
+                    searchInput.value = '';
+                    clearTimeout(timer);
+                    doSearch(1);
+                    this.classList.remove('visible');
+                    searchInput.focus();
+                });
+            }
+            if (statusSelect) {
+                statusSelect.addEventListener('change', function () { doSearch(1); });
+            }
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearTimeout(timer);
+                doSearch(1);
+            });
+
+            // Edit modal bind
+            var editModal = document.getElementById('editCategoryModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function (event) {
+                    var btn = event.relatedTarget;
+                    document.getElementById('editOldCategory').value = btn.getAttribute('data-name') || '';
+                    document.getElementById('editCategoryName').value = btn.getAttribute('data-name') || '';
+                    document.getElementById('editDepartmentId').value = btn.getAttribute('data-department') || '';
+                    document.getElementById('editDescription').value = btn.getAttribute('data-description') || '';
+                    document.getElementById('editStatus').value = btn.getAttribute('data-status') || 'Active';
+                });
+            }
+
+            // Delete modal bind
+            var deleteModal = document.getElementById('deleteCategoryModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    var name = event.relatedTarget.getAttribute('data-name') || '';
+                    document.getElementById('deleteCategoryName').textContent = name;
+                    document.getElementById('deleteCategoryNameInput').value = name;
+                });
+            }
+
+            // Status toggle
+            document.addEventListener('click', function (e) {
+                var badge = e.target.closest('.sa-status-badge.toggle');
+                if (!badge) return;
+                e.preventDefault();
+                e.stopPropagation();
+                var categoryName = badge.getAttribute('data-category-name');
+                var currentStatus = badge.getAttribute('data-status');
+                var newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                fetch('/api/categories/toggle-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                    body: JSON.stringify({ category_name: categoryName, status: newStatus })
+                })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (data.status === 'Active') {
+                            badge.className = 'sa-status-badge sa-status-badge--active toggle';
+                            badge.setAttribute('data-status', 'Active');
+                            badge.innerHTML = '<i class="fa-solid fa-circle"></i> Active';
+                        } else {
+                            badge.className = 'sa-status-badge sa-status-badge--inactive toggle';
+                            badge.setAttribute('data-status', 'Inactive');
+                            badge.innerHTML = '<i class="fa-solid fa-circle"></i> Inactive';
+                        }
+                    })
+                    .catch(function () { alert('Failed to update status. Please try again.'); });
+            });
+        });
+    })();
+</script>
+{% endblock %}

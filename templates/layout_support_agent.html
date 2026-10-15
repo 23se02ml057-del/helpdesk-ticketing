@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="{{ session.get('locale', 'en') }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}{{ _('Support Agent') }} - Help Desk{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+Gujarati:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f6f9;
+            font-family: 'Poppins', 'Noto Sans', 'Noto Sans SC', 'Noto Sans Gujarati', Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: #212529;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+            transition: transform .3s ease;
+            z-index: 1050;
+        }
+
+        .sidebar h4 {
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid #343a40;
+        }
+
+        .sidebar a {
+            color: #ced4da;
+            text-decoration: none;
+            display: block;
+            padding: 14px 22px;
+            transition: .3s;
+        }
+
+        .sidebar a:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .sidebar a.active {
+            background: #0d6efd;
+            color: white;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 260px;
+            min-height: 100vh;
+            transition: margin-left .3s ease;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: white;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .profile {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* Mobile toggle */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #212529;
+            cursor: pointer;
+        }
+
+        /* Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            z-index: 1040;
+            transition: opacity .3s ease;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media(max-width:991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0 !important;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+        }
+
+        @media(max-width:575.98px) {
+            .topbar {
+                height: 60px;
+                padding: 0 10px;
+            }
+
+            .content {
+                padding: 15px 10px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Mobile Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="{{ _('toggle menu') }}">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <h4><i class="fa-solid fa-headset"></i> {{ _('Support Agent') }}</h4>
+        <a class="{% if request.endpoint == 'support_agent.dashboard' %}active{% endif %}"
+            href="{{ url_for('support_agent.dashboard') }}">
+            <i class="fa-solid fa-gauge"></i> {{ _('Dashboard') }}
+        </a>
+        <a class="{% if request.endpoint == 'support_agent.my_tickets' %}active{% endif %}"
+            href="{{ url_for('support_agent.my_tickets') }}">
+            <i class="fa-solid fa-ticket"></i> {{ _('My Tickets') }}
+        </a>
+        <a class="{% if request.endpoint == 'support_agent.reports' %}active{% endif %}"
+            href="{{ url_for('support_agent.reports') }}">
+            <i class="fa-solid fa-chart-column"></i> {{ _('Reports') }}
+        </a>
+        <a class="{% if request.endpoint == 'support_agent.notifications' %}active{% endif %}"
+            href="{{ url_for('support_agent.notifications') }}">
+            <i class="fa-solid fa-bell"></i> {{ _('Notifications') }}
+            {% if unread_count and unread_count > 0 %}
+            <span class="badge bg-danger rounded-pill ms-auto">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+        <a class="{% if request.endpoint == 'support_agent.profile' %}active{% endif %}"
+            href="{{ url_for('support_agent.profile') }}">
+            <i class="fa-solid fa-user"></i> {{ _('My Profile') }}
+        </a>
+        <a class="{% if request.endpoint == 'auth.change_password' %}active{% endif %}"
+            href="{{ url_for('auth.change_password') }}">
+            <i class="fa-solid fa-key"></i> {{ _('Change Password') }}
+        </a>
+        <a href="{{ url_for('logout') }}">
+            <i class="fa-solid fa-right-from-bracket"></i> {{ _('Logout') }}
+        </a>
+    </div>
+
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <h4 class="mb-0">{% block page_title %}{{ _('Support Agent') }}{% endblock %}</h4>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <!-- Language Selector -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1"
+                        type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="font-size:0.8rem; padding:4px 8px; border-radius:6px;">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>
+                            {% if session.get('locale', 'en') == 'en' %}{{ _('Language En') }}
+                            {% elif session.get('locale', 'en') == 'zh' %}{{ _('Language Zh') }}
+                            {% elif session.get('locale', 'en') == 'de' %}{{ _('Language De') }}
+                            {% elif session.get('locale', 'en') == 'fr' %}{{ _('Language Fr') }}
+                            {% elif session.get('locale', 'en') == 'tr' %}{{ _('Language Tr') }}
+                            {% elif session.get('locale', 'en') == 'gu' %}{{ _('Language Gu') }}
+                            {% else %}{{ _('Language En') }}{% endif %}
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="languageDropdown"
+                        style="min-width:150px; border-radius:8px;">
+                        <li><a class="dropdown-item {% if session.get('locale', 'en') == 'en' %}active{% endif %}"
+                                href="{{ url_for('set_language', locale='en') }}" style="font-size:0.8rem;">🇬🇧 {{
+                                _('Language En') }}</a></li>
+                        <li><a class="dropdown-item {% if session.get('locale', 'en') == 'zh' %}active{% endif %}"
+                                href="{{ url_for('set_language', locale='zh') }}" style="font-size:0.8rem;">🇨🇳 {{
+                                _('Language Zh') }}</a></li>
+                        <li><a class="dropdown-item {% if session.get('locale', 'en') == 'de' %}active{% endif %}"
+                                href="{{ url_for('set_language', locale='de') }}" style="font-size:0.8rem;">🇩🇪 {{
+                                _('Language De') }}</a></li>
+                        <li><a class="dropdown-item {% if session.get('locale', 'en') == 'fr' %}active{% endif %}"
+                                href="{{ url_for('set_language', locale='fr') }}" style="font-size:0.8rem;">🇫🇷 {{
+                                _('Language Fr') }}</a></li>
+                        <li><a class="dropdown-item {% if session.get('locale', 'en') == 'tr' %}active{% endif %}"
+                                href="{{ url_for('set_language', locale='tr') }}" style="font-size:0.8rem;">🇹🇷 {{
+                                _('Language Tr') }}</a></li>
+                        <li><a class="dropdown-item {% if session.get('locale', 'en') == 'gu' %}active{% endif %}"
+                                href="{{ url_for('set_language', locale='gu') }}" style="font-size:0.8rem;">🇮🇳 {{
+                                _('Language Gu') }}</a></li>
+                    </ul>
+                </div>
+                <a href="{{ url_for('support_agent.notifications') }}"
+                    class="text-dark text-decoration-none d-flex align-items-center gap-1">
+                    <i class="fa-solid fa-bell fs-5"></i>
+                    {% if unread_count and unread_count > 0 %}
+                    <span class="badge bg-danger rounded-pill">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+                <div class="profile">SA</div>
+            </div>
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.getElementById('sidebarToggle');
+
+        function openSidebar() { sidebar.classList.add('show'); overlay.classList.add('show'); }
+        function closeSidebar() { sidebar.classList.remove('show'); overlay.classList.remove('show'); }
+
+        toggle.addEventListener('click', openSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992) { closeSidebar(); }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 992) { overlay.classList.remove('show'); }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if (csrfToken) {
+                document.querySelectorAll('form').forEach(function (form) {
+                    if (!form.querySelector('input[name="csrf_token"]')) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'csrf_token';
+                        input.value = csrfToken;
+                        form.appendChild(input);
+                    }
+                });
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+
+    {% include 'chatbot_widget.html' %}
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+</body>
+
+</html>

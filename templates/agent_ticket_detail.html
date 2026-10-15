@@ -1,0 +1,468 @@
+{% extends "layout_support_agent.html" %}
+
+{% block title %}
+{{ _('Ticket Hash') }}{{ ticket.ticket_number }}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <a href="{{ url_for('support_agent.my_tickets') }}" class="btn btn-secondary mb-3">
+        <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }} to {{ _('My Tickets') }}
+    </a>
+
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Ticket Details') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-6">
+                            <p class="mb-1"><strong>{{ _('Ticket Number') }}:</strong> {{ ticket.ticket_number }}</p>
+                            <p class="mb-1"><strong>{{ _('Title') }}:</strong> {{ ticket.title }}</p>
+                            <p class="mb-1"><strong>{{ _('Description') }}:</strong></p>
+                            <p class="text-muted">{{ ticket.description }}</p>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-muted">{{ _('Ai Summary') }}</label>
+                            {% if ticket.ai_summary %}
+                                <div class="alert alert-info mb-0">
+                                    <i class="fa-solid fa-robot me-2"></i>
+                                    {{ ticket.ai_summary }}
+                                </div>
+                            {% else %}
+                                <form method="POST" action="{{ url_for('tickets.generate_ai_summary', ticket_id=ticket.ticket_id) }}" class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                                        <i class="fa-solid fa-wand-magic-sparkles me-1"></i> {{ _('Generate Ai Summary') }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        {% if ticket.ai_suggested_category %}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">AI Generated {{ _('Category') }}</label>
+                            <span class="badge bg-info">{{ translate_category(ticket.ai_suggested_category) }}</span>
+                        </div>
+                        {% endif %}
+                        {% if ticket.ai_suggested_department %}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Assign') }}ed {{ _('Department') }}</label>
+                            <span class="badge bg-secondary">{{ translate_department(ticket.ai_suggested_department) }}</span>
+                        </div>
+                        {% endif %}
+                        {% if ticket.ai_suggested_agent %}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Assign') }}ed {{ _('Agent') }}</label>
+                            {% if ticket.agent_first and ticket.agent_last %}
+                                <span class="badge bg-success">{{ ticket.agent_first }} {{ ticket.agent_last }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% if ticket.ai_confidence %}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">{{ _('Ai Confidence') }}</label>
+                            <span class="badge bg-{{ 'success' if ticket.ai_confidence == 'high' else 'warning' }}">{{ translate_value(ticket.ai_confidence)|title if ticket.ai_confidence else ticket.ai_confidence }}</span>
+                        </div>
+                        {% endif %}
+                        {% if ticket.ai_correction_type %}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-muted">AI Correction {{ _('Type') }}</label>
+                            <span class="badge bg-primary">{{ ticket.ai_correction_type }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="col-12">
+                            <label class="form-label text-muted">AI Suggested {{ _('Reply') }}</label>
+                            {% if ticket.ai_suggested_reply %}
+                                <div class="alert alert-success mb-2">
+                                    <i class="fa-solid fa-robot me-2"></i>
+                                    <strong>AI Generated {{ _('Reply') }}:</strong>
+                                    <p class="mb-0 mt-2">{{ ticket.ai_suggested_reply }}</p>
+                                </div>
+                            {% endif %}
+                            <form id="aiReplyForm" method="POST" action="{{ url_for('tickets.generate_ai_reply', ticket_id=ticket.ticket_id) }}" class="mb-2">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="generateAI{{ _('Reply') }}()">
+                                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate AI {{ _('Reply') }}
+                                </button>
+                            </form>
+                            <div id="aiReplyContainer" style="display: none;">
+                                <div class="card border-primary mb-2">
+                                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                        <span><i class="fa-solid fa-robot me-2"></i>AI Suggested {{ _('Reply') }}</span>
+                                        <button type="button" class="btn btn-sm btn-light" onclick="regenerateAI{{ _('Reply') }}()">
+                                            <i class="fa-solid fa-refresh"></i> {{ _('Regenerate') }}
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">{{ _('Reply') }} {{ _('Message') }}:</label>
+                                            <textarea id="aiReplyText" class="form-control" rows="6" placeholder="AI generated reply will appear here..."></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">{{ _('Troubleshooting Steps') }}</label>
+                                            <textarea id="aiTroubleshootingText" class="form-control" rows="4" placeholder="Troubleshooting steps will appear here..."></textarea>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-primary" onclick="sendAI{{ _('Reply') }}()">
+                                                <i class="fa-solid fa-paper-plane me-1"></i> {{ _('Send Reply') }}
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" onclick="cancelAI{{ _('Reply') }}()">
+                                                {{ _('Cancel') }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p class="mb-1"><strong>{{ _('Category') }}:</strong> {{ translate_category(ticket.category_name) or 'N/A' }}</p>
+                            <p class="mb-1"><strong>{{ _('Priority') }}:</strong> {{ translate_priority(ticket.priority_name) or 'N/A' }}</p>
+                            <p class="mb-1"><strong>{{ _('Status') }}:</strong> {{ translate_status(ticket.status_name) or 'N/A' }}</p>
+                            <p class="mb-1"><strong>{{ _('Requester') }}:</strong> {{ ticket.requester_first }} {{ ticket.requester_last }}</p>
+                            <p class="mb-1"><strong>{{ _('Email') }}:</strong> {{ ticket.requester_email or 'N/A' }}</p>
+                            <p class="mb-1"><strong>{{ _('Created') }}:</strong> {{ ticket.created_at.strftime('%Y-%m-%d %H:%M') if ticket.created_at else 'N/A' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ML Resolution Prediction -->
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-brain me-2"></i>
+                        {{ _('Ml Analysis') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if ml_prediction and ml_prediction.prediction_status == "success" %}
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <label class="form-label text-muted small mb-1">{{ _('Estimated Resolution') }}</label>
+                                    <p class="fw-bold mb-0">
+                                        {% if ml_prediction.predicted_resolution_minutes %}
+                                            {{ "%.0f"|format(ml_prediction.predicted_resolution_minutes // 60) }}h {{ "%.0f"|format(ml_prediction.predicted_resolution_minutes % 60) }}m
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <label class="form-label text-muted small mb-1">{{ _('Expected Range') }}</label>
+                                    <p class="fw-bold mb-0">
+                                        {% if ml_prediction.lower_bound_minutes and ml_prediction.upper_bound_minutes %}
+                                            {{ "%.0f"|format(ml_prediction.lower_bound_minutes // 60) }}h – {{ "%.0f"|format(ml_prediction.upper_bound_minutes // 60) }}h
+                                        {% else %}
+                                            <span class="text-muted">{{ _('Not Available') }}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <label class="form-label text-muted small mb-1">{{ _('Sla Maximum') }}</label>
+                                    <p class="fw-bold mb-0">
+                                        {% if ml_sla_info and ml_sla_info.sla_resolution_hours %}
+                                            {{ "%.0f"|format(ml_sla_info.sla_resolution_hours) }}h
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <label class="form-label text-muted small mb-1">{{ _('Sla Breach Risk') }}</label>
+                                    <p class="fw-bold mb-0">
+                                        {% set risk = ml_prediction.sla_breach_risk if ml_prediction.sla_breach_risk else "unknown" %}
+                                        {% if risk == "high" %}
+                                            <span class="badge bg-danger">{{ _('High') }}</span>
+                                        {% elif risk == "medium" %}
+                                            <span class="badge bg-warning text-dark">{{ _('Medium') }}</span>
+                                        {% elif risk == "low" %}
+                                            <span class="badge bg-success">Low</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ _('Unknown') }}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <small class="text-muted">
+                                    Model: {{ ml_prediction.model_version }}
+                                    | Dataset: Experimental/Limited
+                                </small>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mb-0">
+                            <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                            {{ _('Ml Prediction Unavailable') }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">{{ _('Comments') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if comments %}
+                        {% for comment in comments %}
+                        <div class="border rounded p-3 mb-3 {% if comment.is_internal %}bg-warning bg-opacity-10 border-warning{% else %}bg-light{% endif %}">
+                            <div class="d-flex justify-content-between">
+                                <strong>
+                                    {{ comment.first_name }} {{ comment.last_name }}
+                                    {% if comment.is_internal %}
+                                        <span class="badge bg-warning text-dark ms-2">{{ _('Internal') }}</span>
+                                    {% endif %}
+                                </strong>
+                                <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') if comment.created_at else 'N/A' }}</small>
+                            </div>
+                            <p class="mb-0 mt-2">{{ comment.comment_text }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">{{ _('No Comments') }}.</p>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('support_agent.add_comment', ticket_id=ticket.ticket_id) }}" class="mt-3">
+                        <div class="mb-3">
+                            <label class="form-label">{{ _('Add Comment') }}</label>
+                            <textarea name="comment_text" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="is_internal" id="isInternal">
+                            <label class="form-check-label" for="isInternal">
+                                <i class="fa-solid fa-lock me-1"></i> {{ _('Internal Note') }} (visible only to agents)
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-comment"></i> {{ _('Add Comment') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Attachments') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if attachments %}
+                        <ul class="list-group">
+                            {% for attachment in attachments %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fa-solid fa-paperclip me-2"></i>
+                                    <a href="/{{ attachment.file_path }}" target="_blank">{{ attachment.file_name }}</a>
+                                    <small class="text-muted d-block">{{ _('Upload') }}ed by {{ attachment.first_name }} {{ attachment.last_name }} on {{ attachment.uploaded_at.strftime('%Y-%m-%d') if attachment.uploaded_at else 'N/A' }}</small>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">{{ _('No Attachments') }} yet.</p>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('support_agent.upload_attachment', ticket_id=ticket.ticket_id) }}" enctype="multipart/form-data" class="mt-3">
+                        <div class="mb-3">
+                            <label class="form-label">{{ _('Upload') }} Attachment</label>
+                            <input type="file" name="file" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-upload"></i> {{ _('Upload') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">{{ _('Update') }} {{ _('Status') }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('support_agent.update_ticket_status', ticket_id=ticket.ticket_id) }}">
+                        <div class="mb-3">
+                            <label class="form-label">New {{ _('Status') }}</label>
+                            <select name="status_name" class="form-select" required>
+                                {% for status in statuses %}
+                                <option value="{{ status.status_name }}"
+                                    {% if status.status_name == ticket.status_name %}selected{% endif %}>
+                                    {{ translate_status(status.status_name) }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fa-solid fa-rotate"></i> {{ _('Update') }} {{ _('Status') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% if sla_rule %}
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-clock text-warning me-2"></i> {{ _('Sla Targets') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h6 class="text-muted mb-1">{{ _('Response Time') }}</h6>
+                                <h4 class="fw-bold text-primary mb-0">{{ sla_rule.response_time }}h</h4>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h6 class="text-muted mb-1">{{ _('Resolution Time') }}</h6>
+                                <h4 class="fw-bold text-success mb-0">{{ sla_rule.resolution_time }}h</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">Quick {{ _('Actions') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if ticket.status_name == 'Resolved' %}
+                    <form method="POST" action="{{ url_for('support_agent.close_ticket', ticket_id=ticket.ticket_id) }}" class="mb-2">
+                        <button type="submit" class="btn btn-secondary w-100 mb-2">
+                            <i class="fa-solid fa-box-archive"></i> {{ _('Close Ticket') }}
+                        </button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('support_agent.resolve_ticket', ticket_id=ticket.ticket_id) }}" class="mb-2">
+                        <button type="submit" class="btn btn-success w-100 mb-2">
+                            <i class="fa-solid fa-check"></i> Mark as {{ _('Resolved') }}
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('support_agent.reassign_ticket', ticket_id=ticket.ticket_id) }}" class="mb-2">
+                        <div class="mb-2">
+                            <label class="form-label small">{{ _('Reassign To') }}</label>
+                            <select name="assigned_to" class="form-select form-select-sm" required>
+                                <option value="">{{ _('Select Agent') }}</option>
+                                {% for agent in agents %}
+                                <option value="{{ agent.user_id }}">{{ agent.first_name }} {{ agent.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fa-solid fa-user-check"></i> {{ _('Reassign Ticket') }}
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('support_agent.escalate_ticket', ticket_id=ticket.ticket_id) }}">
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="fa-solid fa-arrow-up-right-dots"></i> {{ _('Escalate Ticket') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function generateAIReply() {
+    const ticketId = {{ ticket.ticket_id }};
+    const container = document.getElementById('aiReplyContainer');
+    const replyText = document.getElementById('aiReplyText');
+    const troubleshootText = document.getElementById('aiTroubleshootingText');
+    
+    container.style.display = 'block';
+    replyText.value = 'Generating...';
+    troubleshootText.value = 'Generating...';
+    replyText.disabled = true;
+    troubleshootText.disabled = true;
+    
+    fetch(`/tickets/${ticketId}/generate-ai-reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        replyText.disabled = false;
+        troubleshootText.disabled = false;
+        
+        if (data.success) {
+            replyText.value = data.suggestion || '';
+            troubleshootText.value = data.troubleshooting || '';
+        } else {
+            replyText.value = 'Error: ' + data.error;
+            troubleshootText.value = '';
+        }
+    })
+    .catch(error => {
+        replyText.disabled = false;
+        troubleshootText.disabled = false;
+        replyText.value = 'Error generating reply. Please try again.';
+        troubleshootText.value = '';
+    });
+}
+
+function regenerateAIReply() {
+    generateAIReply();
+}
+
+function sendAIReply() {
+    const ticketId = {{ ticket.ticket_id }};
+    const replyText = document.getElementById('aiReplyText').value.trim();
+    const troubleshootText = document.getElementById('aiTroubleshootingText').value.trim();
+    
+    if (!replyText && !troubleshootText) {
+        alert(i18n.t('please_enter_reply'));
+        return;
+    }
+    
+    let fullMessage = replyText;
+    if (troubleshootText) {
+        fullMessage += '\n\nTroubleshooting Steps:\n' + troubleshootText;
+    }
+    
+    fetch(`/tickets/${ticketId}/send-ai-reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reply_text: fullMessage })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(i18n.t('reply_sent'));
+            location.reload();
+        } else {
+            alert('Error sending reply: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert(i18n.t('error_sending_reply'));
+    });
+}
+
+function cancelAIReply() {
+    document.getElementById('aiReplyContainer').style.display = 'none';
+    document.getElementById('aiReplyText').value = '';
+    document.getElementById('aiTroubleshootingText').value = '';
+}
+</script>
+
+{% endblock %}

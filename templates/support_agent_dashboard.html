@@ -1,0 +1,341 @@
+{% extends "layout_support_agent.html" %}
+
+{% block title %}{{ _('Support Agent') }} {{ _('Dashboard') }}{% endblock %}
+
+
+
+{% block extra_css %}
+<style>
+
+    .dashboard-card {
+        transition: transform 0.15s ease, b
+        0ox-shadow 0.15s ease;
+        border: none;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    }
+    .stat-card {
+        border-left: 3px solid transparent;
+    }
+    .stat-card.my-tickets { border-left-color: #0d6efd; }
+    .stat-card.open { border-left-color: #dc3545; }
+    .stat-card.progress { border-left-color: #ffc107; }
+    .stat-card.resolved { border-left-color: #198754; }
+    .stat-card.closed { border-left-color: #6c757d; }
+
+    .ticket-table th {
+        font-weight: 600;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        border-bottom-width: 2px;
+    }
+    .ticket-table td {
+        vertical-align: middle;
+    }
+    .ticket-table tbody tr {
+        border-bottom: 1px solid #f1f3f7;
+    }
+    .ticket-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    /* Badge sizing */
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.35em 0.7em;
+        white-space: nowrap;
+    }
+
+    /* Table container */
+    .table-container {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    /* Card header */
+    .card-header {
+        border-bottom: 1px solid #e9ecef;
+        padding: 1rem 1.25rem;
+    }
+
+    /* Stats icon */
+    .stat-icon {
+        opacity: 0.85;
+        font-size: 1.75rem;
+    }
+
+    /* Filter pills */
+    .filter-pills .nav-link {
+        border-radius: 20px;
+        padding: 0.35rem 1rem;
+        font-weight: 500;
+        color: #6c757d;
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+    }
+    .filter-pills .nav-link:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+    .filter-pills .nav-link.active {
+        color: #fff;
+    }
+
+    /* Action button */
+    .action-view {
+        min-width: 80px;
+    }
+
+    @media (max-width: 767.98px) {
+        .stat-icon { font-size: 1.4rem; }
+        .table-responsive { margin: -1rem -1rem; }
+        .badge { font-size: 0.7rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100 stat-card my-tickets">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fa-solid fa-ticket stat-icon text-primary me-3"></i>
+                    <div>
+                        <h6 class="text-muted small mb-1">{{ _('My Tickets') }}</h6>
+                        <h2 class="fw-bold text-primary mb-0">{{ my_total }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100 stat-card open">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fa-solid fa-folder-open stat-icon text-danger me-3"></i>
+                    <div>
+                        <h6 class="text-muted small mb-1">{{ _('Open') }}</h6>
+                        <h2 class="fw-bold text-danger mb-0">{{ my_open }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100 stat-card progress">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fa-solid fa-spinner stat-icon text-warning me-3"></i>
+                    <div>
+                        <h6 class="text-muted small mb-1">{{ _('Status In Progress') }}</h6>
+                        <h2 class="fw-bold text-warning mb-0">{{ my_progress }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100 stat-card resolved">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fa-solid fa-circle-check stat-icon text-success me-3"></i>
+                    <div>
+                        <h6 class="text-muted small mb-1">{{ _('Status Resolved') }}</h6>
+                        <h2 class="fw-bold text-success mb-0">{{ my_resolved }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card shadow-sm border-0 rounded-4 h-100 stat-card closed">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fa-solid fa-box-archive stat-icon text-secondary me-3"></i>
+                    <div>
+                        <h6 class="text-muted small mb-1">{{ _('Closed') }}</h6>
+                        <h2 class="fw-bold text-secondary mb-0">{{ my_closed }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Assigned {{ _('Ticket') }}s Card -->
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="fw-bold mb-0">{{ _('Recent Assigned Tickets') }}</h5>
+                <small class="text-muted d-block mt-1">{{ recent_tickets|length }} {{ _('Tickets Displayed') }}</small>
+            </div>
+            <a href="{{ url_for('support_agent.my_tickets') }}" class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-list me-1"></i>{{ _('View All My Tickets') }}
+            </a>
+        </div>
+        <div class="card-body p-0">
+
+            <!-- Search & Filter Controls -->
+            <div class="p-3 border-bottom">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-4">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            <input type="text" id="ticketSearch" class="form-control"
+                                   data-i18n-placeholder="search_by_ticket_or_title" placeholder="{{ _('Search By Ticket Or Title') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4" >
+                            <select class="form-select form-select-sm" id="statusFilter">
+                            <option value="all">{{ _('All Statuses') }}</option>
+                            <option value="New">{{ _('Status New') }}</option>
+                            <option value="Open">{{ _('Status Open') }}</option>
+                            <option value="In Progress">{{ _('Status In Progress') }}</option>
+                            <option value="On Hold">{{ _('Status On Hold') }}</option>
+                            <option value="Resolved">{{ _('Status Resolved') }}</option>
+                            <option value="Closed">{{ _('Status Closed') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select form-select-sm" id="priorityFilter">
+                            <option value="all">{{ _('All Priorities') }}</option>
+                            <option value="High">{{ _('Priority High') }}</option>
+                            <option value="Medium">{{ _('Priority Medium') }}</option>
+                            <option value="Low">{{ _('Priority Low') }}</option>
+                            <option value="Critical">{{ _('Priority Critical') }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- {{ _('Ticket') }} Table -->             
+            <div id="noResultsDashboard" class="alert alert-warning mx-3 mt-2 d-none">
+                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                {{ _('No Tickets Match Filters') }}
+            </div>
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0 ticket-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ _('Ticket') }}</th>
+                            <th scope="col">{{ _('Title') }}</th>
+                            <th scope="col">{{ _('Priority') }}</th>
+                            <th scope="col">{{ _('Status') }}</th>
+                            <th scope="col">{{ _('Created At') }}</th>
+                            <th scope="col" style="width: 100px;">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in recent_tickets %}
+                        <tr class="ticket-row"
+                            data-status="{{ ticket.status_name }}"
+                            data-priority="{{ ticket.priority_name }}"
+                            data-ticket="{{ ticket.ticket_number }}"
+                            data-title="{{ ticket.title }}">
+                            <td>
+                                <span class="fw-medium text-dark">{{ ticket.ticket_number }}</span>
+                            </td>
+                            <td>
+                                <span class="text-truncate d-inline-block" style="max-width: 220px;"
+                                      title="{{ ticket.title }}">{{ ticket.title }}</span>
+                            </td>
+                            <td>
+                                {% if ticket.priority_name == 'High' or ticket.priority_name == 'Critical' %}
+                                    <span class="badge bg-danger">{{ ticket.priority_name }}</span>
+                                {% elif ticket.priority_name == 'Medium' %}
+                                    <span class="badge bg-warning text-dark">{{ ticket.priority_name }}</span>
+                                {% elif ticket.priority_name == 'Low' %}
+                                    <span class="badge bg-success">{{ ticket.priority_name }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ ticket.priority_name or 'N/A' }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if ticket.status_name == 'Open' %}
+                                    <span class="badge bg-danger">{{ ticket.status_name }}</span>
+                                {% elif ticket.status_name == 'In Progress' %}
+                                    <span class="badge bg-warning text-dark">{{ ticket.status_name }}</span>
+                                {% elif ticket.status_name == 'Resolved' %}
+                                    <span class="badge bg-success">{{ ticket.status_name }}</span>
+                                {% elif ticket.status_name == 'Closed' %}
+                                    <span class="badge bg-secondary">{{ ticket.status_name }}</span>
+                                {% elif ticket.status_name == 'On Hold' %}
+                                    <span class="badge bg-info">{{ ticket.status_name }}</span>
+                                {% elif ticket.status_name == 'New' %}
+                                    <span class="badge bg-primary">{{ ticket.status_name }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ ticket.status_name }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ ticket.created_at.strftime('%Y-%m-%d') if ticket.created_at else 'N/A' }}
+                                </small>
+                            </td>
+                            <td class="action-view">
+                                <a href="{{ url_for('support_agent.ticket_detail', ticket_id=ticket.ticket_id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-eye"></i> {{ _('View') }}
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder fa-3x mb-2 opacity-50"></i>
+                                <p class="mb-0">{{ _('No Tickets Assigned Yet') }}</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('ticketSearch');
+    const statusFilter = document.getElementById('statusFilter');
+    const priorityFilter = document.getElementById('priorityFilter');
+    const ticketRows = document.querySelectorAll('.ticket-row');
+    const noResultsMsg = document.getElementById('noResultsDashboard');
+
+    function filterTickets() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusVal = statusFilter.value;
+        const priorityVal = priorityFilter.value;
+        let visibleCount = 0;
+
+        ticketRows.forEach(function(row) {
+            const ticketNum = row.getAttribute('data-ticket').toLowerCase();
+            const title = row.getAttribute('data-title').toLowerCase();
+            const status = row.getAttribute('data-status');
+            const priority = row.getAttribute('data-priority');
+
+            const matchesSearch = searchTerm === '' ||
+                ticketNum.includes(searchTerm) ||
+                title.includes(searchTerm);
+
+            const matchesStatus = statusVal === 'all' || status === statusVal;
+            const matchesPriority = priorityVal === 'all' || priority === priorityVal;
+
+            const isVisible = matchesSearch && matchesStatus && matchesPriority;
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        if (noResultsMsg) {
+            noResultsMsg.classList.toggle('d-none', visibleCount > 0 || ticketRows.length === 0);
+        }
+    }
+
+    searchInput.addEventListener('input', filterTickets);
+    statusFilter.addEventListener('change', filterTickets);
+    priorityFilter.addEventListener('change', filterTickets);
+});
+</script>
+{% endblock %}
