@@ -123,7 +123,7 @@
                     </tbody>
                 </table>
                 {% if pagination and pagination.total > pagination.per_page %}
-                <nav aria-label="Ticket pagination" class="mt-3">
+                <nav aria-label="Ticket pagination" id="adminTicketsPagination" class="mt-3">
                     <ul class="pagination justify-content-center mb-0">
                         <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
                             <a class="page-link"

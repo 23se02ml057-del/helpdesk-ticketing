@@ -150,12 +150,12 @@ body{
 }
 
 .table thead{
-    background:#f8f9fa;
+    background:#212529;
 }
 
 .table th{
     font-weight:700;
-    color:#495057;
+    color:#ffffff;
 }
 
 .table td{
@@ -243,15 +243,21 @@ canvas{
 
 ::-webkit-scrollbar{
     width:8px;
+    height:8px;
+}
+
+::-webkit-scrollbar-track{
+    background:#f1f1f1;
+    border-radius:10px;
 }
 
 ::-webkit-scrollbar-thumb{
-    background:#adb5bd;
+    background:#3B82F6;
     border-radius:10px;
 }
 
 ::-webkit-scrollbar-thumb:hover{
-    background:#6c757d;
+    background:#2563EB;
 }
 
 /* ===========================

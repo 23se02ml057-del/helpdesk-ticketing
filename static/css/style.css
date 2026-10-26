@@ -56,7 +56,9 @@ h6,.h6{font-size:1rem;font-weight:600;line-height:1.45;color:#111827;}
 /* Tables */
 .table th{font-size:0.875rem;font-weight:600;color:#fff;}
 .table td{font-size:0.95rem;font-weight:400;color:#374151;}
-.table thead th{font-size:0.875rem;font-weight:600;}
+.table thead th{font-size:0.875rem;font-weight:600;background-color:#212529;color:#fff;}
+.table-light, .table thead.table-light{background-color:#212529 !important;color:#fff !important;--bs-table-bg:#212529 !important;--bs-table-color:#fff !important;}
+.table-light th, .table thead.table-light th{background-color:#212529 !important;color:#fff !important;}
 
 /* Form controls */
 .form-control,.form-select,.form-control-sm,.form-select-sm{font-size:0.95rem;font-weight:400;color:#1f2937;}
@@ -486,8 +488,9 @@ h6,.h6{font-size:1rem;font-weight:600;line-height:1.45;color:#111827;}
     border:1px solid #d1d5db;
 }
 .form-control:focus{
-    border-color:#2563eb;
+    border-color:#d1d5db;
     box-shadow:none;
+    outline:none;
 }
 .badge-status{
     background:#dcfce7;
@@ -561,22 +564,43 @@ h6,.h6{font-size:1rem;font-weight:600;line-height:1.45;color:#111827;}
 .table{
     margin-bottom:0;
 }
-.table thead{background:#f7f7f7;}
+.table thead{background:#212529;color:#fff;}
 .table th{font-weight:600;padding:14px;}
 .table td{padding:14px;vertical-align:middle;}
 .badge{padding:8px 12px;border-radius:25px;font-size:13px;}
 .chart-box{height:320px;}
 .pie-box{height:280px;}
 
-.table-scroll{
-    overflow-x:auto;
-    overflow-y:auto;
-    max-height:500px;
+.table-scroll,
+.table-responsive,
+.sa-table-wrap {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #3B82F6 #f1f1f1;
 }
-.table-scroll::-webkit-scrollbar{width:8px;}
-.table-scroll::-webkit-scrollbar-track{background:#f1f1f1;border-radius:10px;}
-.table-scroll::-webkit-scrollbar-thumb{background:#3B82F6;border-radius:10px;}
-.table-scroll::-webkit-scrollbar-thumb:hover{background:#2563EB;}
+.table-scroll::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar,
+.sa-table-wrap::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-scroll::-webkit-scrollbar-track,
+.table-responsive::-webkit-scrollbar-track,
+.sa-table-wrap::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.table-scroll::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb,
+.sa-table-wrap::-webkit-scrollbar-thumb {
+    background: #3B82F6;
+    border-radius: 10px;
+}
+.table-scroll::-webkit-scrollbar-thumb:hover,
+.table-responsive::-webkit-scrollbar-thumb:hover,
+.sa-table-wrap::-webkit-scrollbar-thumb:hover {
+    background: #2563EB;
+}
 
 .card-header h5{font-size:1.1rem;}
 
@@ -1254,3 +1278,62 @@ form[data-live-search] input[name="search"].search-loading {
     position: relative;
 }
 
+
+
+/* ========================================================
+   Clean Search Bars & Normal Input Focus (No Blue Line/Box)
+   ======================================================== */
+.form-control:focus,
+.form-control:focus-visible,
+.form-select:focus,
+.form-select:focus-visible,
+input:focus,
+input:focus-visible,
+.input-group .form-control:focus,
+.input-group .form-control:focus-visible,
+.input-group-text:focus,
+.input-group-text:focus-visible,
+.search-clear:focus,
+.search-clear:focus-visible,
+.sa-search-wrap .form-control:focus,
+.sa-search-wrap .form-control:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Specifically for all search inputs and input groups across all roles */
+.input-group .form-control:focus,
+.input-group .form-control:focus-visible,
+input[name="search"]:focus,
+input[name="search"]:focus-visible,
+input[type="search"]:focus,
+input[type="search"]:focus-visible,
+.sa-search-wrap input:focus,
+.sa-search-wrap input:focus-visible,
+.ticket-search-input:focus,
+.ticket-search-input:focus-visible {
+    border-color: #dee2e6 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input-group:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control,
+.input-group:focus-within .btn {
+    border-color: #dee2e6 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input-group .search-clear,
+.input-group .search-clear:focus,
+.input-group .search-clear:active {
+    border-color: #dee2e6 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}

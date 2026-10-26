@@ -657,7 +657,26 @@ def admin_reset_user_password():
 @auth_bp.route('/change-password', methods=['GET', 'POST'])
 def change_password():
     user_id = session.get("user_id")
+    if not user_id:
+        if request.is_json:
+            return failure_response("Please login first", 401)
+        flash(_("please_login_first"), "danger")
+        return redirect(url_for("login_page"))
+
     role_id = session.get("role_id")
+    if role_id is None:
+        user_row = db.session.execute(
+            text("SELECT role_id FROM users WHERE user_id = :user_id"),
+            {"user_id": user_id}
+        ).fetchone()
+        if user_row:
+            role_id = user_row[0]
+            session["role_id"] = role_id
+
+    try:
+        role_id = int(role_id) if role_id is not None else 6
+    except (ValueError, TypeError):
+        role_id = 6
 
     if request.method == 'GET':
         if role_id == 1:

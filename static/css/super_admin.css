@@ -356,8 +356,9 @@ body.sa-app .sa-page {
 
 .sa-toolbar .form-control:focus,
 .sa-toolbar .form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .sa-search-wrap {
@@ -418,7 +419,37 @@ body.sa-app .sa-page {
 /* Tables */
 .sa-table-wrap {
     overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #3B82F6 #f1f1f1;
+}
+
+.sa-table-wrap::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar,
+.table-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.sa-table-wrap::-webkit-scrollbar-track,
+.table-responsive::-webkit-scrollbar-track,
+.table-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.sa-table-wrap::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb,
+.table-scroll::-webkit-scrollbar-thumb {
+    background: #3B82F6;
+    border-radius: 10px;
+}
+
+.sa-table-wrap::-webkit-scrollbar-thumb:hover,
+.table-responsive::-webkit-scrollbar-thumb:hover,
+.table-scroll::-webkit-scrollbar-thumb:hover {
+    background: #2563EB;
 }
 
 .sa-table {
@@ -428,13 +459,13 @@ body.sa-app .sa-page {
 }
 
 .sa-table thead th {
-    background: #f8fafc;
-    color: #475569;
+    background: #212529;
+    color: #ffffff;
     font-weight: 600;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #374151;
     padding: 0.75rem 0.85rem;
     white-space: nowrap;
     vertical-align: middle;
@@ -898,8 +929,9 @@ body.sa-app .modal-footer {
 
 .sa-toolbar .form-control:focus,
 .sa-toolbar .form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .sa-search-wrap {
@@ -1161,13 +1193,26 @@ body.sa-app .dashboard-card {
     animation: fadeIn 0.2s ease-out;
 }
 
-/* Focus visible for accessibility */
+/* Focus reset - keep search inputs and controls completely clean without blue outline boxes */
+.sa-search-wrap .form-control:focus,
 .sa-search-wrap .form-control:focus-visible,
+.sa-toolbar .form-control:focus,
+.sa-toolbar .form-control:focus-visible,
+.sa-toolbar .form-select:focus,
 .sa-toolbar .form-select:focus-visible,
-body.sa-app .btn:focus-visible,
-body.sa-app .form-control:focus-visible {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
+body.sa-app .form-control:focus,
+body.sa-app .form-control:focus-visible,
+body.sa-app .form-select:focus,
+body.sa-app .form-select:focus-visible,
+body.sa-app .input-group .form-control:focus,
+body.sa-app .input-group .form-control:focus-visible,
+input[name="search"]:focus,
+input[name="search"]:focus-visible,
+input[type="search"]:focus,
+input[type="search"]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #cbd5e1 !important;
 }
 
 /* Print styles */

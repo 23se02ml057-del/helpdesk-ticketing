@@ -37,3 +37,10 @@ triggers.txt
 trans_test.txt
 users_dump.txt
 True
+
+# Presentations & Extracted Assets
+*.pptx
+extracted_assets/
+extracted_sample_assets/
+generate_ppsu_presentation.py
+
